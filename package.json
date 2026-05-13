@@ -3,9 +3,6 @@
   "private": true,
   "sideEffects": false,
   "type": "module",
-  "overrides": {
-    "@cloudflare/vite-plugin": "file:./vendor/cloudflare-vite-plugin-stub"
-  },
   "scripts": {
     "dev": "vite dev",
     "build": "vite build",

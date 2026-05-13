@@ -1,9 +1,0 @@
-{
-  "name": "@cloudflare/vite-plugin",
-  "version": "0.0.0-stub",
-  "type": "module",
-  "main": "./index.mjs",
-  "exports": {
-    ".": "./index.mjs"
-  }
-}
