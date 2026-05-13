@@ -1,0 +1,31 @@
+import { useEffect, type ReactNode } from "react";
+import { useNavigate, useRouterState } from "@tanstack/react-router";
+import { useAuth } from "@/context/auth";
+import { selectPathname } from "@/lib/router-pathname";
+
+function LoadingSkeleton() {
+  return (
+    <div className="space-y-4 animate-pulse" aria-busy="true" aria-label="Loading">
+      <div className="h-24 rounded-3xl bg-muted/60" />
+      <div className="h-48 rounded-3xl bg-muted/40" />
+    </div>
+  );
+}
+
+/** Cart and checkout require a Customer session (not staff dashboards). */
+export function RequireCustomer({ children }: { children: ReactNode }) {
+  const { session, ready } = useAuth();
+  const navigate = useNavigate();
+  const pathname = useRouterState({ select: selectPathname });
+
+  useEffect(() => {
+    if (!ready) return;
+    if (!session || session.role !== "customer") {
+      navigate({ to: "/login", search: { redirect: pathname } });
+    }
+  }, [ready, session, navigate, pathname]);
+
+  if (!ready) return <LoadingSkeleton />;
+  if (!session || session.role !== "customer") return <LoadingSkeleton />;
+  return <>{children}</>;
+}
