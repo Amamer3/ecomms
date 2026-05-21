@@ -30,7 +30,7 @@ function Home() {
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 -z-10 bg-[image:var(--gradient-hero)]" />
         <div className="mx-auto grid max-w-7xl gap-10 px-4 pb-20 pt-14 sm:px-6 lg:grid-cols-2 lg:gap-16 lg:px-8 lg:pb-28 lg:pt-20">
-          <div className="flex flex-col justify-center">
+          <div className="order-2 flex flex-col justify-center lg:order-1">
             {/* <span className="inline-flex w-fit items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-xs font-medium text-primary">
               <Sparkles className="h-3.5 w-3.5" /> Same-day delivery in the city
             </span> */}
@@ -73,7 +73,7 @@ function Home() {
             </dl>
           </div>
 
-          <div className="relative">
+          <div className="relative order-1 lg:order-2">
             <div className="relative overflow-hidden rounded-[2rem] shadow-[var(--shadow-card)]">
               <img
                 src="https://media.istockphoto.com/id/891600988/photo/shopping-together-for-all-their-essentials.jpg?s=612x612&w=0&k=20&c=LpNZcFdnN6sv8w-hJgiwd3NXuGWB-NiRQADHcDV3SBs="
@@ -118,9 +118,7 @@ function Home() {
               search={{ category: c.name }}
               className="group flex flex-col gap-3 rounded-3xl border border-border/60 bg-card p-6 transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-[var(--shadow-card)]"
             >
-              {/* <span className="grid h-14 w-14 place-items-center rounded-2xl bg-[image:var(--gradient-hero)] text-3xl">
-                {c.emoji}
-              </span> */}
+              
               <div>
                 <h3 className="text-base font-semibold">{c.name}</h3>
                 <p className="text-xs text-muted-foreground">{c.blurb}</p>
