@@ -20,14 +20,14 @@ export type Product = {
 };
 
 export const categories: { name: Category; emoji: string; blurb: string }[] = [
-  { name: "Fresh Produce", emoji: "🥬", blurb: "Farm-direct fruits & veggies" },
-  { name: "Meat & Seafood", emoji: "🥩", blurb: "Cuts & catches of the day" },
-  { name: "Dairy & Eggs", emoji: "🥚", blurb: "Cold-chain fresh" },
-  { name: "Bakery", emoji: "🥖", blurb: "Baked this morning" },
-  { name: "Pantry", emoji: "🥫", blurb: "Everyday essentials" },
-  { name: "Frozen", emoji: "🧊", blurb: "Snap-frozen goodness" },
-  { name: "Beverages", emoji: "🥤", blurb: "Sip and refresh" },
-  { name: "Household", emoji: "🧴", blurb: "Care for your home" },
+  { name: "Fresh Produce", emoji: "", blurb: "Farm-direct fruits & veggies" },
+  { name: "Meat & Seafood", emoji: "", blurb: "Cuts & catches of the day" },
+  { name: "Dairy & Eggs", emoji: "", blurb: "Cold-chain fresh" },
+  { name: "Bakery", emoji: "", blurb: "Baked this morning" },
+  { name: "Pantry", emoji: "", blurb: "Everyday essentials" },
+  { name: "Frozen", emoji: "", blurb: "Snap-frozen goodness" },
+  { name: "Beverages", emoji: "", blurb: "Sip and refresh" },
+  { name: "Household", emoji: "", blurb: "Care for your home" },
 ];
 
 export const products: Product[] = [

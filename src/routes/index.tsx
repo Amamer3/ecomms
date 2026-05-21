@@ -118,9 +118,9 @@ function Home() {
               search={{ category: c.name }}
               className="group flex flex-col gap-3 rounded-3xl border border-border/60 bg-card p-6 transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-[var(--shadow-card)]"
             >
-              <span className="grid h-14 w-14 place-items-center rounded-2xl bg-[image:var(--gradient-hero)] text-3xl">
+              {/* <span className="grid h-14 w-14 place-items-center rounded-2xl bg-[image:var(--gradient-hero)] text-3xl">
                 {c.emoji}
-              </span>
+              </span> */}
               <div>
                 <h3 className="text-base font-semibold">{c.name}</h3>
                 <p className="text-xs text-muted-foreground">{c.blurb}</p>
