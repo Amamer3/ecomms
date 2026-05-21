@@ -31,9 +31,9 @@ function Home() {
         <div className="absolute inset-0 -z-10 bg-[image:var(--gradient-hero)]" />
         <div className="mx-auto grid max-w-7xl gap-10 px-4 pb-20 pt-14 sm:px-6 lg:grid-cols-2 lg:gap-16 lg:px-8 lg:pb-28 lg:pt-20">
           <div className="flex flex-col justify-center">
-            <span className="inline-flex w-fit items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-xs font-medium text-primary">
+            {/* <span className="inline-flex w-fit items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-xs font-medium text-primary">
               <Sparkles className="h-3.5 w-3.5" /> Same-day delivery in the city
-            </span>
+            </span> */}
             <h1 className="mt-5 font-display text-5xl font-semibold leading-[1.05] tracking-tight text-foreground sm:text-6xl lg:text-7xl">
               Fresh from the market.{" "}
               <span className="bg-[image:var(--gradient-primary)] bg-clip-text text-transparent">
@@ -76,7 +76,7 @@ function Home() {
           <div className="relative">
             <div className="relative overflow-hidden rounded-[2rem] shadow-[var(--shadow-card)]">
               <img
-                src={heroImg}
+                src="https://media.istockphoto.com/id/891600988/photo/shopping-together-for-all-their-essentials.jpg?s=612x612&w=0&k=20&c=LpNZcFdnN6sv8w-hJgiwd3NXuGWB-NiRQADHcDV3SBs="
                 alt="Overhead arrangement of fresh groceries: tomatoes, leafy greens, avocado, bread and eggs"
                 width={1600}
                 height={1200}
@@ -94,17 +94,7 @@ function Home() {
                 </div>
               </div>
             </div>
-            <div className="absolute -right-4 -top-4 hidden rounded-2xl border border-border bg-card p-4 shadow-[var(--shadow-warm)] sm:block">
-              <div className="flex items-center gap-3">
-                <span className="grid h-10 w-10 place-items-center rounded-xl bg-accent/20 text-accent-foreground">
-                  <Leaf className="h-5 w-5" />
-                </span>
-                <div>
-                  <p className="text-sm font-semibold">Freshness guaranteed</p>
-                  <p className="text-xs text-muted-foreground">or your money back</p>
-                </div>
-              </div>
-            </div>
+            {/* delivery rider image */}
           </div>
         </div>
       </section>
