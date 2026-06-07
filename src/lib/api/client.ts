@@ -1,16 +1,34 @@
-import { getConfiguredApiOrigin } from "@/lib/env";
+import { getConfiguredApiOrigin, isApiConfigured } from "@/lib/env";
 import type { ErrorResponse, LoginResponse, MfaLoginChallenge, TokenPair } from "./types";
 
 const TOKEN_KEY = "randys_tokens";
 
 export function getApiBaseUrl(): string {
-  const base = getConfiguredApiOrigin();
-  if (!base) {
+  if (!isApiConfigured()) {
     throw new Error(
       "VITE_API_URL is not configured. Set it in .env for local dev or in your hosting build environment.",
     );
   }
-  return `${base}/api/v1`;
+  return `${getConfiguredApiOrigin()}/api/v1`;
+}
+
+function buildApiUrl(path: string, query?: RequestOptions["query"]): URL {
+  let url: URL;
+  try {
+    url = new URL(`${getApiBaseUrl()}${path.startsWith("/") ? path : `/${path}`}`);
+  } catch {
+    throw new ApiError(
+      503,
+      "Invalid VITE_API_URL. Use a full origin such as https://api.example.com",
+      { error: "CONFIG", message: "Invalid VITE_API_URL" },
+    );
+  }
+  if (query) {
+    for (const [k, v] of Object.entries(query)) {
+      if (v !== undefined && v !== null && v !== "") url.searchParams.set(k, String(v));
+    }
+  }
+  return url;
 }
 
 export type StoredTokens = {
@@ -100,12 +118,7 @@ export type RequestOptions = {
 
 export async function apiRequest<T>(path: string, options: RequestOptions = {}): Promise<T> {
   const { method = "GET", body, auth = false, query, headers: extraHeaders } = options;
-  const url = new URL(`${getApiBaseUrl()}${path.startsWith("/") ? path : `/${path}`}`);
-  if (query) {
-    for (const [k, v] of Object.entries(query)) {
-      if (v !== undefined && v !== null && v !== "") url.searchParams.set(k, String(v));
-    }
-  }
+  const url = buildApiUrl(path, query);
 
   const headers: Record<string, string> = { accept: "application/json", ...extraHeaders };
   if (body !== undefined) headers["content-type"] = "application/json";
