@@ -8,8 +8,8 @@ export const Route = createFileRoute("/delivery/")({
   component: DeliveryLanding,
   head: () => ({
     meta: [
-      { title: "Drive with Randy's — Flexible delivery work" },
-      { name: "description", content: "Earn on your schedule with Randy's Commerce. Smart routing, weekly payouts, supportive community." },
+      { title: "Drive with GoMarket — Flexible delivery work" },
+      { name: "description", content: "Earn on your schedule with GoMarket. Smart routing, weekly payouts, supportive community." },
     ],
   }),
 });
@@ -38,8 +38,12 @@ function DeliveryLanding() {
             >
               Start an application <ArrowRight className="h-4 w-4" />
             </Link>
-            <Link to="/dashboard/delivery" className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-6 py-3.5 text-sm font-semibold">
-              Courier dashboard
+            <Link
+              to="/dashboard/login"
+              search={{ redirect: "/dashboard/delivery" }}
+              className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-6 py-3.5 text-sm font-semibold"
+            >
+              Partner sign in
             </Link>
           </div>
         </div>

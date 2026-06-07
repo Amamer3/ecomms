@@ -1,1 +1,0 @@
-const r=new Intl.NumberFormat("en-GH",{style:"currency",currency:"GHS",minimumFractionDigits:2,maximumFractionDigits:2}),n=new Intl.NumberFormat("en-GH",{style:"currency",currency:"GHS",notation:"compact",compactDisplay:"short",maximumFractionDigits:1});function c(t){return r.format(t)}function m(t){return n.format(t)}export{m as a,c as f};

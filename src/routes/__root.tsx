@@ -11,6 +11,7 @@ import {
 import appCss from "../styles.css?url";
 import { AuthProvider } from "@/context/auth";
 import { CartProvider } from "@/context/cart";
+import { ApiConfigBanner } from "@/components/ApiConfigBanner";
 import { Toaster } from "@/components/ui/sonner";
 
 function NotFoundComponent() {
@@ -75,14 +76,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "GoMarket" },
+      { name: "description", content: "Fresh groceries & essentials, delivered from local vendors." },
+      { property: "og:title", content: "GoMarket" },
+      { property: "og:description", content: "Fresh groceries & essentials, delivered from local vendors." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@Lovable" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
@@ -121,6 +120,7 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <CartProvider>
+          <ApiConfigBanner />
           <Outlet />
           <Toaster richColors position="top-right" />
         </CartProvider>

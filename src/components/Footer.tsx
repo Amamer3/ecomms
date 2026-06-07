@@ -1,5 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { Sprout } from "lucide-react";
+import { BrandLogo } from "@/components/BrandLogo";
+import { APP_NAME } from "@/lib/brand";
 
 export function Footer() {
   return (
@@ -11,7 +13,7 @@ export function Footer() {
               <span className="grid h-9 w-9 place-items-center rounded-xl bg-[image:var(--gradient-primary)] text-primary-foreground">
                 <Sprout className="h-5 w-5" />
               </span>
-              <span className="font-display text-xl font-semibold">Randy's</span>
+              <BrandLogo className="text-xl" />
             </div>
             <p className="mt-4 max-w-xs text-sm text-muted-foreground">
               Everything for your kitchen and home — delivered fresh, fast, and fairly priced.
@@ -22,7 +24,7 @@ export function Footer() {
           <FooterCol title="Company" links={[["/", "About"], ["/", "Press"], ["/", "Contact"]]} />
         </div>
         <div className="mt-10 flex flex-col items-start justify-between gap-3 border-t border-border/60 pt-6 text-xs text-muted-foreground sm:flex-row sm:items-center">
-          <p>© {new Date().getFullYear()} Randy's Commerce. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} {APP_NAME}. All rights reserved.</p>
           <p>Built for fresh living.</p>
         </div>
       </div>

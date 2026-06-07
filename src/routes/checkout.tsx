@@ -1,58 +1,216 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { CheckCircle2, Lock } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { ArrowLeft, CheckCircle2, ShoppingBag } from "lucide-react";
+import { toast } from "sonner";
 import { Navbar } from "@/components/Navbar";
 import { RequireCustomer } from "@/components/RequireCustomer";
 import { Footer } from "@/components/Footer";
 import { useCart } from "@/context/cart";
+import { checkout, createAddress, listAddresses, validatePromotion } from "@/lib/api";
+import { ApiError, parseMoney } from "@/lib/api/client";
+import type { CheckoutResult } from "@/lib/api/types";
 import { formatGhs } from "@/lib/format-money";
+import { normalizeE164Phone } from "@/lib/phone";
+import {
+  customerInputCls,
+  CustomerDetailGrid,
+  CustomerPageHeader,
+} from "@/components/customer/customer-ui";
 
 export const Route = createFileRoute("/checkout")({
   component: CheckoutPage,
-  head: () => ({ meta: [{ title: "Checkout — Randy's Commerce" }] }),
+  head: () => ({ meta: [{ title: "Checkout — GoMarket" }] }),
 });
 
-const DELIVERY = 3.5;
-
 function CheckoutPage() {
-  const { items, subtotal, clear } = useCart();
-  const navigate = useNavigate();
-  const [done, setDone] = useState(false);
-  const total = subtotal + (items.length ? DELIVERY : 0);
+  const { items, subtotal, storeId, clear } = useCart();
+  const [done, setDone] = useState<CheckoutResult | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+  const [promoCode, setPromoCode] = useState("");
+  const [momoNumber, setMomoNumber] = useState("");
+  const [notes, setNotes] = useState("");
+  const [addressForm, setAddressForm] = useState({
+    line1: "",
+    city: "Accra",
+    lat: 5.6037,
+    lng: -0.187,
+    contactPhone: "",
+  });
 
-  const submit = (e: React.FormEvent) => {
+  const { data: addresses = [], refetch: refetchAddresses } = useQuery({
+    queryKey: ["addresses"],
+    queryFn: listAddresses,
+  });
+
+  const [selectedAddressId, setSelectedAddressId] = useState<string>("");
+
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setDone(true);
-    setTimeout(() => clear(), 600);
+    if (!storeId || items.length === 0) {
+      toast.error("Your cart is empty");
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      let addressId = selectedAddressId || addresses.find((a) => a.isDefault)?.id;
+      if (!addressId) {
+        if (!addressForm.line1.trim()) {
+          toast.error("Add a delivery address");
+          setSubmitting(false);
+          return;
+        }
+        const created = await createAddress({
+          line1: addressForm.line1,
+          city: addressForm.city,
+          lat: addressForm.lat,
+          lng: addressForm.lng,
+          country: "GH",
+          contactPhone: addressForm.contactPhone || undefined,
+          isDefault: true,
+        });
+        addressId = created.id;
+        await refetchAddresses();
+      }
+
+      const momo = normalizeE164Phone(momoNumber);
+      if (!momo) {
+        toast.error("MoMo number must be E.164, e.g. +233200000001");
+        setSubmitting(false);
+        return;
+      }
+
+      if (promoCode.trim()) {
+        try {
+          await validatePromotion(promoCode.trim(), storeId, subtotal.toFixed(2));
+        } catch {
+          toast.error("Invalid promotion code");
+          setSubmitting(false);
+          return;
+        }
+      }
+
+      const result = await checkout({
+        storeId,
+        addressId,
+        momoNumber: momo,
+        notes: notes.trim() || undefined,
+        promoCode: promoCode.trim() || undefined,
+        channel: "MOMO",
+        idempotencyKey: crypto.randomUUID(),
+      });
+
+      setDone(result);
+      await clear();
+      toast.success(result.nextAction?.message ?? "Pending order created — approve MoMo on your phone");
+    } catch (err) {
+      toast.error(err instanceof ApiError ? err.message : "Checkout failed");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   if (done) {
+    const { order, payment, nextAction } = done;
     return (
       <RequireCustomer>
         <div className="min-h-screen bg-background">
           <Navbar />
-          <section className="mx-auto grid max-w-2xl place-items-center px-4 py-24 text-center">
-            <span className="grid h-16 w-16 place-items-center rounded-2xl bg-primary/10 text-primary">
+          <section className="mx-auto max-w-2xl px-4 py-16 sm:px-6">
+            <span className="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-primary/10 text-primary">
               <CheckCircle2 className="h-8 w-8" />
             </span>
-            <h1 className="mt-6 font-display text-4xl font-semibold">Order placed!</h1>
-            <p className="mt-3 max-w-md text-muted-foreground">
-              Thanks for shopping with Randy's. Your order is being prepared and will arrive in
-              about 45 minutes.
+            <h1 className="mt-6 text-center font-display text-3xl font-semibold">
+              Order {order.orderNumber}
+            </h1>
+            <p className="mt-3 text-center text-muted-foreground">
+              {nextAction?.message ??
+                "A pending MoMo payment prompt was sent. Approve it on your phone to confirm."}
             </p>
-            <div className="mt-8 flex gap-3">
+
+            <div className="mt-8 space-y-6">
+              <CustomerDetailGrid
+                rows={[
+                  { label: "Order status", value: order.status },
+                  { label: "Payment status", value: payment.status },
+                  { label: "Channel", value: payment.channel ?? "MOMO" },
+                  { label: "Subtotal", value: formatGhs(parseMoney(order.subtotal)) },
+                  { label: "Delivery fee", value: formatGhs(parseMoney(order.deliveryFee)) },
+                  { label: "Service fee", value: formatGhs(parseMoney(order.serviceFee)) },
+                  ...(parseMoney(order.discountTotal) > 0
+                    ? [{ label: "Discount", value: `−${formatGhs(parseMoney(order.discountTotal))}` }]
+                    : []),
+                  { label: "Total", value: formatGhs(parseMoney(order.total)) },
+                  ...(payment.momoNumber
+                    ? [{ label: "MoMo number", value: payment.momoNumber }]
+                    : []),
+                ]}
+              />
+
+              {nextAction?.type && (
+                <p className="text-center font-mono text-xs text-muted-foreground">
+                  Next action: {nextAction.type}
+                </p>
+              )}
+            </div>
+
+            <div className="mt-8 flex flex-wrap justify-center gap-3">
+              <Link
+                to="/account/orders/$orderId"
+                params={{ orderId: order.id }}
+                className="rounded-full bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground"
+              >
+                View order
+              </Link>
+              <Link
+                to="/account/transactions/$paymentId"
+                params={{ paymentId: payment.id }}
+                className="rounded-full border border-border bg-card px-5 py-3 text-sm font-semibold"
+              >
+                View payment
+              </Link>
               <Link
                 to="/shop"
+                search={{ storeId: order.storeId }}
                 className="rounded-full border border-border bg-card px-5 py-3 text-sm font-semibold"
               >
                 Keep shopping
               </Link>
-              <button
-                onClick={() => navigate({ to: "/" })}
+            </div>
+          </section>
+          <Footer />
+        </div>
+      </RequireCustomer>
+    );
+  }
+
+  if (!storeId || items.length === 0) {
+    return (
+      <RequireCustomer>
+        <div className="min-h-screen bg-background">
+          <Navbar />
+          <section className="mx-auto max-w-2xl px-4 py-24 text-center">
+            <span className="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-primary/10 text-primary">
+              <ShoppingBag className="h-6 w-6" />
+            </span>
+            <h1 className="mt-6 font-display text-3xl font-semibold">Nothing to checkout</h1>
+            <p className="mt-3 text-muted-foreground">
+              Add items to your cart first, then return here to create a pending order and MoMo payment.
+            </p>
+            <div className="mt-8 flex flex-wrap justify-center gap-3">
+              <Link
+                to="/cart"
                 className="rounded-full bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground"
               >
-                Back to home
-              </button>
+                View cart
+              </Link>
+              <Link
+                to="/shop"
+                className="rounded-full border border-border bg-card px-5 py-3 text-sm font-semibold"
+              >
+                Browse stores
+              </Link>
             </div>
           </section>
           <Footer />
@@ -65,69 +223,125 @@ function CheckoutPage() {
     <RequireCustomer>
       <div className="min-h-screen bg-background">
         <Navbar />
-        <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-          <h1 className="font-display text-4xl font-semibold">Checkout</h1>
-          <p className="mt-1 text-muted-foreground">Almost there — just a few details.</p>
+        <div className="border-b border-border/60 bg-[image:var(--gradient-hero)]">
+          <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+            <Link
+              to="/cart"
+              className="mb-4 inline-flex items-center gap-1 text-sm font-medium text-muted-foreground hover:text-foreground"
+            >
+              <ArrowLeft className="h-4 w-4" /> Back to cart
+            </Link>
+            <CustomerPageHeader
+              title="Checkout"
+              description="Create a pending order and pending MoMo payment from your active store cart."
+            />
+          </div>
+        </div>
 
-          <form onSubmit={submit} className="mt-10 grid gap-8 lg:grid-cols-[1fr_360px]">
+        <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+          <form onSubmit={(e) => void submit(e)} className="grid gap-8 lg:grid-cols-[1fr_360px]">
             <div className="space-y-8">
-              <Section title="Delivery details">
-                <Field label="Full name" required placeholder="Jane Doe" />
-                <Field label="Phone" required placeholder="+233 ..." />
-                <Field label="Address" required placeholder="123 Independence Ave" full />
-                <Field label="City" required placeholder="Accra" />
-                <Field label="Notes (optional)" placeholder="Gate code, leave at door…" full />
+              <Section title="Delivery address">
+                {addresses.length > 0 ? (
+                  <div className="space-y-2 sm:col-span-2">
+                    {addresses.map((a) => (
+                      <label
+                        key={a.id}
+                        className="flex cursor-pointer items-start gap-3 rounded-xl border border-border p-3"
+                      >
+                        <input
+                          type="radio"
+                          name="address"
+                          checked={(selectedAddressId || addresses.find((x) => x.isDefault)?.id) === a.id}
+                          onChange={() => setSelectedAddressId(a.id)}
+                        />
+                        <span className="text-sm">
+                          <span className="font-medium">{a.label ?? "Address"}</span>
+                          <br />
+                          {a.line1}, {a.city}
+                        </span>
+                      </label>
+                    ))}
+                    <Link
+                      to="/account/addresses"
+                      className="inline-block text-sm font-medium text-primary hover:underline"
+                    >
+                      Manage addresses
+                    </Link>
+                  </div>
+                ) : (
+                  <>
+                    <Field
+                      label="Street address"
+                      required
+                      value={addressForm.line1}
+                      onChange={(v) => setAddressForm((f) => ({ ...f, line1: v }))}
+                      full
+                    />
+                    <Field
+                      label="City"
+                      required
+                      value={addressForm.city}
+                      onChange={(v) => setAddressForm((f) => ({ ...f, city: v }))}
+                    />
+                    <Field
+                      label="Contact phone"
+                      value={addressForm.contactPhone}
+                      onChange={(v) => setAddressForm((f) => ({ ...f, contactPhone: v }))}
+                    />
+                    <p className="text-xs text-muted-foreground sm:col-span-2">
+                      Or{" "}
+                      <Link to="/account/addresses" className="font-medium text-primary hover:underline">
+                        add a saved address
+                      </Link>{" "}
+                      first.
+                    </p>
+                  </>
+                )}
+                <Field label="Delivery notes" value={notes} onChange={setNotes} full />
               </Section>
 
-              <Section title="Payment">
-                <Field label="Card number" required placeholder="4242 4242 4242 4242" full />
-                <Field label="Expiry" required placeholder="MM / YY" />
-                <Field label="CVC" required placeholder="123" />
-                <p className="col-span-full inline-flex items-center gap-2 text-xs text-muted-foreground">
-                  <Lock className="h-3.5 w-3.5" /> Demo checkout — no real charges.
+              <Section title="Mobile Money payment">
+                <p className="text-sm text-muted-foreground sm:col-span-2">
+                  Submitting creates a pending order and sends a MoMo payment prompt to your phone.
                 </p>
+                <Field
+                  label="MoMo number"
+                  required
+                  value={momoNumber}
+                  onChange={setMomoNumber}
+                  placeholder="+233200000001"
+                  full
+                />
+                <Field label="Promo code (optional)" value={promoCode} onChange={setPromoCode} full />
               </Section>
             </div>
 
             <aside className="h-fit rounded-3xl border border-border/60 bg-card p-6 shadow-[var(--shadow-card)] lg:sticky lg:top-24">
-              <h2 className="font-display text-xl font-semibold">Order</h2>
-              <ul className="mt-4 max-h-72 space-y-3 overflow-auto pr-1 text-sm">
-                {items.map(({ product, qty }) => (
-                  <li key={product.id} className="flex items-center justify-between gap-3">
-                    <span className="flex items-center gap-2">
-                      <span className="text-xl">{product.emoji}</span>
-                      <span>
-                        <span className="block font-medium">{product.name}</span>
-                        <span className="text-xs text-muted-foreground">× {qty}</span>
-                      </span>
+              <h2 className="font-display text-xl font-semibold">Order summary</h2>
+              <p className="mt-1 text-xs text-muted-foreground">Store {storeId.slice(0, 8)}…</p>
+              <ul className="mt-4 max-h-72 space-y-3 overflow-auto text-sm">
+                {items.map(({ item }) => (
+                  <li key={item.id} className="flex justify-between gap-3">
+                    <span>
+                      {item.name} × {item.qty}
                     </span>
-                    <span className="font-medium">{formatGhs(product.price * qty)}</span>
+                    <span className="font-medium">{formatGhs(parseMoney(item.lineTotal))}</span>
                   </li>
                 ))}
-                {items.length === 0 && (
-                  <p className="text-muted-foreground">Your basket is empty.</p>
-                )}
               </ul>
-              <dl className="mt-5 space-y-2 border-t border-border pt-4 text-sm">
-                <div className="flex justify-between">
-                  <dt className="text-muted-foreground">Subtotal</dt>
-                  <dd>{formatGhs(subtotal)}</dd>
-                </div>
-                <div className="flex justify-between">
-                  <dt className="text-muted-foreground">Delivery</dt>
-                  <dd>{formatGhs(DELIVERY)}</dd>
-                </div>
-                <div className="flex justify-between border-t border-border pt-2 text-base font-semibold">
-                  <dt>Total</dt>
-                  <dd>{formatGhs(total)}</dd>
-                </div>
-              </dl>
+              <p className="mt-5 border-t border-border pt-4 text-base font-semibold">
+                Subtotal {formatGhs(subtotal)}
+              </p>
+              <p className="mt-1 text-xs text-muted-foreground">
+                Delivery and service fees are calculated when the order is created.
+              </p>
               <button
                 type="submit"
-                disabled={items.length === 0}
-                className="mt-6 w-full rounded-full bg-primary px-5 py-3.5 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-glow)] transition-transform hover:scale-[1.01] disabled:opacity-50"
+                disabled={submitting}
+                className="mt-6 w-full rounded-full bg-primary px-5 py-3.5 text-sm font-semibold text-primary-foreground disabled:opacity-50"
               >
-                Place order
+                {submitting ? "Creating order…" : "Place order & pay with MoMo"}
               </button>
             </aside>
           </form>
@@ -150,14 +364,23 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 function Field({
   label,
   full,
+  value,
+  onChange,
   ...rest
-}: { label: string; full?: boolean } & React.InputHTMLAttributes<HTMLInputElement>) {
+}: {
+  label: string;
+  full?: boolean;
+  value: string;
+  onChange: (v: string) => void;
+} & Omit<React.InputHTMLAttributes<HTMLInputElement>, "value" | "onChange">) {
   return (
     <label className={`flex flex-col gap-1.5 ${full ? "sm:col-span-2" : ""}`}>
       <span className="text-xs font-medium text-foreground/80">{label}</span>
       <input
         {...rest}
-        className="rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className={customerInputCls}
       />
     </label>
   );

@@ -4,6 +4,7 @@ import { useAuth } from "@/context/auth";
 import { useCart } from "@/context/cart";
 import { appHomePathForRole } from "@/lib/auth-storage";
 import { selectPathname } from "@/lib/router-pathname";
+import { BrandLogo } from "@/components/BrandLogo";
 import { cn } from "@/lib/utils";
 import {
   Sheet,
@@ -14,44 +15,48 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 
-const NAV_ITEMS_BASE = [
+/** Storefront nav only — business dashboards are not linked publicly. */
+const NAV_ITEMS_PUBLIC = [
   { to: "/", label: "Home" },
   { to: "/shop", label: "Shop" },
+  { to: "/catalog", label: "Catalog" },
   { to: "/vendors", label: "Sell with us" },
   { to: "/delivery", label: "Deliver" },
-  { to: "/dashboard", label: "Dashboard", hideForCustomer: true as const },
 ] as const;
 
 const NAV_ITEMS_CUSTOMER = [
   { to: "/", label: "Home" },
   { to: "/shop", label: "Shop" },
+  { to: "/catalog", label: "Catalog" },
   { to: "/account", label: "My delivery" },
   { to: "/vendors", label: "Sell with us" },
   { to: "/delivery", label: "Deliver" },
 ] as const;
 
 function navLinkActive(path: string, to: string) {
-  if (to === "/dashboard") return path === "/dashboard" || path.startsWith("/dashboard/");
   if (to === "/account") return path === "/account" || path.startsWith("/account/");
+  if (to === "/catalog") return path === "/catalog" || path.startsWith("/catalog/");
   return path === to;
+}
+
+function loginSearch(path: string): { redirect: string | undefined } {
+  return { redirect: path === "/login" ? undefined : path };
 }
 
 export function Navbar() {
   const { count } = useCart();
   const { session, ready, logout } = useAuth();
   const path = useRouterState({ select: selectPathname });
-  const navItems = session?.role === "customer" ? NAV_ITEMS_CUSTOMER : NAV_ITEMS_BASE;
+  const navItems = session?.role === "customer" ? NAV_ITEMS_CUSTOMER : NAV_ITEMS_PUBLIC;
 
   return (
-    <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur-xl">
-      <div className="mx-auto flex h-16 max-w-7xl items-center gap-3 px-4 sm:px-6 lg:px-8">
+    <header className="sticky top-0 z-50 px-3 pt-3 sm:px-4 sm:pt-4 lg:px-6">
+      <div className="mx-auto flex h-14 max-w-7xl items-center gap-3 rounded-2xl border border-border/60 bg-card/90 px-3 shadow-[var(--shadow-card)] backdrop-blur-md supports-[backdrop-filter]:bg-card/75 sm:h-[4.25rem] sm:gap-3 sm:px-5 lg:px-6">
         <Link to="/" className="flex shrink-0 items-center gap-2">
           <span className="grid h-9 w-9 place-items-center rounded-xl bg-[image:var(--gradient-primary)] text-primary-foreground shadow-[var(--shadow-soft)]">
             <Sprout className="h-5 w-5" />
           </span>
-          <span className="font-display text-xl font-semibold tracking-tight">
-            Randy's<span className="text-primary">.</span>
-          </span>
+          <BrandLogo className="text-xl" />
         </Link>
 
         <nav className="hidden flex-1 items-center justify-center gap-8 md:flex" aria-label="Main">
@@ -60,8 +65,10 @@ export function Navbar() {
               key={to}
               to={to}
               className={cn(
-                "text-sm font-medium transition-colors hover:text-primary",
-                navLinkActive(path, to) ? "text-primary" : "text-foreground/70",
+                "rounded-full px-3 py-1.5 text-sm font-medium transition-colors hover:text-primary",
+                navLinkActive(path, to)
+                  ? "bg-primary/10 text-primary"
+                  : "text-foreground/70",
               )}
             >
               {label}
@@ -79,7 +86,7 @@ export function Navbar() {
             <div className="hidden items-center gap-2 md:flex">
               <Link
                 to={session.role === "customer" ? "/account" : appHomePathForRole(session.role)}
-                className="max-w-[140px] truncate rounded-full border border-border/60 bg-card px-3 py-2 text-xs font-medium text-foreground transition-colors hover:border-primary/40"
+                className="max-w-[160px] truncate rounded-lg border border-border/70 bg-card px-3 py-2 text-xs font-medium text-foreground shadow-sm transition-colors hover:border-primary/30"
                 title={session.name}
               >
                 {session.name}
@@ -95,6 +102,7 @@ export function Navbar() {
           ) : (
             <Link
               to="/login"
+              search={loginSearch(path)}
               className="hidden items-center gap-2 rounded-full border border-border/60 bg-card px-4 py-2 text-sm font-medium text-foreground shadow-[var(--shadow-soft)] transition-colors hover:border-primary/40 md:inline-flex"
             >
               <LogIn className="h-4 w-4" /> Log in
@@ -162,6 +170,7 @@ export function Navbar() {
                     <SheetClose asChild>
                       <Link
                         to="/login"
+                        search={loginSearch(path)}
                         className="block rounded-xl px-4 py-3 text-sm font-medium text-primary hover:bg-primary/10"
                       >
                         Log in

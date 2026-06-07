@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { Map as LeafletMap } from "leaflet";
-import type { DeliveryTracking, GeoPoint } from "@/lib/delivery-tracking";
+import type { GeoPoint, MapTracking } from "@/lib/map-tracking";
 
 type LatLngTuple = [number, number];
 type OsrmRouteResponse = {
@@ -12,12 +12,12 @@ type OsrmRouteResponse = {
 };
 
 type DeliveryTrackingMapProps = {
-  delivery: DeliveryTracking;
+  delivery: MapTracking;
   showDirections?: boolean;
   className?: string;
 };
 
-export function DeliveryTrackingMap({ delivery, showDirections = delivery.status === "accepted", className }: DeliveryTrackingMapProps) {
+export function DeliveryTrackingMap({ delivery, showDirections = delivery.status === "en_route", className }: DeliveryTrackingMapProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   const [resetCount, setResetCount] = useState(0);
   const courierPosition = useMemo(() => toLatLng(delivery.courierPoint), [delivery.courierPoint.lat, delivery.courierPoint.lng]);

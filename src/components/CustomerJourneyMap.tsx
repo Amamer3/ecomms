@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { Map as LeafletMap } from "leaflet";
-import type { DeliveryTracking, GeoPoint } from "@/lib/delivery-tracking";
+import type { GeoPoint, MapTracking } from "@/lib/map-tracking";
 
 type LatLngTuple = [number, number];
 
@@ -13,7 +13,7 @@ type OsrmRouteResponse = {
 };
 
 type CustomerJourneyMapProps = {
-  delivery: DeliveryTracking;
+  delivery: MapTracking;
   /** When true, draw road route through vendor → courier → you (accepted). */
   showLiveRoute: boolean;
   className?: string;

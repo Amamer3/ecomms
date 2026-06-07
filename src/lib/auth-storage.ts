@@ -1,8 +1,10 @@
+import type { ApiRole, PublicUser } from "@/lib/api/types";
+
 /**
  * Four user personas (stored `role` on {@link AuthSession}):
  * - `customer` — storefront (Customer)
  * - `vendor` — merchant tools (Vendor)
- * - `delivery` — courier tools at `/dashboard/delivery` (Courier); kept as `delivery` for URLs & persisted sessions
+ * - `delivery` — courier tools at `/dashboard/delivery` (Courier)
  * - `admin` — platform tools (Admin)
  */
 export type DashboardRole = "admin" | "vendor" | "delivery";
@@ -14,11 +16,57 @@ export type AuthSession = {
   id: string;
   email: string;
   name: string;
+  phone: string;
   role: UserRole;
+  apiRole: ApiRole;
   createdAt: string;
 };
 
 export const AUTH_STORAGE_KEY = "randys_auth_session";
+
+export function apiRoleToUserRole(role: ApiRole): UserRole {
+  switch (role) {
+    case "CUSTOMER":
+      return "customer";
+    case "VENDOR":
+      return "vendor";
+    case "RIDER":
+      return "delivery";
+    case "ADMIN":
+      return "admin";
+  }
+}
+
+export function displayNameFromUser(user: PublicUser, profile?: { firstName?: string | null; lastName?: string | null; businessName?: string }): string {
+  if (profile && "businessName" in profile && profile.businessName) return profile.businessName;
+  const parts = [profile?.firstName, profile?.lastName].filter(Boolean);
+  if (parts.length) return parts.join(" ");
+  if (user.email) return user.email.split("@")[0] ?? user.phone;
+  return user.phone;
+}
+
+/** Prefer first + last name from customer profile; fall back to phone. */
+export function customerProfileDisplayName(profile: {
+  firstName?: string | null;
+  lastName?: string | null;
+  phone: string;
+}): string {
+  const parts = [profile.firstName, profile.lastName].filter(Boolean);
+  if (parts.length) return parts.join(" ");
+  return profile.phone;
+}
+
+export function sessionFromUser(user: PublicUser, name?: string): AuthSession {
+  return {
+    id: user.id,
+    email: user.email ?? "",
+    phone: user.phone,
+    name: name ?? user.email?.split("@")[0] ?? user.phone,
+    role: apiRoleToUserRole(user.role),
+    apiRole: user.role,
+    createdAt: new Date().toISOString(),
+  };
+}
 
 export function parseSession(raw: string | null): AuthSession | null {
   if (!raw) return null;
@@ -30,12 +78,27 @@ export function parseSession(raw: string | null): AuthSession | null {
     return {
       id: p.id,
       email: typeof p.email === "string" ? p.email : "",
+      phone: typeof p.phone === "string" ? p.phone : "",
       name: typeof p.name === "string" ? p.name : "",
       role: p.role as UserRole,
+      apiRole: (p.apiRole as ApiRole) ?? mapLegacyApiRole(p.role as UserRole),
       createdAt: typeof p.createdAt === "string" ? p.createdAt : new Date().toISOString(),
     };
   } catch {
     return null;
+  }
+}
+
+function mapLegacyApiRole(role: UserRole): ApiRole {
+  switch (role) {
+    case "customer":
+      return "CUSTOMER";
+    case "vendor":
+      return "VENDOR";
+    case "delivery":
+      return "RIDER";
+    case "admin":
+      return "ADMIN";
   }
 }
 
@@ -52,7 +115,6 @@ export function clearSessionFromStorage(): void {
   localStorage.removeItem(AUTH_STORAGE_KEY);
 }
 
-/** Product-facing name for each stored role (Customer, Courier, Vendor, Admin). */
 export function roleLabel(role: UserRole): string {
   switch (role) {
     case "customer":
@@ -79,7 +141,6 @@ export function dashboardPathForRole(
   }
 }
 
-/** Navbar / “home” after sign-in: shop for customers, dashboard for staff. */
 export function appHomePathForRole(role: UserRole): string {
   if (role === "customer") return "/shop";
   return dashboardPathForRole(role);
@@ -92,7 +153,6 @@ function pathRole(path: string): DashboardRole | null {
   return null;
 }
 
-/** Avoid open redirects; only allow same-origin dashboard paths the signed-in role may open. */
 export function safePostLoginRedirect(
   role: DashboardRole,
   redirect: string | undefined,
@@ -107,7 +167,16 @@ export function safePostLoginRedirect(
   return redirect as "/dashboard/admin" | "/dashboard/vendor" | "/dashboard/delivery";
 }
 
-/** After customer login: stay on storefront paths only. */
+/** Route after password/MFA login from the API user record (not a UI-selected role). */
+export function postAuthRedirectPath(
+  user: Pick<PublicUser, "role">,
+  redirect: string | undefined,
+): ReturnType<typeof safePostLoginRedirect> | ReturnType<typeof safeShopperPostLoginRedirect> {
+  const role = apiRoleToUserRole(user.role);
+  if (role === "customer") return safeShopperPostLoginRedirect(redirect);
+  return safePostLoginRedirect(role, redirect);
+}
+
 export function safeShopperPostLoginRedirect(
   redirect: string | undefined,
 ): "/shop" | "/cart" | "/checkout" | "/account" {

@@ -11,21 +11,83 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as VendorsRouteImport } from './routes/vendors'
 import { Route as ShopRouteImport } from './routes/shop'
+import { Route as ReviewsRouteImport } from './routes/reviews'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as DeliveryRouteImport } from './routes/delivery'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as CheckoutRouteImport } from './routes/checkout'
+import { Route as CatalogRouteImport } from './routes/catalog'
 import { Route as CartRouteImport } from './routes/cart'
 import { Route as AccountRouteImport } from './routes/account'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as VendorsIndexRouteImport } from './routes/vendors.index'
+import { Route as ReviewsIndexRouteImport } from './routes/reviews.index'
 import { Route as DeliveryIndexRouteImport } from './routes/delivery.index'
+import { Route as CatalogIndexRouteImport } from './routes/catalog.index'
+import { Route as CartIndexRouteImport } from './routes/cart.index'
+import { Route as AccountIndexRouteImport } from './routes/account.index'
 import { Route as VendorsRegisterRouteImport } from './routes/vendors.register'
+import { Route as ReviewsNewRouteImport } from './routes/reviews.new'
+import { Route as PromotionsValidateRouteImport } from './routes/promotions.validate'
 import { Route as DeliveryApplyRouteImport } from './routes/delivery.apply'
 import { Route as DashboardVendorRouteImport } from './routes/dashboard.vendor'
+import { Route as DashboardSecurityRouteImport } from './routes/dashboard.security'
 import { Route as DashboardLoginRouteImport } from './routes/dashboard.login'
 import { Route as DashboardDeliveryRouteImport } from './routes/dashboard.delivery'
 import { Route as DashboardAdminRouteImport } from './routes/dashboard.admin'
+import { Route as CatalogStoresRouteImport } from './routes/catalog.stores'
+import { Route as CatalogCategoriesRouteImport } from './routes/catalog.categories'
+import { Route as AccountTransactionsRouteImport } from './routes/account.transactions'
+import { Route as AccountSecurityRouteImport } from './routes/account.security'
+import { Route as AccountReferralRouteImport } from './routes/account.referral'
+import { Route as AccountProfileRouteImport } from './routes/account.profile'
+import { Route as AccountOrdersRouteImport } from './routes/account.orders'
+import { Route as AccountDisputesRouteImport } from './routes/account.disputes'
+import { Route as AccountAddressesRouteImport } from './routes/account.addresses'
+import { Route as DashboardVendorIndexRouteImport } from './routes/dashboard.vendor.index'
+import { Route as DashboardDeliveryIndexRouteImport } from './routes/dashboard.delivery.index'
+import { Route as DashboardAdminIndexRouteImport } from './routes/dashboard.admin.index'
+import { Route as DashboardVendorStoresRouteImport } from './routes/dashboard.vendor.stores'
+import { Route as DashboardVendorPromotionsRouteImport } from './routes/dashboard.vendor.promotions'
+import { Route as DashboardVendorProfileRouteImport } from './routes/dashboard.vendor.profile'
+import { Route as DashboardVendorProductsRouteImport } from './routes/dashboard.vendor.products'
+import { Route as DashboardVendorPayoutsRouteImport } from './routes/dashboard.vendor.payouts'
+import { Route as DashboardVendorEarningsRouteImport } from './routes/dashboard.vendor.earnings'
+import { Route as DashboardMfaSetupRouteImport } from './routes/dashboard.mfa.setup'
+import { Route as DashboardDeliveryProfileRouteImport } from './routes/dashboard.delivery.profile'
+import { Route as DashboardDeliveryPayoutsRouteImport } from './routes/dashboard.delivery.payouts'
+import { Route as DashboardDeliveryEarningsRouteImport } from './routes/dashboard.delivery.earnings'
+import { Route as DashboardDeliveryDeliveriesRouteImport } from './routes/dashboard.delivery.deliveries'
+import { Route as DashboardAdminSettlementsRouteImport } from './routes/dashboard.admin.settlements'
+import { Route as DashboardAdminPromotionsRouteImport } from './routes/dashboard.admin.promotions'
+import { Route as DashboardAdminPaymentsRouteImport } from './routes/dashboard.admin.payments'
+import { Route as DashboardAdminOrdersRouteImport } from './routes/dashboard.admin.orders'
+import { Route as DashboardAdminDisputesRouteImport } from './routes/dashboard.admin.disputes'
+import { Route as CatalogStoresStoreIdRouteImport } from './routes/catalog.stores.$storeId'
+import { Route as CatalogProductsProductIdRouteImport } from './routes/catalog.products.$productId'
+import { Route as CartItemsNewRouteImport } from './routes/cart.items.new'
+import { Route as CartItemsItemIdRouteImport } from './routes/cart.items.$itemId'
+import { Route as AccountTransactionsPaymentIdRouteImport } from './routes/account.transactions.$paymentId'
+import { Route as AccountOrdersOrderIdRouteImport } from './routes/account.orders.$orderId'
+import { Route as DashboardAdminSettlementsIndexRouteImport } from './routes/dashboard.admin.settlements.index'
+import { Route as DashboardVendorStoresStoreIdRouteImport } from './routes/dashboard.vendor.stores.$storeId'
+import { Route as DashboardVendorPromotionsNewRouteImport } from './routes/dashboard.vendor.promotions.new'
+import { Route as DashboardVendorPromotionsPromotionIdRouteImport } from './routes/dashboard.vendor.promotions.$promotionId'
+import { Route as DashboardVendorProductsNewRouteImport } from './routes/dashboard.vendor.products.new'
+import { Route as DashboardVendorProductsProductIdRouteImport } from './routes/dashboard.vendor.products.$productId'
+import { Route as DashboardVendorOrdersOrderIdRouteImport } from './routes/dashboard.vendor.orders.$orderId'
+import { Route as DashboardDeliveryDeliveriesDeliveryIdRouteImport } from './routes/dashboard.delivery.deliveries.$deliveryId'
+import { Route as DashboardAdminVendorsTierRouteImport } from './routes/dashboard.admin.vendors.tier'
+import { Route as DashboardAdminVendorsApproveRouteImport } from './routes/dashboard.admin.vendors.approve'
+import { Route as DashboardAdminSettlementsRefundsRouteImport } from './routes/dashboard.admin.settlements.refunds'
+import { Route as DashboardAdminSettlementsPayoutsRouteImport } from './routes/dashboard.admin.settlements.payouts'
+import { Route as DashboardAdminSettlementsLedgerRouteImport } from './routes/dashboard.admin.settlements.ledger'
+import { Route as DashboardAdminRidersApproveRouteImport } from './routes/dashboard.admin.riders.approve'
+import { Route as DashboardAdminPromotionsNewRouteImport } from './routes/dashboard.admin.promotions.new'
+import { Route as DashboardAdminPromotionsPromotionIdRouteImport } from './routes/dashboard.admin.promotions.$promotionId'
+import { Route as DashboardAdminPaymentsCallbackRouteImport } from './routes/dashboard.admin.payments.callback'
+import { Route as DashboardAdminDisputesDisputeIdRouteImport } from './routes/dashboard.admin.disputes.$disputeId'
+import { Route as AccountOrdersOrderIdTrackingRouteImport } from './routes/account.orders.$orderId.tracking'
 
 const VendorsRoute = VendorsRouteImport.update({
   id: '/vendors',
@@ -35,6 +97,11 @@ const VendorsRoute = VendorsRouteImport.update({
 const ShopRoute = ShopRouteImport.update({
   id: '/shop',
   path: '/shop',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReviewsRoute = ReviewsRouteImport.update({
+  id: '/reviews',
+  path: '/reviews',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -57,6 +124,11 @@ const CheckoutRoute = CheckoutRouteImport.update({
   path: '/checkout',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CatalogRoute = CatalogRouteImport.update({
+  id: '/catalog',
+  path: '/catalog',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CartRoute = CartRouteImport.update({
   id: '/cart',
   path: '/cart',
@@ -77,15 +149,45 @@ const VendorsIndexRoute = VendorsIndexRouteImport.update({
   path: '/',
   getParentRoute: () => VendorsRoute,
 } as any)
+const ReviewsIndexRoute = ReviewsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ReviewsRoute,
+} as any)
 const DeliveryIndexRoute = DeliveryIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => DeliveryRoute,
 } as any)
+const CatalogIndexRoute = CatalogIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => CatalogRoute,
+} as any)
+const CartIndexRoute = CartIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => CartRoute,
+} as any)
+const AccountIndexRoute = AccountIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AccountRoute,
+} as any)
 const VendorsRegisterRoute = VendorsRegisterRouteImport.update({
   id: '/register',
   path: '/register',
   getParentRoute: () => VendorsRoute,
+} as any)
+const ReviewsNewRoute = ReviewsNewRouteImport.update({
+  id: '/new',
+  path: '/new',
+  getParentRoute: () => ReviewsRoute,
+} as any)
+const PromotionsValidateRoute = PromotionsValidateRouteImport.update({
+  id: '/promotions/validate',
+  path: '/promotions/validate',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const DeliveryApplyRoute = DeliveryApplyRouteImport.update({
   id: '/apply',
@@ -95,6 +197,11 @@ const DeliveryApplyRoute = DeliveryApplyRouteImport.update({
 const DashboardVendorRoute = DashboardVendorRouteImport.update({
   id: '/vendor',
   path: '/vendor',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardSecurityRoute = DashboardSecurityRouteImport.update({
+  id: '/security',
+  path: '/security',
   getParentRoute: () => DashboardRoute,
 } as any)
 const DashboardLoginRoute = DashboardLoginRouteImport.update({
@@ -112,62 +219,533 @@ const DashboardAdminRoute = DashboardAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => DashboardRoute,
 } as any)
+const CatalogStoresRoute = CatalogStoresRouteImport.update({
+  id: '/stores',
+  path: '/stores',
+  getParentRoute: () => CatalogRoute,
+} as any)
+const CatalogCategoriesRoute = CatalogCategoriesRouteImport.update({
+  id: '/categories',
+  path: '/categories',
+  getParentRoute: () => CatalogRoute,
+} as any)
+const AccountTransactionsRoute = AccountTransactionsRouteImport.update({
+  id: '/transactions',
+  path: '/transactions',
+  getParentRoute: () => AccountRoute,
+} as any)
+const AccountSecurityRoute = AccountSecurityRouteImport.update({
+  id: '/security',
+  path: '/security',
+  getParentRoute: () => AccountRoute,
+} as any)
+const AccountReferralRoute = AccountReferralRouteImport.update({
+  id: '/referral',
+  path: '/referral',
+  getParentRoute: () => AccountRoute,
+} as any)
+const AccountProfileRoute = AccountProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => AccountRoute,
+} as any)
+const AccountOrdersRoute = AccountOrdersRouteImport.update({
+  id: '/orders',
+  path: '/orders',
+  getParentRoute: () => AccountRoute,
+} as any)
+const AccountDisputesRoute = AccountDisputesRouteImport.update({
+  id: '/disputes',
+  path: '/disputes',
+  getParentRoute: () => AccountRoute,
+} as any)
+const AccountAddressesRoute = AccountAddressesRouteImport.update({
+  id: '/addresses',
+  path: '/addresses',
+  getParentRoute: () => AccountRoute,
+} as any)
+const DashboardVendorIndexRoute = DashboardVendorIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => DashboardVendorRoute,
+} as any)
+const DashboardDeliveryIndexRoute = DashboardDeliveryIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => DashboardDeliveryRoute,
+} as any)
+const DashboardAdminIndexRoute = DashboardAdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => DashboardAdminRoute,
+} as any)
+const DashboardVendorStoresRoute = DashboardVendorStoresRouteImport.update({
+  id: '/stores',
+  path: '/stores',
+  getParentRoute: () => DashboardVendorRoute,
+} as any)
+const DashboardVendorPromotionsRoute =
+  DashboardVendorPromotionsRouteImport.update({
+    id: '/promotions',
+    path: '/promotions',
+    getParentRoute: () => DashboardVendorRoute,
+  } as any)
+const DashboardVendorProfileRoute = DashboardVendorProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => DashboardVendorRoute,
+} as any)
+const DashboardVendorProductsRoute = DashboardVendorProductsRouteImport.update({
+  id: '/products',
+  path: '/products',
+  getParentRoute: () => DashboardVendorRoute,
+} as any)
+const DashboardVendorPayoutsRoute = DashboardVendorPayoutsRouteImport.update({
+  id: '/payouts',
+  path: '/payouts',
+  getParentRoute: () => DashboardVendorRoute,
+} as any)
+const DashboardVendorEarningsRoute = DashboardVendorEarningsRouteImport.update({
+  id: '/earnings',
+  path: '/earnings',
+  getParentRoute: () => DashboardVendorRoute,
+} as any)
+const DashboardMfaSetupRoute = DashboardMfaSetupRouteImport.update({
+  id: '/mfa/setup',
+  path: '/mfa/setup',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardDeliveryProfileRoute =
+  DashboardDeliveryProfileRouteImport.update({
+    id: '/profile',
+    path: '/profile',
+    getParentRoute: () => DashboardDeliveryRoute,
+  } as any)
+const DashboardDeliveryPayoutsRoute =
+  DashboardDeliveryPayoutsRouteImport.update({
+    id: '/payouts',
+    path: '/payouts',
+    getParentRoute: () => DashboardDeliveryRoute,
+  } as any)
+const DashboardDeliveryEarningsRoute =
+  DashboardDeliveryEarningsRouteImport.update({
+    id: '/earnings',
+    path: '/earnings',
+    getParentRoute: () => DashboardDeliveryRoute,
+  } as any)
+const DashboardDeliveryDeliveriesRoute =
+  DashboardDeliveryDeliveriesRouteImport.update({
+    id: '/deliveries',
+    path: '/deliveries',
+    getParentRoute: () => DashboardDeliveryRoute,
+  } as any)
+const DashboardAdminSettlementsRoute =
+  DashboardAdminSettlementsRouteImport.update({
+    id: '/settlements',
+    path: '/settlements',
+    getParentRoute: () => DashboardAdminRoute,
+  } as any)
+const DashboardAdminPromotionsRoute =
+  DashboardAdminPromotionsRouteImport.update({
+    id: '/promotions',
+    path: '/promotions',
+    getParentRoute: () => DashboardAdminRoute,
+  } as any)
+const DashboardAdminPaymentsRoute = DashboardAdminPaymentsRouteImport.update({
+  id: '/payments',
+  path: '/payments',
+  getParentRoute: () => DashboardAdminRoute,
+} as any)
+const DashboardAdminOrdersRoute = DashboardAdminOrdersRouteImport.update({
+  id: '/orders',
+  path: '/orders',
+  getParentRoute: () => DashboardAdminRoute,
+} as any)
+const DashboardAdminDisputesRoute = DashboardAdminDisputesRouteImport.update({
+  id: '/disputes',
+  path: '/disputes',
+  getParentRoute: () => DashboardAdminRoute,
+} as any)
+const CatalogStoresStoreIdRoute = CatalogStoresStoreIdRouteImport.update({
+  id: '/$storeId',
+  path: '/$storeId',
+  getParentRoute: () => CatalogStoresRoute,
+} as any)
+const CatalogProductsProductIdRoute =
+  CatalogProductsProductIdRouteImport.update({
+    id: '/products/$productId',
+    path: '/products/$productId',
+    getParentRoute: () => CatalogRoute,
+  } as any)
+const CartItemsNewRoute = CartItemsNewRouteImport.update({
+  id: '/items/new',
+  path: '/items/new',
+  getParentRoute: () => CartRoute,
+} as any)
+const CartItemsItemIdRoute = CartItemsItemIdRouteImport.update({
+  id: '/items/$itemId',
+  path: '/items/$itemId',
+  getParentRoute: () => CartRoute,
+} as any)
+const AccountTransactionsPaymentIdRoute =
+  AccountTransactionsPaymentIdRouteImport.update({
+    id: '/$paymentId',
+    path: '/$paymentId',
+    getParentRoute: () => AccountTransactionsRoute,
+  } as any)
+const AccountOrdersOrderIdRoute = AccountOrdersOrderIdRouteImport.update({
+  id: '/$orderId',
+  path: '/$orderId',
+  getParentRoute: () => AccountOrdersRoute,
+} as any)
+const DashboardAdminSettlementsIndexRoute =
+  DashboardAdminSettlementsIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => DashboardAdminSettlementsRoute,
+  } as any)
+const DashboardVendorStoresStoreIdRoute =
+  DashboardVendorStoresStoreIdRouteImport.update({
+    id: '/$storeId',
+    path: '/$storeId',
+    getParentRoute: () => DashboardVendorStoresRoute,
+  } as any)
+const DashboardVendorPromotionsNewRoute =
+  DashboardVendorPromotionsNewRouteImport.update({
+    id: '/new',
+    path: '/new',
+    getParentRoute: () => DashboardVendorPromotionsRoute,
+  } as any)
+const DashboardVendorPromotionsPromotionIdRoute =
+  DashboardVendorPromotionsPromotionIdRouteImport.update({
+    id: '/$promotionId',
+    path: '/$promotionId',
+    getParentRoute: () => DashboardVendorPromotionsRoute,
+  } as any)
+const DashboardVendorProductsNewRoute =
+  DashboardVendorProductsNewRouteImport.update({
+    id: '/new',
+    path: '/new',
+    getParentRoute: () => DashboardVendorProductsRoute,
+  } as any)
+const DashboardVendorProductsProductIdRoute =
+  DashboardVendorProductsProductIdRouteImport.update({
+    id: '/$productId',
+    path: '/$productId',
+    getParentRoute: () => DashboardVendorProductsRoute,
+  } as any)
+const DashboardVendorOrdersOrderIdRoute =
+  DashboardVendorOrdersOrderIdRouteImport.update({
+    id: '/orders/$orderId',
+    path: '/orders/$orderId',
+    getParentRoute: () => DashboardVendorRoute,
+  } as any)
+const DashboardDeliveryDeliveriesDeliveryIdRoute =
+  DashboardDeliveryDeliveriesDeliveryIdRouteImport.update({
+    id: '/$deliveryId',
+    path: '/$deliveryId',
+    getParentRoute: () => DashboardDeliveryDeliveriesRoute,
+  } as any)
+const DashboardAdminVendorsTierRoute =
+  DashboardAdminVendorsTierRouteImport.update({
+    id: '/vendors/tier',
+    path: '/vendors/tier',
+    getParentRoute: () => DashboardAdminRoute,
+  } as any)
+const DashboardAdminVendorsApproveRoute =
+  DashboardAdminVendorsApproveRouteImport.update({
+    id: '/vendors/approve',
+    path: '/vendors/approve',
+    getParentRoute: () => DashboardAdminRoute,
+  } as any)
+const DashboardAdminSettlementsRefundsRoute =
+  DashboardAdminSettlementsRefundsRouteImport.update({
+    id: '/refunds',
+    path: '/refunds',
+    getParentRoute: () => DashboardAdminSettlementsRoute,
+  } as any)
+const DashboardAdminSettlementsPayoutsRoute =
+  DashboardAdminSettlementsPayoutsRouteImport.update({
+    id: '/payouts',
+    path: '/payouts',
+    getParentRoute: () => DashboardAdminSettlementsRoute,
+  } as any)
+const DashboardAdminSettlementsLedgerRoute =
+  DashboardAdminSettlementsLedgerRouteImport.update({
+    id: '/ledger',
+    path: '/ledger',
+    getParentRoute: () => DashboardAdminSettlementsRoute,
+  } as any)
+const DashboardAdminRidersApproveRoute =
+  DashboardAdminRidersApproveRouteImport.update({
+    id: '/riders/approve',
+    path: '/riders/approve',
+    getParentRoute: () => DashboardAdminRoute,
+  } as any)
+const DashboardAdminPromotionsNewRoute =
+  DashboardAdminPromotionsNewRouteImport.update({
+    id: '/new',
+    path: '/new',
+    getParentRoute: () => DashboardAdminPromotionsRoute,
+  } as any)
+const DashboardAdminPromotionsPromotionIdRoute =
+  DashboardAdminPromotionsPromotionIdRouteImport.update({
+    id: '/$promotionId',
+    path: '/$promotionId',
+    getParentRoute: () => DashboardAdminPromotionsRoute,
+  } as any)
+const DashboardAdminPaymentsCallbackRoute =
+  DashboardAdminPaymentsCallbackRouteImport.update({
+    id: '/callback',
+    path: '/callback',
+    getParentRoute: () => DashboardAdminPaymentsRoute,
+  } as any)
+const DashboardAdminDisputesDisputeIdRoute =
+  DashboardAdminDisputesDisputeIdRouteImport.update({
+    id: '/$disputeId',
+    path: '/$disputeId',
+    getParentRoute: () => DashboardAdminDisputesRoute,
+  } as any)
+const AccountOrdersOrderIdTrackingRoute =
+  AccountOrdersOrderIdTrackingRouteImport.update({
+    id: '/tracking',
+    path: '/tracking',
+    getParentRoute: () => AccountOrdersOrderIdRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/account': typeof AccountRoute
-  '/cart': typeof CartRoute
+  '/account': typeof AccountRouteWithChildren
+  '/cart': typeof CartRouteWithChildren
+  '/catalog': typeof CatalogRouteWithChildren
   '/checkout': typeof CheckoutRoute
   '/dashboard': typeof DashboardRouteWithChildren
   '/delivery': typeof DeliveryRouteWithChildren
   '/login': typeof LoginRoute
+  '/reviews': typeof ReviewsRouteWithChildren
   '/shop': typeof ShopRoute
   '/vendors': typeof VendorsRouteWithChildren
-  '/dashboard/admin': typeof DashboardAdminRoute
-  '/dashboard/delivery': typeof DashboardDeliveryRoute
+  '/account/addresses': typeof AccountAddressesRoute
+  '/account/disputes': typeof AccountDisputesRoute
+  '/account/orders': typeof AccountOrdersRouteWithChildren
+  '/account/profile': typeof AccountProfileRoute
+  '/account/referral': typeof AccountReferralRoute
+  '/account/security': typeof AccountSecurityRoute
+  '/account/transactions': typeof AccountTransactionsRouteWithChildren
+  '/catalog/categories': typeof CatalogCategoriesRoute
+  '/catalog/stores': typeof CatalogStoresRouteWithChildren
+  '/dashboard/admin': typeof DashboardAdminRouteWithChildren
+  '/dashboard/delivery': typeof DashboardDeliveryRouteWithChildren
   '/dashboard/login': typeof DashboardLoginRoute
-  '/dashboard/vendor': typeof DashboardVendorRoute
+  '/dashboard/security': typeof DashboardSecurityRoute
+  '/dashboard/vendor': typeof DashboardVendorRouteWithChildren
   '/delivery/apply': typeof DeliveryApplyRoute
+  '/promotions/validate': typeof PromotionsValidateRoute
+  '/reviews/new': typeof ReviewsNewRoute
   '/vendors/register': typeof VendorsRegisterRoute
+  '/account/': typeof AccountIndexRoute
+  '/cart/': typeof CartIndexRoute
+  '/catalog/': typeof CatalogIndexRoute
   '/delivery/': typeof DeliveryIndexRoute
+  '/reviews/': typeof ReviewsIndexRoute
   '/vendors/': typeof VendorsIndexRoute
+  '/account/orders/$orderId': typeof AccountOrdersOrderIdRouteWithChildren
+  '/account/transactions/$paymentId': typeof AccountTransactionsPaymentIdRoute
+  '/cart/items/$itemId': typeof CartItemsItemIdRoute
+  '/cart/items/new': typeof CartItemsNewRoute
+  '/catalog/products/$productId': typeof CatalogProductsProductIdRoute
+  '/catalog/stores/$storeId': typeof CatalogStoresStoreIdRoute
+  '/dashboard/admin/disputes': typeof DashboardAdminDisputesRouteWithChildren
+  '/dashboard/admin/orders': typeof DashboardAdminOrdersRoute
+  '/dashboard/admin/payments': typeof DashboardAdminPaymentsRouteWithChildren
+  '/dashboard/admin/promotions': typeof DashboardAdminPromotionsRouteWithChildren
+  '/dashboard/admin/settlements': typeof DashboardAdminSettlementsRouteWithChildren
+  '/dashboard/delivery/deliveries': typeof DashboardDeliveryDeliveriesRouteWithChildren
+  '/dashboard/delivery/earnings': typeof DashboardDeliveryEarningsRoute
+  '/dashboard/delivery/payouts': typeof DashboardDeliveryPayoutsRoute
+  '/dashboard/delivery/profile': typeof DashboardDeliveryProfileRoute
+  '/dashboard/mfa/setup': typeof DashboardMfaSetupRoute
+  '/dashboard/vendor/earnings': typeof DashboardVendorEarningsRoute
+  '/dashboard/vendor/payouts': typeof DashboardVendorPayoutsRoute
+  '/dashboard/vendor/products': typeof DashboardVendorProductsRouteWithChildren
+  '/dashboard/vendor/profile': typeof DashboardVendorProfileRoute
+  '/dashboard/vendor/promotions': typeof DashboardVendorPromotionsRouteWithChildren
+  '/dashboard/vendor/stores': typeof DashboardVendorStoresRouteWithChildren
+  '/dashboard/admin/': typeof DashboardAdminIndexRoute
+  '/dashboard/delivery/': typeof DashboardDeliveryIndexRoute
+  '/dashboard/vendor/': typeof DashboardVendorIndexRoute
+  '/account/orders/$orderId/tracking': typeof AccountOrdersOrderIdTrackingRoute
+  '/dashboard/admin/disputes/$disputeId': typeof DashboardAdminDisputesDisputeIdRoute
+  '/dashboard/admin/payments/callback': typeof DashboardAdminPaymentsCallbackRoute
+  '/dashboard/admin/promotions/$promotionId': typeof DashboardAdminPromotionsPromotionIdRoute
+  '/dashboard/admin/promotions/new': typeof DashboardAdminPromotionsNewRoute
+  '/dashboard/admin/riders/approve': typeof DashboardAdminRidersApproveRoute
+  '/dashboard/admin/settlements/ledger': typeof DashboardAdminSettlementsLedgerRoute
+  '/dashboard/admin/settlements/payouts': typeof DashboardAdminSettlementsPayoutsRoute
+  '/dashboard/admin/settlements/refunds': typeof DashboardAdminSettlementsRefundsRoute
+  '/dashboard/admin/vendors/approve': typeof DashboardAdminVendorsApproveRoute
+  '/dashboard/admin/vendors/tier': typeof DashboardAdminVendorsTierRoute
+  '/dashboard/delivery/deliveries/$deliveryId': typeof DashboardDeliveryDeliveriesDeliveryIdRoute
+  '/dashboard/vendor/orders/$orderId': typeof DashboardVendorOrdersOrderIdRoute
+  '/dashboard/vendor/products/$productId': typeof DashboardVendorProductsProductIdRoute
+  '/dashboard/vendor/products/new': typeof DashboardVendorProductsNewRoute
+  '/dashboard/vendor/promotions/$promotionId': typeof DashboardVendorPromotionsPromotionIdRoute
+  '/dashboard/vendor/promotions/new': typeof DashboardVendorPromotionsNewRoute
+  '/dashboard/vendor/stores/$storeId': typeof DashboardVendorStoresStoreIdRoute
+  '/dashboard/admin/settlements/': typeof DashboardAdminSettlementsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/account': typeof AccountRoute
-  '/cart': typeof CartRoute
   '/checkout': typeof CheckoutRoute
   '/dashboard': typeof DashboardRouteWithChildren
   '/login': typeof LoginRoute
   '/shop': typeof ShopRoute
-  '/dashboard/admin': typeof DashboardAdminRoute
-  '/dashboard/delivery': typeof DashboardDeliveryRoute
+  '/account/addresses': typeof AccountAddressesRoute
+  '/account/disputes': typeof AccountDisputesRoute
+  '/account/orders': typeof AccountOrdersRouteWithChildren
+  '/account/profile': typeof AccountProfileRoute
+  '/account/referral': typeof AccountReferralRoute
+  '/account/security': typeof AccountSecurityRoute
+  '/account/transactions': typeof AccountTransactionsRouteWithChildren
+  '/catalog/categories': typeof CatalogCategoriesRoute
+  '/catalog/stores': typeof CatalogStoresRouteWithChildren
   '/dashboard/login': typeof DashboardLoginRoute
-  '/dashboard/vendor': typeof DashboardVendorRoute
+  '/dashboard/security': typeof DashboardSecurityRoute
   '/delivery/apply': typeof DeliveryApplyRoute
+  '/promotions/validate': typeof PromotionsValidateRoute
+  '/reviews/new': typeof ReviewsNewRoute
   '/vendors/register': typeof VendorsRegisterRoute
+  '/account': typeof AccountIndexRoute
+  '/cart': typeof CartIndexRoute
+  '/catalog': typeof CatalogIndexRoute
   '/delivery': typeof DeliveryIndexRoute
+  '/reviews': typeof ReviewsIndexRoute
   '/vendors': typeof VendorsIndexRoute
+  '/account/orders/$orderId': typeof AccountOrdersOrderIdRouteWithChildren
+  '/account/transactions/$paymentId': typeof AccountTransactionsPaymentIdRoute
+  '/cart/items/$itemId': typeof CartItemsItemIdRoute
+  '/cart/items/new': typeof CartItemsNewRoute
+  '/catalog/products/$productId': typeof CatalogProductsProductIdRoute
+  '/catalog/stores/$storeId': typeof CatalogStoresStoreIdRoute
+  '/dashboard/admin/disputes': typeof DashboardAdminDisputesRouteWithChildren
+  '/dashboard/admin/orders': typeof DashboardAdminOrdersRoute
+  '/dashboard/admin/payments': typeof DashboardAdminPaymentsRouteWithChildren
+  '/dashboard/admin/promotions': typeof DashboardAdminPromotionsRouteWithChildren
+  '/dashboard/delivery/deliveries': typeof DashboardDeliveryDeliveriesRouteWithChildren
+  '/dashboard/delivery/earnings': typeof DashboardDeliveryEarningsRoute
+  '/dashboard/delivery/payouts': typeof DashboardDeliveryPayoutsRoute
+  '/dashboard/delivery/profile': typeof DashboardDeliveryProfileRoute
+  '/dashboard/mfa/setup': typeof DashboardMfaSetupRoute
+  '/dashboard/vendor/earnings': typeof DashboardVendorEarningsRoute
+  '/dashboard/vendor/payouts': typeof DashboardVendorPayoutsRoute
+  '/dashboard/vendor/products': typeof DashboardVendorProductsRouteWithChildren
+  '/dashboard/vendor/profile': typeof DashboardVendorProfileRoute
+  '/dashboard/vendor/promotions': typeof DashboardVendorPromotionsRouteWithChildren
+  '/dashboard/vendor/stores': typeof DashboardVendorStoresRouteWithChildren
+  '/dashboard/admin': typeof DashboardAdminIndexRoute
+  '/dashboard/delivery': typeof DashboardDeliveryIndexRoute
+  '/dashboard/vendor': typeof DashboardVendorIndexRoute
+  '/account/orders/$orderId/tracking': typeof AccountOrdersOrderIdTrackingRoute
+  '/dashboard/admin/disputes/$disputeId': typeof DashboardAdminDisputesDisputeIdRoute
+  '/dashboard/admin/payments/callback': typeof DashboardAdminPaymentsCallbackRoute
+  '/dashboard/admin/promotions/$promotionId': typeof DashboardAdminPromotionsPromotionIdRoute
+  '/dashboard/admin/promotions/new': typeof DashboardAdminPromotionsNewRoute
+  '/dashboard/admin/riders/approve': typeof DashboardAdminRidersApproveRoute
+  '/dashboard/admin/settlements/ledger': typeof DashboardAdminSettlementsLedgerRoute
+  '/dashboard/admin/settlements/payouts': typeof DashboardAdminSettlementsPayoutsRoute
+  '/dashboard/admin/settlements/refunds': typeof DashboardAdminSettlementsRefundsRoute
+  '/dashboard/admin/vendors/approve': typeof DashboardAdminVendorsApproveRoute
+  '/dashboard/admin/vendors/tier': typeof DashboardAdminVendorsTierRoute
+  '/dashboard/delivery/deliveries/$deliveryId': typeof DashboardDeliveryDeliveriesDeliveryIdRoute
+  '/dashboard/vendor/orders/$orderId': typeof DashboardVendorOrdersOrderIdRoute
+  '/dashboard/vendor/products/$productId': typeof DashboardVendorProductsProductIdRoute
+  '/dashboard/vendor/products/new': typeof DashboardVendorProductsNewRoute
+  '/dashboard/vendor/promotions/$promotionId': typeof DashboardVendorPromotionsPromotionIdRoute
+  '/dashboard/vendor/promotions/new': typeof DashboardVendorPromotionsNewRoute
+  '/dashboard/vendor/stores/$storeId': typeof DashboardVendorStoresStoreIdRoute
+  '/dashboard/admin/settlements': typeof DashboardAdminSettlementsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/account': typeof AccountRoute
-  '/cart': typeof CartRoute
+  '/account': typeof AccountRouteWithChildren
+  '/cart': typeof CartRouteWithChildren
+  '/catalog': typeof CatalogRouteWithChildren
   '/checkout': typeof CheckoutRoute
   '/dashboard': typeof DashboardRouteWithChildren
   '/delivery': typeof DeliveryRouteWithChildren
   '/login': typeof LoginRoute
+  '/reviews': typeof ReviewsRouteWithChildren
   '/shop': typeof ShopRoute
   '/vendors': typeof VendorsRouteWithChildren
-  '/dashboard/admin': typeof DashboardAdminRoute
-  '/dashboard/delivery': typeof DashboardDeliveryRoute
+  '/account/addresses': typeof AccountAddressesRoute
+  '/account/disputes': typeof AccountDisputesRoute
+  '/account/orders': typeof AccountOrdersRouteWithChildren
+  '/account/profile': typeof AccountProfileRoute
+  '/account/referral': typeof AccountReferralRoute
+  '/account/security': typeof AccountSecurityRoute
+  '/account/transactions': typeof AccountTransactionsRouteWithChildren
+  '/catalog/categories': typeof CatalogCategoriesRoute
+  '/catalog/stores': typeof CatalogStoresRouteWithChildren
+  '/dashboard/admin': typeof DashboardAdminRouteWithChildren
+  '/dashboard/delivery': typeof DashboardDeliveryRouteWithChildren
   '/dashboard/login': typeof DashboardLoginRoute
-  '/dashboard/vendor': typeof DashboardVendorRoute
+  '/dashboard/security': typeof DashboardSecurityRoute
+  '/dashboard/vendor': typeof DashboardVendorRouteWithChildren
   '/delivery/apply': typeof DeliveryApplyRoute
+  '/promotions/validate': typeof PromotionsValidateRoute
+  '/reviews/new': typeof ReviewsNewRoute
   '/vendors/register': typeof VendorsRegisterRoute
+  '/account/': typeof AccountIndexRoute
+  '/cart/': typeof CartIndexRoute
+  '/catalog/': typeof CatalogIndexRoute
   '/delivery/': typeof DeliveryIndexRoute
+  '/reviews/': typeof ReviewsIndexRoute
   '/vendors/': typeof VendorsIndexRoute
+  '/account/orders/$orderId': typeof AccountOrdersOrderIdRouteWithChildren
+  '/account/transactions/$paymentId': typeof AccountTransactionsPaymentIdRoute
+  '/cart/items/$itemId': typeof CartItemsItemIdRoute
+  '/cart/items/new': typeof CartItemsNewRoute
+  '/catalog/products/$productId': typeof CatalogProductsProductIdRoute
+  '/catalog/stores/$storeId': typeof CatalogStoresStoreIdRoute
+  '/dashboard/admin/disputes': typeof DashboardAdminDisputesRouteWithChildren
+  '/dashboard/admin/orders': typeof DashboardAdminOrdersRoute
+  '/dashboard/admin/payments': typeof DashboardAdminPaymentsRouteWithChildren
+  '/dashboard/admin/promotions': typeof DashboardAdminPromotionsRouteWithChildren
+  '/dashboard/admin/settlements': typeof DashboardAdminSettlementsRouteWithChildren
+  '/dashboard/delivery/deliveries': typeof DashboardDeliveryDeliveriesRouteWithChildren
+  '/dashboard/delivery/earnings': typeof DashboardDeliveryEarningsRoute
+  '/dashboard/delivery/payouts': typeof DashboardDeliveryPayoutsRoute
+  '/dashboard/delivery/profile': typeof DashboardDeliveryProfileRoute
+  '/dashboard/mfa/setup': typeof DashboardMfaSetupRoute
+  '/dashboard/vendor/earnings': typeof DashboardVendorEarningsRoute
+  '/dashboard/vendor/payouts': typeof DashboardVendorPayoutsRoute
+  '/dashboard/vendor/products': typeof DashboardVendorProductsRouteWithChildren
+  '/dashboard/vendor/profile': typeof DashboardVendorProfileRoute
+  '/dashboard/vendor/promotions': typeof DashboardVendorPromotionsRouteWithChildren
+  '/dashboard/vendor/stores': typeof DashboardVendorStoresRouteWithChildren
+  '/dashboard/admin/': typeof DashboardAdminIndexRoute
+  '/dashboard/delivery/': typeof DashboardDeliveryIndexRoute
+  '/dashboard/vendor/': typeof DashboardVendorIndexRoute
+  '/account/orders/$orderId/tracking': typeof AccountOrdersOrderIdTrackingRoute
+  '/dashboard/admin/disputes/$disputeId': typeof DashboardAdminDisputesDisputeIdRoute
+  '/dashboard/admin/payments/callback': typeof DashboardAdminPaymentsCallbackRoute
+  '/dashboard/admin/promotions/$promotionId': typeof DashboardAdminPromotionsPromotionIdRoute
+  '/dashboard/admin/promotions/new': typeof DashboardAdminPromotionsNewRoute
+  '/dashboard/admin/riders/approve': typeof DashboardAdminRidersApproveRoute
+  '/dashboard/admin/settlements/ledger': typeof DashboardAdminSettlementsLedgerRoute
+  '/dashboard/admin/settlements/payouts': typeof DashboardAdminSettlementsPayoutsRoute
+  '/dashboard/admin/settlements/refunds': typeof DashboardAdminSettlementsRefundsRoute
+  '/dashboard/admin/vendors/approve': typeof DashboardAdminVendorsApproveRoute
+  '/dashboard/admin/vendors/tier': typeof DashboardAdminVendorsTierRoute
+  '/dashboard/delivery/deliveries/$deliveryId': typeof DashboardDeliveryDeliveriesDeliveryIdRoute
+  '/dashboard/vendor/orders/$orderId': typeof DashboardVendorOrdersOrderIdRoute
+  '/dashboard/vendor/products/$productId': typeof DashboardVendorProductsProductIdRoute
+  '/dashboard/vendor/products/new': typeof DashboardVendorProductsNewRoute
+  '/dashboard/vendor/promotions/$promotionId': typeof DashboardVendorPromotionsPromotionIdRoute
+  '/dashboard/vendor/promotions/new': typeof DashboardVendorPromotionsNewRoute
+  '/dashboard/vendor/stores/$storeId': typeof DashboardVendorStoresStoreIdRoute
+  '/dashboard/admin/settlements/': typeof DashboardAdminSettlementsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -175,68 +753,249 @@ export interface FileRouteTypes {
     | '/'
     | '/account'
     | '/cart'
+    | '/catalog'
     | '/checkout'
     | '/dashboard'
     | '/delivery'
     | '/login'
+    | '/reviews'
     | '/shop'
     | '/vendors'
+    | '/account/addresses'
+    | '/account/disputes'
+    | '/account/orders'
+    | '/account/profile'
+    | '/account/referral'
+    | '/account/security'
+    | '/account/transactions'
+    | '/catalog/categories'
+    | '/catalog/stores'
     | '/dashboard/admin'
     | '/dashboard/delivery'
     | '/dashboard/login'
+    | '/dashboard/security'
     | '/dashboard/vendor'
     | '/delivery/apply'
+    | '/promotions/validate'
+    | '/reviews/new'
     | '/vendors/register'
+    | '/account/'
+    | '/cart/'
+    | '/catalog/'
     | '/delivery/'
+    | '/reviews/'
     | '/vendors/'
+    | '/account/orders/$orderId'
+    | '/account/transactions/$paymentId'
+    | '/cart/items/$itemId'
+    | '/cart/items/new'
+    | '/catalog/products/$productId'
+    | '/catalog/stores/$storeId'
+    | '/dashboard/admin/disputes'
+    | '/dashboard/admin/orders'
+    | '/dashboard/admin/payments'
+    | '/dashboard/admin/promotions'
+    | '/dashboard/admin/settlements'
+    | '/dashboard/delivery/deliveries'
+    | '/dashboard/delivery/earnings'
+    | '/dashboard/delivery/payouts'
+    | '/dashboard/delivery/profile'
+    | '/dashboard/mfa/setup'
+    | '/dashboard/vendor/earnings'
+    | '/dashboard/vendor/payouts'
+    | '/dashboard/vendor/products'
+    | '/dashboard/vendor/profile'
+    | '/dashboard/vendor/promotions'
+    | '/dashboard/vendor/stores'
+    | '/dashboard/admin/'
+    | '/dashboard/delivery/'
+    | '/dashboard/vendor/'
+    | '/account/orders/$orderId/tracking'
+    | '/dashboard/admin/disputes/$disputeId'
+    | '/dashboard/admin/payments/callback'
+    | '/dashboard/admin/promotions/$promotionId'
+    | '/dashboard/admin/promotions/new'
+    | '/dashboard/admin/riders/approve'
+    | '/dashboard/admin/settlements/ledger'
+    | '/dashboard/admin/settlements/payouts'
+    | '/dashboard/admin/settlements/refunds'
+    | '/dashboard/admin/vendors/approve'
+    | '/dashboard/admin/vendors/tier'
+    | '/dashboard/delivery/deliveries/$deliveryId'
+    | '/dashboard/vendor/orders/$orderId'
+    | '/dashboard/vendor/products/$productId'
+    | '/dashboard/vendor/products/new'
+    | '/dashboard/vendor/promotions/$promotionId'
+    | '/dashboard/vendor/promotions/new'
+    | '/dashboard/vendor/stores/$storeId'
+    | '/dashboard/admin/settlements/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/account'
-    | '/cart'
     | '/checkout'
     | '/dashboard'
     | '/login'
     | '/shop'
+    | '/account/addresses'
+    | '/account/disputes'
+    | '/account/orders'
+    | '/account/profile'
+    | '/account/referral'
+    | '/account/security'
+    | '/account/transactions'
+    | '/catalog/categories'
+    | '/catalog/stores'
+    | '/dashboard/login'
+    | '/dashboard/security'
+    | '/delivery/apply'
+    | '/promotions/validate'
+    | '/reviews/new'
+    | '/vendors/register'
+    | '/account'
+    | '/cart'
+    | '/catalog'
+    | '/delivery'
+    | '/reviews'
+    | '/vendors'
+    | '/account/orders/$orderId'
+    | '/account/transactions/$paymentId'
+    | '/cart/items/$itemId'
+    | '/cart/items/new'
+    | '/catalog/products/$productId'
+    | '/catalog/stores/$storeId'
+    | '/dashboard/admin/disputes'
+    | '/dashboard/admin/orders'
+    | '/dashboard/admin/payments'
+    | '/dashboard/admin/promotions'
+    | '/dashboard/delivery/deliveries'
+    | '/dashboard/delivery/earnings'
+    | '/dashboard/delivery/payouts'
+    | '/dashboard/delivery/profile'
+    | '/dashboard/mfa/setup'
+    | '/dashboard/vendor/earnings'
+    | '/dashboard/vendor/payouts'
+    | '/dashboard/vendor/products'
+    | '/dashboard/vendor/profile'
+    | '/dashboard/vendor/promotions'
+    | '/dashboard/vendor/stores'
     | '/dashboard/admin'
     | '/dashboard/delivery'
-    | '/dashboard/login'
     | '/dashboard/vendor'
-    | '/delivery/apply'
-    | '/vendors/register'
-    | '/delivery'
-    | '/vendors'
+    | '/account/orders/$orderId/tracking'
+    | '/dashboard/admin/disputes/$disputeId'
+    | '/dashboard/admin/payments/callback'
+    | '/dashboard/admin/promotions/$promotionId'
+    | '/dashboard/admin/promotions/new'
+    | '/dashboard/admin/riders/approve'
+    | '/dashboard/admin/settlements/ledger'
+    | '/dashboard/admin/settlements/payouts'
+    | '/dashboard/admin/settlements/refunds'
+    | '/dashboard/admin/vendors/approve'
+    | '/dashboard/admin/vendors/tier'
+    | '/dashboard/delivery/deliveries/$deliveryId'
+    | '/dashboard/vendor/orders/$orderId'
+    | '/dashboard/vendor/products/$productId'
+    | '/dashboard/vendor/products/new'
+    | '/dashboard/vendor/promotions/$promotionId'
+    | '/dashboard/vendor/promotions/new'
+    | '/dashboard/vendor/stores/$storeId'
+    | '/dashboard/admin/settlements'
   id:
     | '__root__'
     | '/'
     | '/account'
     | '/cart'
+    | '/catalog'
     | '/checkout'
     | '/dashboard'
     | '/delivery'
     | '/login'
+    | '/reviews'
     | '/shop'
     | '/vendors'
+    | '/account/addresses'
+    | '/account/disputes'
+    | '/account/orders'
+    | '/account/profile'
+    | '/account/referral'
+    | '/account/security'
+    | '/account/transactions'
+    | '/catalog/categories'
+    | '/catalog/stores'
     | '/dashboard/admin'
     | '/dashboard/delivery'
     | '/dashboard/login'
+    | '/dashboard/security'
     | '/dashboard/vendor'
     | '/delivery/apply'
+    | '/promotions/validate'
+    | '/reviews/new'
     | '/vendors/register'
+    | '/account/'
+    | '/cart/'
+    | '/catalog/'
     | '/delivery/'
+    | '/reviews/'
     | '/vendors/'
+    | '/account/orders/$orderId'
+    | '/account/transactions/$paymentId'
+    | '/cart/items/$itemId'
+    | '/cart/items/new'
+    | '/catalog/products/$productId'
+    | '/catalog/stores/$storeId'
+    | '/dashboard/admin/disputes'
+    | '/dashboard/admin/orders'
+    | '/dashboard/admin/payments'
+    | '/dashboard/admin/promotions'
+    | '/dashboard/admin/settlements'
+    | '/dashboard/delivery/deliveries'
+    | '/dashboard/delivery/earnings'
+    | '/dashboard/delivery/payouts'
+    | '/dashboard/delivery/profile'
+    | '/dashboard/mfa/setup'
+    | '/dashboard/vendor/earnings'
+    | '/dashboard/vendor/payouts'
+    | '/dashboard/vendor/products'
+    | '/dashboard/vendor/profile'
+    | '/dashboard/vendor/promotions'
+    | '/dashboard/vendor/stores'
+    | '/dashboard/admin/'
+    | '/dashboard/delivery/'
+    | '/dashboard/vendor/'
+    | '/account/orders/$orderId/tracking'
+    | '/dashboard/admin/disputes/$disputeId'
+    | '/dashboard/admin/payments/callback'
+    | '/dashboard/admin/promotions/$promotionId'
+    | '/dashboard/admin/promotions/new'
+    | '/dashboard/admin/riders/approve'
+    | '/dashboard/admin/settlements/ledger'
+    | '/dashboard/admin/settlements/payouts'
+    | '/dashboard/admin/settlements/refunds'
+    | '/dashboard/admin/vendors/approve'
+    | '/dashboard/admin/vendors/tier'
+    | '/dashboard/delivery/deliveries/$deliveryId'
+    | '/dashboard/vendor/orders/$orderId'
+    | '/dashboard/vendor/products/$productId'
+    | '/dashboard/vendor/products/new'
+    | '/dashboard/vendor/promotions/$promotionId'
+    | '/dashboard/vendor/promotions/new'
+    | '/dashboard/vendor/stores/$storeId'
+    | '/dashboard/admin/settlements/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AccountRoute: typeof AccountRoute
-  CartRoute: typeof CartRoute
+  AccountRoute: typeof AccountRouteWithChildren
+  CartRoute: typeof CartRouteWithChildren
+  CatalogRoute: typeof CatalogRouteWithChildren
   CheckoutRoute: typeof CheckoutRoute
   DashboardRoute: typeof DashboardRouteWithChildren
   DeliveryRoute: typeof DeliveryRouteWithChildren
   LoginRoute: typeof LoginRoute
+  ReviewsRoute: typeof ReviewsRouteWithChildren
   ShopRoute: typeof ShopRoute
   VendorsRoute: typeof VendorsRouteWithChildren
+  PromotionsValidateRoute: typeof PromotionsValidateRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -253,6 +1012,13 @@ declare module '@tanstack/react-router' {
       path: '/shop'
       fullPath: '/shop'
       preLoaderRoute: typeof ShopRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reviews': {
+      id: '/reviews'
+      path: '/reviews'
+      fullPath: '/reviews'
+      preLoaderRoute: typeof ReviewsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -283,6 +1049,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CheckoutRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/catalog': {
+      id: '/catalog'
+      path: '/catalog'
+      fullPath: '/catalog'
+      preLoaderRoute: typeof CatalogRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/cart': {
       id: '/cart'
       path: '/cart'
@@ -311,6 +1084,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof VendorsIndexRouteImport
       parentRoute: typeof VendorsRoute
     }
+    '/reviews/': {
+      id: '/reviews/'
+      path: '/'
+      fullPath: '/reviews/'
+      preLoaderRoute: typeof ReviewsIndexRouteImport
+      parentRoute: typeof ReviewsRoute
+    }
     '/delivery/': {
       id: '/delivery/'
       path: '/'
@@ -318,12 +1098,47 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DeliveryIndexRouteImport
       parentRoute: typeof DeliveryRoute
     }
+    '/catalog/': {
+      id: '/catalog/'
+      path: '/'
+      fullPath: '/catalog/'
+      preLoaderRoute: typeof CatalogIndexRouteImport
+      parentRoute: typeof CatalogRoute
+    }
+    '/cart/': {
+      id: '/cart/'
+      path: '/'
+      fullPath: '/cart/'
+      preLoaderRoute: typeof CartIndexRouteImport
+      parentRoute: typeof CartRoute
+    }
+    '/account/': {
+      id: '/account/'
+      path: '/'
+      fullPath: '/account/'
+      preLoaderRoute: typeof AccountIndexRouteImport
+      parentRoute: typeof AccountRoute
+    }
     '/vendors/register': {
       id: '/vendors/register'
       path: '/register'
       fullPath: '/vendors/register'
       preLoaderRoute: typeof VendorsRegisterRouteImport
       parentRoute: typeof VendorsRoute
+    }
+    '/reviews/new': {
+      id: '/reviews/new'
+      path: '/new'
+      fullPath: '/reviews/new'
+      preLoaderRoute: typeof ReviewsNewRouteImport
+      parentRoute: typeof ReviewsRoute
+    }
+    '/promotions/validate': {
+      id: '/promotions/validate'
+      path: '/promotions/validate'
+      fullPath: '/promotions/validate'
+      preLoaderRoute: typeof PromotionsValidateRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/delivery/apply': {
       id: '/delivery/apply'
@@ -337,6 +1152,13 @@ declare module '@tanstack/react-router' {
       path: '/vendor'
       fullPath: '/dashboard/vendor'
       preLoaderRoute: typeof DashboardVendorRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/security': {
+      id: '/dashboard/security'
+      path: '/security'
+      fullPath: '/dashboard/security'
+      preLoaderRoute: typeof DashboardSecurityRouteImport
       parentRoute: typeof DashboardRoute
     }
     '/dashboard/login': {
@@ -360,21 +1182,701 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardAdminRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/catalog/stores': {
+      id: '/catalog/stores'
+      path: '/stores'
+      fullPath: '/catalog/stores'
+      preLoaderRoute: typeof CatalogStoresRouteImport
+      parentRoute: typeof CatalogRoute
+    }
+    '/catalog/categories': {
+      id: '/catalog/categories'
+      path: '/categories'
+      fullPath: '/catalog/categories'
+      preLoaderRoute: typeof CatalogCategoriesRouteImport
+      parentRoute: typeof CatalogRoute
+    }
+    '/account/transactions': {
+      id: '/account/transactions'
+      path: '/transactions'
+      fullPath: '/account/transactions'
+      preLoaderRoute: typeof AccountTransactionsRouteImport
+      parentRoute: typeof AccountRoute
+    }
+    '/account/security': {
+      id: '/account/security'
+      path: '/security'
+      fullPath: '/account/security'
+      preLoaderRoute: typeof AccountSecurityRouteImport
+      parentRoute: typeof AccountRoute
+    }
+    '/account/referral': {
+      id: '/account/referral'
+      path: '/referral'
+      fullPath: '/account/referral'
+      preLoaderRoute: typeof AccountReferralRouteImport
+      parentRoute: typeof AccountRoute
+    }
+    '/account/profile': {
+      id: '/account/profile'
+      path: '/profile'
+      fullPath: '/account/profile'
+      preLoaderRoute: typeof AccountProfileRouteImport
+      parentRoute: typeof AccountRoute
+    }
+    '/account/orders': {
+      id: '/account/orders'
+      path: '/orders'
+      fullPath: '/account/orders'
+      preLoaderRoute: typeof AccountOrdersRouteImport
+      parentRoute: typeof AccountRoute
+    }
+    '/account/disputes': {
+      id: '/account/disputes'
+      path: '/disputes'
+      fullPath: '/account/disputes'
+      preLoaderRoute: typeof AccountDisputesRouteImport
+      parentRoute: typeof AccountRoute
+    }
+    '/account/addresses': {
+      id: '/account/addresses'
+      path: '/addresses'
+      fullPath: '/account/addresses'
+      preLoaderRoute: typeof AccountAddressesRouteImport
+      parentRoute: typeof AccountRoute
+    }
+    '/dashboard/vendor/': {
+      id: '/dashboard/vendor/'
+      path: '/'
+      fullPath: '/dashboard/vendor/'
+      preLoaderRoute: typeof DashboardVendorIndexRouteImport
+      parentRoute: typeof DashboardVendorRoute
+    }
+    '/dashboard/delivery/': {
+      id: '/dashboard/delivery/'
+      path: '/'
+      fullPath: '/dashboard/delivery/'
+      preLoaderRoute: typeof DashboardDeliveryIndexRouteImport
+      parentRoute: typeof DashboardDeliveryRoute
+    }
+    '/dashboard/admin/': {
+      id: '/dashboard/admin/'
+      path: '/'
+      fullPath: '/dashboard/admin/'
+      preLoaderRoute: typeof DashboardAdminIndexRouteImport
+      parentRoute: typeof DashboardAdminRoute
+    }
+    '/dashboard/vendor/stores': {
+      id: '/dashboard/vendor/stores'
+      path: '/stores'
+      fullPath: '/dashboard/vendor/stores'
+      preLoaderRoute: typeof DashboardVendorStoresRouteImport
+      parentRoute: typeof DashboardVendorRoute
+    }
+    '/dashboard/vendor/promotions': {
+      id: '/dashboard/vendor/promotions'
+      path: '/promotions'
+      fullPath: '/dashboard/vendor/promotions'
+      preLoaderRoute: typeof DashboardVendorPromotionsRouteImport
+      parentRoute: typeof DashboardVendorRoute
+    }
+    '/dashboard/vendor/profile': {
+      id: '/dashboard/vendor/profile'
+      path: '/profile'
+      fullPath: '/dashboard/vendor/profile'
+      preLoaderRoute: typeof DashboardVendorProfileRouteImport
+      parentRoute: typeof DashboardVendorRoute
+    }
+    '/dashboard/vendor/products': {
+      id: '/dashboard/vendor/products'
+      path: '/products'
+      fullPath: '/dashboard/vendor/products'
+      preLoaderRoute: typeof DashboardVendorProductsRouteImport
+      parentRoute: typeof DashboardVendorRoute
+    }
+    '/dashboard/vendor/payouts': {
+      id: '/dashboard/vendor/payouts'
+      path: '/payouts'
+      fullPath: '/dashboard/vendor/payouts'
+      preLoaderRoute: typeof DashboardVendorPayoutsRouteImport
+      parentRoute: typeof DashboardVendorRoute
+    }
+    '/dashboard/vendor/earnings': {
+      id: '/dashboard/vendor/earnings'
+      path: '/earnings'
+      fullPath: '/dashboard/vendor/earnings'
+      preLoaderRoute: typeof DashboardVendorEarningsRouteImport
+      parentRoute: typeof DashboardVendorRoute
+    }
+    '/dashboard/mfa/setup': {
+      id: '/dashboard/mfa/setup'
+      path: '/mfa/setup'
+      fullPath: '/dashboard/mfa/setup'
+      preLoaderRoute: typeof DashboardMfaSetupRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/delivery/profile': {
+      id: '/dashboard/delivery/profile'
+      path: '/profile'
+      fullPath: '/dashboard/delivery/profile'
+      preLoaderRoute: typeof DashboardDeliveryProfileRouteImport
+      parentRoute: typeof DashboardDeliveryRoute
+    }
+    '/dashboard/delivery/payouts': {
+      id: '/dashboard/delivery/payouts'
+      path: '/payouts'
+      fullPath: '/dashboard/delivery/payouts'
+      preLoaderRoute: typeof DashboardDeliveryPayoutsRouteImport
+      parentRoute: typeof DashboardDeliveryRoute
+    }
+    '/dashboard/delivery/earnings': {
+      id: '/dashboard/delivery/earnings'
+      path: '/earnings'
+      fullPath: '/dashboard/delivery/earnings'
+      preLoaderRoute: typeof DashboardDeliveryEarningsRouteImport
+      parentRoute: typeof DashboardDeliveryRoute
+    }
+    '/dashboard/delivery/deliveries': {
+      id: '/dashboard/delivery/deliveries'
+      path: '/deliveries'
+      fullPath: '/dashboard/delivery/deliveries'
+      preLoaderRoute: typeof DashboardDeliveryDeliveriesRouteImport
+      parentRoute: typeof DashboardDeliveryRoute
+    }
+    '/dashboard/admin/settlements': {
+      id: '/dashboard/admin/settlements'
+      path: '/settlements'
+      fullPath: '/dashboard/admin/settlements'
+      preLoaderRoute: typeof DashboardAdminSettlementsRouteImport
+      parentRoute: typeof DashboardAdminRoute
+    }
+    '/dashboard/admin/promotions': {
+      id: '/dashboard/admin/promotions'
+      path: '/promotions'
+      fullPath: '/dashboard/admin/promotions'
+      preLoaderRoute: typeof DashboardAdminPromotionsRouteImport
+      parentRoute: typeof DashboardAdminRoute
+    }
+    '/dashboard/admin/payments': {
+      id: '/dashboard/admin/payments'
+      path: '/payments'
+      fullPath: '/dashboard/admin/payments'
+      preLoaderRoute: typeof DashboardAdminPaymentsRouteImport
+      parentRoute: typeof DashboardAdminRoute
+    }
+    '/dashboard/admin/orders': {
+      id: '/dashboard/admin/orders'
+      path: '/orders'
+      fullPath: '/dashboard/admin/orders'
+      preLoaderRoute: typeof DashboardAdminOrdersRouteImport
+      parentRoute: typeof DashboardAdminRoute
+    }
+    '/dashboard/admin/disputes': {
+      id: '/dashboard/admin/disputes'
+      path: '/disputes'
+      fullPath: '/dashboard/admin/disputes'
+      preLoaderRoute: typeof DashboardAdminDisputesRouteImport
+      parentRoute: typeof DashboardAdminRoute
+    }
+    '/catalog/stores/$storeId': {
+      id: '/catalog/stores/$storeId'
+      path: '/$storeId'
+      fullPath: '/catalog/stores/$storeId'
+      preLoaderRoute: typeof CatalogStoresStoreIdRouteImport
+      parentRoute: typeof CatalogStoresRoute
+    }
+    '/catalog/products/$productId': {
+      id: '/catalog/products/$productId'
+      path: '/products/$productId'
+      fullPath: '/catalog/products/$productId'
+      preLoaderRoute: typeof CatalogProductsProductIdRouteImport
+      parentRoute: typeof CatalogRoute
+    }
+    '/cart/items/new': {
+      id: '/cart/items/new'
+      path: '/items/new'
+      fullPath: '/cart/items/new'
+      preLoaderRoute: typeof CartItemsNewRouteImport
+      parentRoute: typeof CartRoute
+    }
+    '/cart/items/$itemId': {
+      id: '/cart/items/$itemId'
+      path: '/items/$itemId'
+      fullPath: '/cart/items/$itemId'
+      preLoaderRoute: typeof CartItemsItemIdRouteImport
+      parentRoute: typeof CartRoute
+    }
+    '/account/transactions/$paymentId': {
+      id: '/account/transactions/$paymentId'
+      path: '/$paymentId'
+      fullPath: '/account/transactions/$paymentId'
+      preLoaderRoute: typeof AccountTransactionsPaymentIdRouteImport
+      parentRoute: typeof AccountTransactionsRoute
+    }
+    '/account/orders/$orderId': {
+      id: '/account/orders/$orderId'
+      path: '/$orderId'
+      fullPath: '/account/orders/$orderId'
+      preLoaderRoute: typeof AccountOrdersOrderIdRouteImport
+      parentRoute: typeof AccountOrdersRoute
+    }
+    '/dashboard/admin/settlements/': {
+      id: '/dashboard/admin/settlements/'
+      path: '/'
+      fullPath: '/dashboard/admin/settlements/'
+      preLoaderRoute: typeof DashboardAdminSettlementsIndexRouteImport
+      parentRoute: typeof DashboardAdminSettlementsRoute
+    }
+    '/dashboard/vendor/stores/$storeId': {
+      id: '/dashboard/vendor/stores/$storeId'
+      path: '/$storeId'
+      fullPath: '/dashboard/vendor/stores/$storeId'
+      preLoaderRoute: typeof DashboardVendorStoresStoreIdRouteImport
+      parentRoute: typeof DashboardVendorStoresRoute
+    }
+    '/dashboard/vendor/promotions/new': {
+      id: '/dashboard/vendor/promotions/new'
+      path: '/new'
+      fullPath: '/dashboard/vendor/promotions/new'
+      preLoaderRoute: typeof DashboardVendorPromotionsNewRouteImport
+      parentRoute: typeof DashboardVendorPromotionsRoute
+    }
+    '/dashboard/vendor/promotions/$promotionId': {
+      id: '/dashboard/vendor/promotions/$promotionId'
+      path: '/$promotionId'
+      fullPath: '/dashboard/vendor/promotions/$promotionId'
+      preLoaderRoute: typeof DashboardVendorPromotionsPromotionIdRouteImport
+      parentRoute: typeof DashboardVendorPromotionsRoute
+    }
+    '/dashboard/vendor/products/new': {
+      id: '/dashboard/vendor/products/new'
+      path: '/new'
+      fullPath: '/dashboard/vendor/products/new'
+      preLoaderRoute: typeof DashboardVendorProductsNewRouteImport
+      parentRoute: typeof DashboardVendorProductsRoute
+    }
+    '/dashboard/vendor/products/$productId': {
+      id: '/dashboard/vendor/products/$productId'
+      path: '/$productId'
+      fullPath: '/dashboard/vendor/products/$productId'
+      preLoaderRoute: typeof DashboardVendorProductsProductIdRouteImport
+      parentRoute: typeof DashboardVendorProductsRoute
+    }
+    '/dashboard/vendor/orders/$orderId': {
+      id: '/dashboard/vendor/orders/$orderId'
+      path: '/orders/$orderId'
+      fullPath: '/dashboard/vendor/orders/$orderId'
+      preLoaderRoute: typeof DashboardVendorOrdersOrderIdRouteImport
+      parentRoute: typeof DashboardVendorRoute
+    }
+    '/dashboard/delivery/deliveries/$deliveryId': {
+      id: '/dashboard/delivery/deliveries/$deliveryId'
+      path: '/$deliveryId'
+      fullPath: '/dashboard/delivery/deliveries/$deliveryId'
+      preLoaderRoute: typeof DashboardDeliveryDeliveriesDeliveryIdRouteImport
+      parentRoute: typeof DashboardDeliveryDeliveriesRoute
+    }
+    '/dashboard/admin/vendors/tier': {
+      id: '/dashboard/admin/vendors/tier'
+      path: '/vendors/tier'
+      fullPath: '/dashboard/admin/vendors/tier'
+      preLoaderRoute: typeof DashboardAdminVendorsTierRouteImport
+      parentRoute: typeof DashboardAdminRoute
+    }
+    '/dashboard/admin/vendors/approve': {
+      id: '/dashboard/admin/vendors/approve'
+      path: '/vendors/approve'
+      fullPath: '/dashboard/admin/vendors/approve'
+      preLoaderRoute: typeof DashboardAdminVendorsApproveRouteImport
+      parentRoute: typeof DashboardAdminRoute
+    }
+    '/dashboard/admin/settlements/refunds': {
+      id: '/dashboard/admin/settlements/refunds'
+      path: '/refunds'
+      fullPath: '/dashboard/admin/settlements/refunds'
+      preLoaderRoute: typeof DashboardAdminSettlementsRefundsRouteImport
+      parentRoute: typeof DashboardAdminSettlementsRoute
+    }
+    '/dashboard/admin/settlements/payouts': {
+      id: '/dashboard/admin/settlements/payouts'
+      path: '/payouts'
+      fullPath: '/dashboard/admin/settlements/payouts'
+      preLoaderRoute: typeof DashboardAdminSettlementsPayoutsRouteImport
+      parentRoute: typeof DashboardAdminSettlementsRoute
+    }
+    '/dashboard/admin/settlements/ledger': {
+      id: '/dashboard/admin/settlements/ledger'
+      path: '/ledger'
+      fullPath: '/dashboard/admin/settlements/ledger'
+      preLoaderRoute: typeof DashboardAdminSettlementsLedgerRouteImport
+      parentRoute: typeof DashboardAdminSettlementsRoute
+    }
+    '/dashboard/admin/riders/approve': {
+      id: '/dashboard/admin/riders/approve'
+      path: '/riders/approve'
+      fullPath: '/dashboard/admin/riders/approve'
+      preLoaderRoute: typeof DashboardAdminRidersApproveRouteImport
+      parentRoute: typeof DashboardAdminRoute
+    }
+    '/dashboard/admin/promotions/new': {
+      id: '/dashboard/admin/promotions/new'
+      path: '/new'
+      fullPath: '/dashboard/admin/promotions/new'
+      preLoaderRoute: typeof DashboardAdminPromotionsNewRouteImport
+      parentRoute: typeof DashboardAdminPromotionsRoute
+    }
+    '/dashboard/admin/promotions/$promotionId': {
+      id: '/dashboard/admin/promotions/$promotionId'
+      path: '/$promotionId'
+      fullPath: '/dashboard/admin/promotions/$promotionId'
+      preLoaderRoute: typeof DashboardAdminPromotionsPromotionIdRouteImport
+      parentRoute: typeof DashboardAdminPromotionsRoute
+    }
+    '/dashboard/admin/payments/callback': {
+      id: '/dashboard/admin/payments/callback'
+      path: '/callback'
+      fullPath: '/dashboard/admin/payments/callback'
+      preLoaderRoute: typeof DashboardAdminPaymentsCallbackRouteImport
+      parentRoute: typeof DashboardAdminPaymentsRoute
+    }
+    '/dashboard/admin/disputes/$disputeId': {
+      id: '/dashboard/admin/disputes/$disputeId'
+      path: '/$disputeId'
+      fullPath: '/dashboard/admin/disputes/$disputeId'
+      preLoaderRoute: typeof DashboardAdminDisputesDisputeIdRouteImport
+      parentRoute: typeof DashboardAdminDisputesRoute
+    }
+    '/account/orders/$orderId/tracking': {
+      id: '/account/orders/$orderId/tracking'
+      path: '/tracking'
+      fullPath: '/account/orders/$orderId/tracking'
+      preLoaderRoute: typeof AccountOrdersOrderIdTrackingRouteImport
+      parentRoute: typeof AccountOrdersOrderIdRoute
+    }
   }
 }
 
+interface AccountOrdersOrderIdRouteChildren {
+  AccountOrdersOrderIdTrackingRoute: typeof AccountOrdersOrderIdTrackingRoute
+}
+
+const AccountOrdersOrderIdRouteChildren: AccountOrdersOrderIdRouteChildren = {
+  AccountOrdersOrderIdTrackingRoute: AccountOrdersOrderIdTrackingRoute,
+}
+
+const AccountOrdersOrderIdRouteWithChildren =
+  AccountOrdersOrderIdRoute._addFileChildren(AccountOrdersOrderIdRouteChildren)
+
+interface AccountOrdersRouteChildren {
+  AccountOrdersOrderIdRoute: typeof AccountOrdersOrderIdRouteWithChildren
+}
+
+const AccountOrdersRouteChildren: AccountOrdersRouteChildren = {
+  AccountOrdersOrderIdRoute: AccountOrdersOrderIdRouteWithChildren,
+}
+
+const AccountOrdersRouteWithChildren = AccountOrdersRoute._addFileChildren(
+  AccountOrdersRouteChildren,
+)
+
+interface AccountTransactionsRouteChildren {
+  AccountTransactionsPaymentIdRoute: typeof AccountTransactionsPaymentIdRoute
+}
+
+const AccountTransactionsRouteChildren: AccountTransactionsRouteChildren = {
+  AccountTransactionsPaymentIdRoute: AccountTransactionsPaymentIdRoute,
+}
+
+const AccountTransactionsRouteWithChildren =
+  AccountTransactionsRoute._addFileChildren(AccountTransactionsRouteChildren)
+
+interface AccountRouteChildren {
+  AccountAddressesRoute: typeof AccountAddressesRoute
+  AccountDisputesRoute: typeof AccountDisputesRoute
+  AccountOrdersRoute: typeof AccountOrdersRouteWithChildren
+  AccountProfileRoute: typeof AccountProfileRoute
+  AccountReferralRoute: typeof AccountReferralRoute
+  AccountSecurityRoute: typeof AccountSecurityRoute
+  AccountTransactionsRoute: typeof AccountTransactionsRouteWithChildren
+  AccountIndexRoute: typeof AccountIndexRoute
+}
+
+const AccountRouteChildren: AccountRouteChildren = {
+  AccountAddressesRoute: AccountAddressesRoute,
+  AccountDisputesRoute: AccountDisputesRoute,
+  AccountOrdersRoute: AccountOrdersRouteWithChildren,
+  AccountProfileRoute: AccountProfileRoute,
+  AccountReferralRoute: AccountReferralRoute,
+  AccountSecurityRoute: AccountSecurityRoute,
+  AccountTransactionsRoute: AccountTransactionsRouteWithChildren,
+  AccountIndexRoute: AccountIndexRoute,
+}
+
+const AccountRouteWithChildren =
+  AccountRoute._addFileChildren(AccountRouteChildren)
+
+interface CartRouteChildren {
+  CartIndexRoute: typeof CartIndexRoute
+  CartItemsItemIdRoute: typeof CartItemsItemIdRoute
+  CartItemsNewRoute: typeof CartItemsNewRoute
+}
+
+const CartRouteChildren: CartRouteChildren = {
+  CartIndexRoute: CartIndexRoute,
+  CartItemsItemIdRoute: CartItemsItemIdRoute,
+  CartItemsNewRoute: CartItemsNewRoute,
+}
+
+const CartRouteWithChildren = CartRoute._addFileChildren(CartRouteChildren)
+
+interface CatalogStoresRouteChildren {
+  CatalogStoresStoreIdRoute: typeof CatalogStoresStoreIdRoute
+}
+
+const CatalogStoresRouteChildren: CatalogStoresRouteChildren = {
+  CatalogStoresStoreIdRoute: CatalogStoresStoreIdRoute,
+}
+
+const CatalogStoresRouteWithChildren = CatalogStoresRoute._addFileChildren(
+  CatalogStoresRouteChildren,
+)
+
+interface CatalogRouteChildren {
+  CatalogCategoriesRoute: typeof CatalogCategoriesRoute
+  CatalogStoresRoute: typeof CatalogStoresRouteWithChildren
+  CatalogIndexRoute: typeof CatalogIndexRoute
+  CatalogProductsProductIdRoute: typeof CatalogProductsProductIdRoute
+}
+
+const CatalogRouteChildren: CatalogRouteChildren = {
+  CatalogCategoriesRoute: CatalogCategoriesRoute,
+  CatalogStoresRoute: CatalogStoresRouteWithChildren,
+  CatalogIndexRoute: CatalogIndexRoute,
+  CatalogProductsProductIdRoute: CatalogProductsProductIdRoute,
+}
+
+const CatalogRouteWithChildren =
+  CatalogRoute._addFileChildren(CatalogRouteChildren)
+
+interface DashboardAdminDisputesRouteChildren {
+  DashboardAdminDisputesDisputeIdRoute: typeof DashboardAdminDisputesDisputeIdRoute
+}
+
+const DashboardAdminDisputesRouteChildren: DashboardAdminDisputesRouteChildren =
+  {
+    DashboardAdminDisputesDisputeIdRoute: DashboardAdminDisputesDisputeIdRoute,
+  }
+
+const DashboardAdminDisputesRouteWithChildren =
+  DashboardAdminDisputesRoute._addFileChildren(
+    DashboardAdminDisputesRouteChildren,
+  )
+
+interface DashboardAdminPaymentsRouteChildren {
+  DashboardAdminPaymentsCallbackRoute: typeof DashboardAdminPaymentsCallbackRoute
+}
+
+const DashboardAdminPaymentsRouteChildren: DashboardAdminPaymentsRouteChildren =
+  {
+    DashboardAdminPaymentsCallbackRoute: DashboardAdminPaymentsCallbackRoute,
+  }
+
+const DashboardAdminPaymentsRouteWithChildren =
+  DashboardAdminPaymentsRoute._addFileChildren(
+    DashboardAdminPaymentsRouteChildren,
+  )
+
+interface DashboardAdminPromotionsRouteChildren {
+  DashboardAdminPromotionsPromotionIdRoute: typeof DashboardAdminPromotionsPromotionIdRoute
+  DashboardAdminPromotionsNewRoute: typeof DashboardAdminPromotionsNewRoute
+}
+
+const DashboardAdminPromotionsRouteChildren: DashboardAdminPromotionsRouteChildren =
+  {
+    DashboardAdminPromotionsPromotionIdRoute:
+      DashboardAdminPromotionsPromotionIdRoute,
+    DashboardAdminPromotionsNewRoute: DashboardAdminPromotionsNewRoute,
+  }
+
+const DashboardAdminPromotionsRouteWithChildren =
+  DashboardAdminPromotionsRoute._addFileChildren(
+    DashboardAdminPromotionsRouteChildren,
+  )
+
+interface DashboardAdminSettlementsRouteChildren {
+  DashboardAdminSettlementsLedgerRoute: typeof DashboardAdminSettlementsLedgerRoute
+  DashboardAdminSettlementsPayoutsRoute: typeof DashboardAdminSettlementsPayoutsRoute
+  DashboardAdminSettlementsRefundsRoute: typeof DashboardAdminSettlementsRefundsRoute
+  DashboardAdminSettlementsIndexRoute: typeof DashboardAdminSettlementsIndexRoute
+}
+
+const DashboardAdminSettlementsRouteChildren: DashboardAdminSettlementsRouteChildren =
+  {
+    DashboardAdminSettlementsLedgerRoute: DashboardAdminSettlementsLedgerRoute,
+    DashboardAdminSettlementsPayoutsRoute:
+      DashboardAdminSettlementsPayoutsRoute,
+    DashboardAdminSettlementsRefundsRoute:
+      DashboardAdminSettlementsRefundsRoute,
+    DashboardAdminSettlementsIndexRoute: DashboardAdminSettlementsIndexRoute,
+  }
+
+const DashboardAdminSettlementsRouteWithChildren =
+  DashboardAdminSettlementsRoute._addFileChildren(
+    DashboardAdminSettlementsRouteChildren,
+  )
+
+interface DashboardAdminRouteChildren {
+  DashboardAdminDisputesRoute: typeof DashboardAdminDisputesRouteWithChildren
+  DashboardAdminOrdersRoute: typeof DashboardAdminOrdersRoute
+  DashboardAdminPaymentsRoute: typeof DashboardAdminPaymentsRouteWithChildren
+  DashboardAdminPromotionsRoute: typeof DashboardAdminPromotionsRouteWithChildren
+  DashboardAdminSettlementsRoute: typeof DashboardAdminSettlementsRouteWithChildren
+  DashboardAdminIndexRoute: typeof DashboardAdminIndexRoute
+  DashboardAdminRidersApproveRoute: typeof DashboardAdminRidersApproveRoute
+  DashboardAdminVendorsApproveRoute: typeof DashboardAdminVendorsApproveRoute
+  DashboardAdminVendorsTierRoute: typeof DashboardAdminVendorsTierRoute
+}
+
+const DashboardAdminRouteChildren: DashboardAdminRouteChildren = {
+  DashboardAdminDisputesRoute: DashboardAdminDisputesRouteWithChildren,
+  DashboardAdminOrdersRoute: DashboardAdminOrdersRoute,
+  DashboardAdminPaymentsRoute: DashboardAdminPaymentsRouteWithChildren,
+  DashboardAdminPromotionsRoute: DashboardAdminPromotionsRouteWithChildren,
+  DashboardAdminSettlementsRoute: DashboardAdminSettlementsRouteWithChildren,
+  DashboardAdminIndexRoute: DashboardAdminIndexRoute,
+  DashboardAdminRidersApproveRoute: DashboardAdminRidersApproveRoute,
+  DashboardAdminVendorsApproveRoute: DashboardAdminVendorsApproveRoute,
+  DashboardAdminVendorsTierRoute: DashboardAdminVendorsTierRoute,
+}
+
+const DashboardAdminRouteWithChildren = DashboardAdminRoute._addFileChildren(
+  DashboardAdminRouteChildren,
+)
+
+interface DashboardDeliveryDeliveriesRouteChildren {
+  DashboardDeliveryDeliveriesDeliveryIdRoute: typeof DashboardDeliveryDeliveriesDeliveryIdRoute
+}
+
+const DashboardDeliveryDeliveriesRouteChildren: DashboardDeliveryDeliveriesRouteChildren =
+  {
+    DashboardDeliveryDeliveriesDeliveryIdRoute:
+      DashboardDeliveryDeliveriesDeliveryIdRoute,
+  }
+
+const DashboardDeliveryDeliveriesRouteWithChildren =
+  DashboardDeliveryDeliveriesRoute._addFileChildren(
+    DashboardDeliveryDeliveriesRouteChildren,
+  )
+
+interface DashboardDeliveryRouteChildren {
+  DashboardDeliveryDeliveriesRoute: typeof DashboardDeliveryDeliveriesRouteWithChildren
+  DashboardDeliveryEarningsRoute: typeof DashboardDeliveryEarningsRoute
+  DashboardDeliveryPayoutsRoute: typeof DashboardDeliveryPayoutsRoute
+  DashboardDeliveryProfileRoute: typeof DashboardDeliveryProfileRoute
+  DashboardDeliveryIndexRoute: typeof DashboardDeliveryIndexRoute
+}
+
+const DashboardDeliveryRouteChildren: DashboardDeliveryRouteChildren = {
+  DashboardDeliveryDeliveriesRoute:
+    DashboardDeliveryDeliveriesRouteWithChildren,
+  DashboardDeliveryEarningsRoute: DashboardDeliveryEarningsRoute,
+  DashboardDeliveryPayoutsRoute: DashboardDeliveryPayoutsRoute,
+  DashboardDeliveryProfileRoute: DashboardDeliveryProfileRoute,
+  DashboardDeliveryIndexRoute: DashboardDeliveryIndexRoute,
+}
+
+const DashboardDeliveryRouteWithChildren =
+  DashboardDeliveryRoute._addFileChildren(DashboardDeliveryRouteChildren)
+
+interface DashboardVendorProductsRouteChildren {
+  DashboardVendorProductsProductIdRoute: typeof DashboardVendorProductsProductIdRoute
+  DashboardVendorProductsNewRoute: typeof DashboardVendorProductsNewRoute
+}
+
+const DashboardVendorProductsRouteChildren: DashboardVendorProductsRouteChildren =
+  {
+    DashboardVendorProductsProductIdRoute:
+      DashboardVendorProductsProductIdRoute,
+    DashboardVendorProductsNewRoute: DashboardVendorProductsNewRoute,
+  }
+
+const DashboardVendorProductsRouteWithChildren =
+  DashboardVendorProductsRoute._addFileChildren(
+    DashboardVendorProductsRouteChildren,
+  )
+
+interface DashboardVendorPromotionsRouteChildren {
+  DashboardVendorPromotionsPromotionIdRoute: typeof DashboardVendorPromotionsPromotionIdRoute
+  DashboardVendorPromotionsNewRoute: typeof DashboardVendorPromotionsNewRoute
+}
+
+const DashboardVendorPromotionsRouteChildren: DashboardVendorPromotionsRouteChildren =
+  {
+    DashboardVendorPromotionsPromotionIdRoute:
+      DashboardVendorPromotionsPromotionIdRoute,
+    DashboardVendorPromotionsNewRoute: DashboardVendorPromotionsNewRoute,
+  }
+
+const DashboardVendorPromotionsRouteWithChildren =
+  DashboardVendorPromotionsRoute._addFileChildren(
+    DashboardVendorPromotionsRouteChildren,
+  )
+
+interface DashboardVendorStoresRouteChildren {
+  DashboardVendorStoresStoreIdRoute: typeof DashboardVendorStoresStoreIdRoute
+}
+
+const DashboardVendorStoresRouteChildren: DashboardVendorStoresRouteChildren = {
+  DashboardVendorStoresStoreIdRoute: DashboardVendorStoresStoreIdRoute,
+}
+
+const DashboardVendorStoresRouteWithChildren =
+  DashboardVendorStoresRoute._addFileChildren(
+    DashboardVendorStoresRouteChildren,
+  )
+
+interface DashboardVendorRouteChildren {
+  DashboardVendorEarningsRoute: typeof DashboardVendorEarningsRoute
+  DashboardVendorPayoutsRoute: typeof DashboardVendorPayoutsRoute
+  DashboardVendorProductsRoute: typeof DashboardVendorProductsRouteWithChildren
+  DashboardVendorProfileRoute: typeof DashboardVendorProfileRoute
+  DashboardVendorPromotionsRoute: typeof DashboardVendorPromotionsRouteWithChildren
+  DashboardVendorStoresRoute: typeof DashboardVendorStoresRouteWithChildren
+  DashboardVendorIndexRoute: typeof DashboardVendorIndexRoute
+  DashboardVendorOrdersOrderIdRoute: typeof DashboardVendorOrdersOrderIdRoute
+}
+
+const DashboardVendorRouteChildren: DashboardVendorRouteChildren = {
+  DashboardVendorEarningsRoute: DashboardVendorEarningsRoute,
+  DashboardVendorPayoutsRoute: DashboardVendorPayoutsRoute,
+  DashboardVendorProductsRoute: DashboardVendorProductsRouteWithChildren,
+  DashboardVendorProfileRoute: DashboardVendorProfileRoute,
+  DashboardVendorPromotionsRoute: DashboardVendorPromotionsRouteWithChildren,
+  DashboardVendorStoresRoute: DashboardVendorStoresRouteWithChildren,
+  DashboardVendorIndexRoute: DashboardVendorIndexRoute,
+  DashboardVendorOrdersOrderIdRoute: DashboardVendorOrdersOrderIdRoute,
+}
+
+const DashboardVendorRouteWithChildren = DashboardVendorRoute._addFileChildren(
+  DashboardVendorRouteChildren,
+)
+
 interface DashboardRouteChildren {
-  DashboardAdminRoute: typeof DashboardAdminRoute
-  DashboardDeliveryRoute: typeof DashboardDeliveryRoute
+  DashboardAdminRoute: typeof DashboardAdminRouteWithChildren
+  DashboardDeliveryRoute: typeof DashboardDeliveryRouteWithChildren
   DashboardLoginRoute: typeof DashboardLoginRoute
-  DashboardVendorRoute: typeof DashboardVendorRoute
+  DashboardSecurityRoute: typeof DashboardSecurityRoute
+  DashboardVendorRoute: typeof DashboardVendorRouteWithChildren
+  DashboardMfaSetupRoute: typeof DashboardMfaSetupRoute
 }
 
 const DashboardRouteChildren: DashboardRouteChildren = {
-  DashboardAdminRoute: DashboardAdminRoute,
-  DashboardDeliveryRoute: DashboardDeliveryRoute,
+  DashboardAdminRoute: DashboardAdminRouteWithChildren,
+  DashboardDeliveryRoute: DashboardDeliveryRouteWithChildren,
   DashboardLoginRoute: DashboardLoginRoute,
-  DashboardVendorRoute: DashboardVendorRoute,
+  DashboardSecurityRoute: DashboardSecurityRoute,
+  DashboardVendorRoute: DashboardVendorRouteWithChildren,
+  DashboardMfaSetupRoute: DashboardMfaSetupRoute,
 }
 
 const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
@@ -395,6 +1897,19 @@ const DeliveryRouteWithChildren = DeliveryRoute._addFileChildren(
   DeliveryRouteChildren,
 )
 
+interface ReviewsRouteChildren {
+  ReviewsNewRoute: typeof ReviewsNewRoute
+  ReviewsIndexRoute: typeof ReviewsIndexRoute
+}
+
+const ReviewsRouteChildren: ReviewsRouteChildren = {
+  ReviewsNewRoute: ReviewsNewRoute,
+  ReviewsIndexRoute: ReviewsIndexRoute,
+}
+
+const ReviewsRouteWithChildren =
+  ReviewsRoute._addFileChildren(ReviewsRouteChildren)
+
 interface VendorsRouteChildren {
   VendorsRegisterRoute: typeof VendorsRegisterRoute
   VendorsIndexRoute: typeof VendorsIndexRoute
@@ -410,14 +1925,17 @@ const VendorsRouteWithChildren =
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AccountRoute: AccountRoute,
-  CartRoute: CartRoute,
+  AccountRoute: AccountRouteWithChildren,
+  CartRoute: CartRouteWithChildren,
+  CatalogRoute: CatalogRouteWithChildren,
   CheckoutRoute: CheckoutRoute,
   DashboardRoute: DashboardRouteWithChildren,
   DeliveryRoute: DeliveryRouteWithChildren,
   LoginRoute: LoginRoute,
+  ReviewsRoute: ReviewsRouteWithChildren,
   ShopRoute: ShopRoute,
   VendorsRoute: VendorsRouteWithChildren,
+  PromotionsValidateRoute: PromotionsValidateRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

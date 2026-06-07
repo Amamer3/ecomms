@@ -8,11 +8,11 @@ export const Route = createFileRoute("/vendors/")({
   component: VendorsLanding,
   head: () => ({
     meta: [
-      { title: "Sell with Randy's — Grow your business" },
+      { title: "Sell with GoMarket — Grow your business" },
       {
         name: "description",
         content:
-          "Join 500+ farmers, butchers and brands selling on Randy's Commerce. Simple onboarding, fair fees, real growth.",
+          "Join 500+ farmers, butchers and brands selling on GoMarket. Simple onboarding, fair fees, real growth.",
       },
     ],
   }),
@@ -28,7 +28,7 @@ function VendorsLanding() {
             <Store className="h-3.5 w-3.5" /> For vendors
           </span>
           <h1 className="mt-5 font-display text-5xl font-semibold leading-[1.05] sm:text-6xl">
-            Grow your business with Randy's.
+            Grow your business with GoMarket.
           </h1>
           <p className="mt-5 max-w-lg text-lg text-muted-foreground">
             Reach more customers in your city with a partner that handles the tech, logistics, and discovery — so you can
@@ -42,10 +42,11 @@ function VendorsLanding() {
               Apply to sell <ArrowRight className="h-4 w-4" />
             </Link>
             <Link
-              to="/dashboard/vendor"
+              to="/dashboard/login"
+              search={{ redirect: "/dashboard/vendor" }}
               className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-6 py-3.5 text-sm font-semibold"
             >
-              Vendor dashboard
+              Partner sign in
             </Link>
           </div>
         </div>

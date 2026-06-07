@@ -1,15 +1,34 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { z } from "zod";
-import { Bike, Shield, Store } from "lucide-react";
+import { Loader2, ShoppingBag } from "lucide-react";
 import { toast } from "sonner";
-import { useAuth } from "@/context/auth";
 import {
-  safePostLoginRedirect,
-  safeShopperPostLoginRedirect,
-  type DashboardRole,
-} from "@/lib/auth-storage";
-import { cn } from "@/lib/utils";
+  AuthDivider,
+  AuthStepIndicator,
+  BusinessLoginLayout,
+  authPillButtonClass,
+  authPillFieldClass,
+} from "@/components/auth/AuthShell";
+import { MfaEnrollForm } from "@/components/auth/MfaEnrollForm";
+import { MfaVerifyForm } from "@/components/auth/MfaVerifyForm";
+import { PasswordField } from "@/components/auth/PasswordField";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useAuth } from "@/context/auth";
+import { login, verifyMfa } from "@/lib/api";
+import { ApiError, isMfaChallenge, isMfaEnrollment, isTokenPair } from "@/lib/api/client";
+import type { MfaLoginChallenge } from "@/lib/api/types";
+import { postAuthRedirectPath, safePostLoginRedirect, safeShopperPostLoginRedirect } from "@/lib/auth-storage";
+
+const MFA_SESSION_KEY = "gmarket_mfa_session";
+
+type StoredMfaSession = {
+  mfaToken: string;
+  otpauthUri?: string;
+  message?: string;
+};
 
 const searchSchema = z.object({
   redirect: z.string().optional(),
@@ -18,22 +37,39 @@ const searchSchema = z.object({
 export const Route = createFileRoute("/dashboard/login")({
   validateSearch: searchSchema,
   component: DashboardLogin,
+  head: () => ({ meta: [{ title: "Business sign in — GoMarket" }] }),
 });
 
-const roles: { id: DashboardRole; label: string; blurb: string; icon: typeof Store }[] = [
-  { id: "vendor", label: "Vendor", blurb: "Manage products and orders.", icon: Store },
-  { id: "delivery", label: "Courier", blurb: "Accept runs and track earnings.", icon: Bike },
-  { id: "admin", label: "Admin", blurb: "Review applications and platform stats.", icon: Shield },
-];
+const STEPS = [
+  { id: "credentials", label: "Account" },
+  { id: "setup", label: "Set up" },
+  { id: "verify", label: "Verify" },
+] as const;
+
+function loadMfaSession(): StoredMfaSession | null {
+  try {
+    const raw = sessionStorage.getItem(MFA_SESSION_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as StoredMfaSession;
+    if (typeof parsed.mfaToken === "string" && parsed.mfaToken.length > 0) return parsed;
+    return null;
+  } catch {
+    return null;
+  }
+}
 
 function DashboardLogin() {
   const { redirect } = Route.useSearch();
-  const { session, ready, login } = useAuth();
+  const { session, ready, setSessionFromTokens } = useAuth();
   const navigate = useNavigate();
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
+  const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState<DashboardRole>("vendor");
+  const [mfaSession, setMfaSession] = useState<StoredMfaSession | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    setMfaSession(loadMfaSession());
+  }, []);
 
   useEffect(() => {
     if (!ready || !session) return;
@@ -44,111 +80,167 @@ function DashboardLogin() {
     navigate({ to: safePostLoginRedirect(session.role, redirect) });
   }, [ready, session, navigate, redirect]);
 
-  const onSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!password.trim()) {
-      toast.error("Enter any password — auth is simulated and stored in this browser only.");
-      return;
-    }
-    login({ name, email, role });
-    const dest = safePostLoginRedirect(role, redirect);
-    toast.success("Signed in");
-    navigate({ to: dest });
+  const persistMfaSession = (challenge: MfaLoginChallenge) => {
+    const next: StoredMfaSession = {
+      mfaToken: challenge.mfaToken,
+      otpauthUri: challenge.otpauthUri,
+      message: challenge.message,
+    };
+    setMfaSession(next);
+    sessionStorage.setItem(MFA_SESSION_KEY, JSON.stringify(next));
   };
 
+  const clearMfaSession = () => {
+    setMfaSession(null);
+    sessionStorage.removeItem(MFA_SESSION_KEY);
+  };
+
+  const onSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!password.trim() || !identifier.trim()) {
+      toast.error("Enter your email and password");
+      return;
+    }
+    setSubmitting(true);
+    try {
+      const res = await login(identifier.trim(), password);
+
+      if (isMfaChallenge(res)) {
+        persistMfaSession(res);
+        if (isMfaEnrollment(res)) {
+          toast("Scan the QR code in your authenticator app to continue");
+        } else {
+          toast("Enter the code from your authenticator app");
+        }
+        return;
+      }
+
+      if (isTokenPair(res)) {
+        await setSessionFromTokens(res);
+        navigate({ to: postAuthRedirectPath(res.user, redirect) });
+        toast.success("Signed in");
+      }
+    } catch (err) {
+      toast.error(err instanceof ApiError ? err.message : "Sign in failed");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const onMfaVerify = async (code: string) => {
+    if (!mfaSession?.mfaToken || code.length < 6) return;
+    setSubmitting(true);
+    try {
+      const tokens = await verifyMfa(mfaSession.mfaToken, code.trim());
+      clearMfaSession();
+      await setSessionFromTokens(tokens);
+      navigate({ to: postAuthRedirectPath(tokens.user, redirect) });
+      toast.success("Signed in");
+    } catch (err) {
+      toast.error(err instanceof ApiError ? err.message : "Invalid code");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const enrolling = mfaSession?.otpauthUri != null && mfaSession.otpauthUri.length > 0;
+  const step = !mfaSession ? "credentials" : enrolling ? "setup" : "verify";
+
   return (
-    <div className="mx-auto max-w-lg">
-      <h2 className="font-display text-2xl font-semibold">Sign in (demo)</h2>
-      <p className="mt-2 text-sm text-muted-foreground">
-        Session is saved in{" "}
-        <code className="rounded bg-muted px-1 py-0.5 text-xs">localStorage</code> as{" "}
-        <code className="rounded bg-muted px-1 py-0.5 text-xs">randys_auth_session</code>. Each role
-        only opens its own dashboard.
-      </p>
+    <BusinessLoginLayout
+      footer={
+        <p className="text-center text-sm text-muted-foreground">
+          Shopping on the site?{" "}
+          <Link
+            to="/login"
+            search={{ redirect: undefined }}
+            className="font-semibold text-primary underline-offset-4 hover:underline"
+          >
+            Customer sign in
+          </Link>
+        </p>
+      }
+    >
+      <header>
+        <h1 className="font-display text-3xl font-semibold tracking-tight text-foreground sm:text-[2rem]">
+          {step === "credentials"
+            ? "Welcome back!"
+            : enrolling
+              ? "Set up two-factor authentication"
+              : "Two-factor verification"}
+        </h1>
+        <p className="mt-2 text-sm text-muted-foreground">
+          {step === "credentials"
+            ? "Enter your business credentials to access your workspace."
+            : enrolling
+              ? "Scan the TOTP URI in your authenticator app, then confirm with a 6-digit code."
+              : "Your account is protected with two-factor authentication."}
+        </p>
+      </header>
 
-      <form onSubmit={onSubmit} className="mt-8 space-y-6">
-        <div>
-          <p className="text-sm font-medium text-foreground">Role</p>
-          <div className="mt-2 grid gap-3 sm:grid-cols-3">
-            {roles.map((r) => {
-              const Icon = r.icon;
-              const active = role === r.id;
-              return (
-                <button
-                  key={r.id}
-                  type="button"
-                  onClick={() => setRole(r.id)}
-                  className={cn(
-                    "flex flex-col items-start gap-2 rounded-2xl border p-4 text-left transition-colors",
-                    active
-                      ? "border-primary bg-primary/5 shadow-[var(--shadow-soft)]"
-                      : "border-border/60 bg-card hover:border-primary/30",
-                  )}
-                >
-                  <span className="grid h-9 w-9 place-items-center rounded-lg bg-primary/10 text-primary">
-                    <Icon className="h-4 w-4" />
-                  </span>
-                  <span className="text-sm font-semibold">{r.label}</span>
-                  <span className="text-xs text-muted-foreground">{r.blurb}</span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
+      <div className="mt-8">
+        <AuthStepIndicator steps={[...STEPS]} current={step} />
 
-        <label className="block">
-          <span className="text-sm font-medium text-foreground">Display name</span>
-          <input
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            autoComplete="name"
-            placeholder="e.g. Amina Okafor"
-            className="mt-1.5 w-full rounded-xl border border-border bg-background px-3 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
-          />
-        </label>
+        {mfaSession ? (
+          enrolling ? (
+            <MfaEnrollForm
+              otpauthUri={mfaSession.otpauthUri!}
+              message={mfaSession.message}
+              submitting={submitting}
+              onBack={clearMfaSession}
+              onVerify={onMfaVerify}
+            />
+          ) : (
+            <MfaVerifyForm
+              submitting={submitting}
+              onBack={clearMfaSession}
+              onVerify={onMfaVerify}
+            />
+          )
+        ) : (
+          <form onSubmit={(e) => void onSubmit(e)} className="space-y-5">
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="identifier">Email or phone</Label>
+                <Input
+                  id="identifier"
+                  type="text"
+                  value={identifier}
+                  onChange={(e) => setIdentifier(e.target.value)}
+                  autoComplete="username"
+                  placeholder="you@company.com"
+                  className={authPillFieldClass}
+                />
+              </div>
+              <PasswordField value={password} onChange={setPassword} variant="pill" />
+            </div>
 
-        <label className="block">
-          <span className="text-sm font-medium text-foreground">Email (optional)</span>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            autoComplete="email"
-            placeholder="you@example.com"
-            className="mt-1.5 w-full rounded-xl border border-border bg-background px-3 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
-          />
-        </label>
+            <Button type="submit" disabled={submitting} className={authPillButtonClass}>
+              {submitting ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" /> Signing in…
+                </>
+              ) : (
+                "Sign in"
+              )}
+            </Button>
 
-        <label className="block">
-          <span className="text-sm font-medium text-foreground">Password</span>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            autoComplete="current-password"
-            placeholder="Any value — not verified"
-            className="mt-1.5 w-full rounded-xl border border-border bg-background px-3 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
-          />
-        </label>
+            <AuthDivider />
 
-        <button
-          type="submit"
-          className="w-full rounded-full bg-primary py-3 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-soft)] transition-all hover:shadow-[var(--shadow-glow)]"
-        >
-          Continue
-        </button>
-      </form>
-
-      <p className="mt-6 text-center text-sm text-muted-foreground">
-        <Link to="/login" className="font-medium text-primary hover:underline">
-          Shopping on the site? Customer sign in
-        </Link>
-      </p>
-      <p className="mt-2 text-center text-sm text-muted-foreground">
-        <Link to="/dashboard" className="font-medium text-primary hover:underline">
-          Back to dashboards
-        </Link>
-      </p>
-    </div>
+            <Button
+              type="button"
+              variant="outline"
+              className="h-12 w-full rounded-full border-border/80 bg-background text-sm font-semibold"
+              asChild
+            >
+              <Link to="/login" search={{ redirect: undefined }}>
+                <ShoppingBag className="mr-2 h-4 w-4" />
+                Customer sign in
+              </Link>
+            </Button>
+          </form>
+        )}
+      </div>
+    </BusinessLoginLayout>
   );
 }

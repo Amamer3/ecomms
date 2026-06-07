@@ -1,6 +1,8 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useRouterState } from "@tanstack/react-router";
 import { useEffect, useState, type ComponentType, type ReactNode } from "react";
-import { LogOut, Menu, ShoppingBag, Sprout } from "lucide-react";
+import { selectPathname } from "@/lib/router-pathname";
+import { KeyRound, LogOut, Menu, ShoppingBag, Sprout } from "lucide-react";
+import { BrandLogo } from "@/components/BrandLogo";
 import { useAuth } from "@/context/auth";
 import { cn } from "@/lib/utils";
 import {
@@ -20,6 +22,18 @@ export type DashboardNavItem = {
   icon: ComponentType<{ className?: string }>;
 };
 
+export type DashboardRouteNavItem = {
+  to: string;
+  label: string;
+  icon: ComponentType<{ className?: string }>;
+  exact?: boolean;
+};
+
+function isRouteNavActive(pathname: string, to: string, exact?: boolean): boolean {
+  if (exact) return pathname === to || pathname === `${to}/`;
+  return pathname === to || pathname.startsWith(`${to}/`);
+}
+
 function useHashSection(): string {
   const [hash, setHash] = useState("");
   useEffect(() => {
@@ -35,32 +49,50 @@ export function DashboardRoleShell({
   workspacePath,
   workspaceTitle,
   navItems,
+  routeNavItems,
   children,
 }: {
   workspacePath: DashboardWorkspacePath;
   workspaceTitle: string;
-  navItems: DashboardNavItem[];
+  navItems?: DashboardNavItem[];
+  routeNavItems?: DashboardRouteNavItem[];
   children: ReactNode;
 }) {
   const { session, logout } = useAuth();
+  const pathname = useRouterState({ select: selectPathname });
   const hash = useHashSection();
-  const defaultSection = navItems[0]?.sectionId ?? "";
+  const defaultSection = navItems?.[0]?.sectionId ?? "";
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
-  const navLinkClass = (sectionId: string) => {
-    const active = hash === sectionId || (hash === "" && sectionId === defaultSection);
-    return cn(
+  const itemClass = (active: boolean) =>
+    cn(
       "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors",
       active
         ? "bg-primary/10 text-primary"
         : "text-muted-foreground hover:bg-muted/60 hover:text-foreground",
     );
+
+  const hashNavLinkClass = (sectionId: string) => {
+    const active = hash === sectionId || (hash === "" && sectionId === defaultSection);
+    return itemClass(active);
   };
 
-  const desktopNav = (
+  const routeNavLinkClass = (to: string, exact?: boolean) =>
+    itemClass(isRouteNavActive(pathname, to, exact));
+
+  const desktopNav = routeNavItems ? (
     <nav className="flex flex-col gap-1 px-3 py-2" aria-label="Workspace">
-      {navItems.map(({ sectionId, label, icon: Icon }) => (
-        <a key={sectionId} href={`#${sectionId}`} className={navLinkClass(sectionId)}>
+      {routeNavItems.map(({ to, label, icon: Icon, exact }) => (
+        <Link key={to} to={to} className={routeNavLinkClass(to, exact)}>
+          <Icon className="h-4 w-4 shrink-0" />
+          {label}
+        </Link>
+      ))}
+    </nav>
+  ) : (
+    <nav className="flex flex-col gap-1 px-3 py-2" aria-label="Workspace">
+      {navItems?.map(({ sectionId, label, icon: Icon }) => (
+        <a key={sectionId} href={`#${sectionId}`} className={hashNavLinkClass(sectionId)}>
           <Icon className="h-4 w-4 shrink-0" />
           {label}
         </a>
@@ -68,14 +100,29 @@ export function DashboardRoleShell({
     </nav>
   );
 
-  const mobileNav = (
+  const mobileNav = routeNavItems ? (
     <nav className="flex flex-col gap-1 px-3 py-2" aria-label="Workspace">
-      {navItems.map(({ sectionId, label, icon: Icon }) => (
+      {routeNavItems.map(({ to, label, icon: Icon, exact }) => (
+        <SheetClose asChild key={to}>
+          <Link
+            to={to}
+            onClick={() => setMobileNavOpen(false)}
+            className={routeNavLinkClass(to, exact)}
+          >
+            <Icon className="h-4 w-4 shrink-0" />
+            {label}
+          </Link>
+        </SheetClose>
+      ))}
+    </nav>
+  ) : (
+    <nav className="flex flex-col gap-1 px-3 py-2" aria-label="Workspace">
+      {navItems?.map(({ sectionId, label, icon: Icon }) => (
         <SheetClose asChild key={sectionId}>
           <a
             href={`#${sectionId}`}
             onClick={() => setMobileNavOpen(false)}
-            className={navLinkClass(sectionId)}
+            className={hashNavLinkClass(sectionId)}
           >
             <Icon className="h-4 w-4 shrink-0" />
             {label}
@@ -96,9 +143,7 @@ export function DashboardRoleShell({
             <span className="grid h-9 w-9 place-items-center rounded-xl bg-[image:var(--gradient-primary)] text-primary-foreground shadow-[var(--shadow-soft)]">
               <Sprout className="h-5 w-5" />
             </span>
-            <span className="font-display text-lg font-semibold tracking-tight">
-              Randy&apos;s<span className="text-primary">.</span>
-            </span>
+            <BrandLogo className="text-lg" />
           </Link>
         </div>
         <div className="border-b border-border/60 px-4 py-4">
@@ -109,7 +154,14 @@ export function DashboardRoleShell({
           </Link>
         </div>
         {desktopNav}
-        <div className="mt-auto border-t border-border/60 p-3">
+        <div className="mt-auto space-y-1 border-t border-border/60 p-3">
+          <Link
+            to="/dashboard/security"
+            className="flex items-center gap-2 rounded-xl px-3 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted/60 hover:text-foreground"
+          >
+            <KeyRound className="h-4 w-4" />
+            Security
+          </Link>
           <Link
             to="/shop"
             className="flex items-center gap-2 rounded-xl px-3 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted/60 hover:text-foreground"
@@ -138,7 +190,16 @@ export function DashboardRoleShell({
                 <p className="text-left text-xs text-muted-foreground">Jump to a section</p>
               </SheetHeader>
               <div className="flex-1 overflow-y-auto py-2">{mobileNav}</div>
-              <div className="border-t border-border/60 p-4">
+              <div className="space-y-1 border-t border-border/60 p-4">
+                <SheetClose asChild>
+                  <Link
+                    to="/dashboard/security"
+                    className="flex items-center gap-2 rounded-xl px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-muted/60"
+                  >
+                    <KeyRound className="h-4 w-4" />
+                    Security
+                  </Link>
+                </SheetClose>
                 <SheetClose asChild>
                   <Link
                     to="/shop"
@@ -165,7 +226,7 @@ export function DashboardRoleShell({
           <button
             type="button"
             onClick={() => logout()}
-            className="inline-flex shrink-0 items-center gap-2 rounded-full border border-border/60 bg-card px-3 py-2 text-xs font-semibold text-muted-foreground shadow-[var(--shadow-soft)] transition-colors hover:border-destructive/40 hover:text-destructive sm:px-4 sm:text-sm"
+            className="inline-flex shrink-0 items-center gap-2 rounded-lg border border-border/70 bg-card px-3 py-2 text-xs font-semibold text-muted-foreground shadow-sm transition-colors hover:border-destructive/40 hover:text-destructive sm:px-4 sm:text-sm"
           >
             <LogOut className="h-4 w-4" />
             <span className="hidden sm:inline">Log out</span>

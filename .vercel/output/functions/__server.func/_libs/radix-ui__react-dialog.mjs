@@ -12,7 +12,7 @@ import { P as Primitive } from "./radix-ui__react-primitive.mjs";
 import { u as useFocusGuards } from "./radix-ui__react-focus-guards.mjs";
 import { R as ReactRemoveScroll } from "./react-remove-scroll.mjs";
 import { h as hideOthers } from "./aria-hidden.mjs";
-import { a as createSlot } from "./radix-ui__react-slot.mjs";
+import { b as createSlot } from "./radix-ui__react-slot.mjs";
 var DIALOG_NAME = "Dialog";
 var [createDialogContext] = createContextScope(DIALOG_NAME);
 var [DialogProvider, useDialogContext] = createDialogContext(DIALOG_NAME);
@@ -316,12 +316,12 @@ var Title = DialogTitle;
 var Description = DialogDescription;
 var Close = DialogClose;
 export {
-  Content as C,
+  Close as C,
   Description as D,
   Overlay as O,
   Portal as P,
   Root as R,
   Trigger as T,
-  Title as a,
-  Close as b
+  Content as a,
+  Title as b
 };

@@ -1,5 +1,5 @@
 import { r as reactExports, j as jsxRuntimeExports } from "../_libs/react.mjs";
-import { R as Root, T as Trigger, P as Portal, C as Content, a as Title, b as Close, O as Overlay, D as Description } from "../_libs/radix-ui__react-dialog.mjs";
+import { R as Root, C as Close, T as Trigger, P as Portal, a as Content, b as Title, O as Overlay, D as Description } from "../_libs/radix-ui__react-dialog.mjs";
 import { c as cva } from "../_libs/class-variance-authority.mjs";
 import { c as cn } from "./utils-H80jjgLf.mjs";
 import { X } from "../_libs/lucide-react.mjs";

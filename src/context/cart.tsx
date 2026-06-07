@@ -1,52 +1,120 @@
-import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
-import type { Product } from "@/lib/products";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  addCartItem,
+  clearCart,
+  getCart,
+  removeCartItem,
+  updateCartItem,
+} from "@/lib/api";
+import { parseMoney } from "@/lib/api/client";
+import type { Cart, CartItem } from "@/lib/api/types";
+import { loadSelectedStoreId, type ShopProduct } from "@/lib/catalog-display";
+import { useAuth } from "@/context/auth";
 
-export type CartItem = { product: Product; qty: number };
+export type CartLine = { item: CartItem; product?: ShopProduct };
 
 type CartCtx = {
-  items: CartItem[];
-  add: (p: Product) => void;
-  remove: (id: string) => void;
-  setQty: (id: string, qty: number) => void;
-  clear: () => void;
+  storeId: string | null;
+  cart: Cart | null;
+  loading: boolean;
+  items: CartLine[];
+  add: (productId: string, qty?: number) => Promise<void>;
+  remove: (itemId: string) => Promise<void>;
+  setQty: (itemId: string, qty: number) => Promise<void>;
+  clear: () => Promise<void>;
+  refresh: () => void;
   count: number;
   subtotal: number;
 };
 
 const Ctx = createContext<CartCtx | null>(null);
-const KEY = "randys.cart.v1";
 
 export function CartProvider({ children }: { children: ReactNode }) {
-  const [items, setItems] = useState<CartItem[]>([]);
+  const { session, ready } = useAuth();
+  const queryClient = useQueryClient();
+  const [storeId, setStoreId] = useState<string | null>(null);
 
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(KEY);
-      if (raw) setItems(JSON.parse(raw));
-    } catch {}
+    setStoreId(loadSelectedStoreId());
   }, []);
 
-  useEffect(() => {
-    try { localStorage.setItem(KEY, JSON.stringify(items)); } catch {}
-  }, [items]);
+  const enabled = ready && !!session && session.role === "customer" && !!storeId;
 
-  const value = useMemo<CartCtx>(() => ({
-    items,
-    add: (p) =>
-      setItems((cur) => {
-        const ex = cur.find((i) => i.product.id === p.id);
-        if (ex) return cur.map((i) => (i.product.id === p.id ? { ...i, qty: i.qty + 1 } : i));
-        return [...cur, { product: p, qty: 1 }];
-      }),
-    remove: (id) => setItems((cur) => cur.filter((i) => i.product.id !== id)),
-    setQty: (id, qty) =>
-      setItems((cur) =>
-        qty <= 0 ? cur.filter((i) => i.product.id !== id) : cur.map((i) => (i.product.id === id ? { ...i, qty } : i)),
-      ),
-    clear: () => setItems([]),
-    count: items.reduce((n, i) => n + i.qty, 0),
-    subtotal: items.reduce((s, i) => s + i.qty * i.product.price, 0),
-  }), [items]);
+  const { data: cart, isLoading, refetch } = useQuery({
+    queryKey: ["cart", storeId],
+    queryFn: () => getCart(storeId!),
+    enabled,
+  });
+
+  const invalidate = useCallback(() => {
+    void queryClient.invalidateQueries({ queryKey: ["cart", storeId] });
+  }, [queryClient, storeId]);
+
+  const add = useCallback(
+    async (productId: string, qty = 1) => {
+      if (!storeId) throw new Error("Select a store before adding to cart");
+      await addCartItem(storeId, productId, qty);
+      invalidate();
+    },
+    [storeId, invalidate],
+  );
+
+  const remove = useCallback(
+    async (itemId: string) => {
+      await removeCartItem(itemId);
+      invalidate();
+    },
+    [invalidate],
+  );
+
+  const setQty = useCallback(
+    async (itemId: string, qty: number) => {
+      if (qty <= 0) {
+        await remove(itemId);
+        return;
+      }
+      await updateCartItem(itemId, qty);
+      invalidate();
+    },
+    [invalidate, remove],
+  );
+
+  const clear = useCallback(async () => {
+    if (!storeId) return;
+    await clearCart(storeId);
+    invalidate();
+  }, [storeId, invalidate]);
+
+  const items = useMemo<CartLine[]>(
+    () => (cart?.items ?? []).map((item) => ({ item })),
+    [cart?.items],
+  );
+
+  const value = useMemo<CartCtx>(
+    () => ({
+      storeId,
+      cart: cart ?? null,
+      loading: isLoading,
+      items,
+      add,
+      remove,
+      setQty,
+      clear,
+      refresh: () => void refetch(),
+      count: items.reduce((n, i) => n + i.item.qty, 0),
+      subtotal: cart ? parseMoney(cart.subtotal) : 0,
+    }),
+    [storeId, cart, isLoading, items, add, remove, setQty, clear, refetch],
+  );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }

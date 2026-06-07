@@ -1,134 +1,54 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { Minus, Plus, Trash2, ShoppingBag, ArrowRight } from "lucide-react";
+import { createFileRoute, Link, Outlet } from "@tanstack/react-router";
+import { Plus, ShoppingBag } from "lucide-react";
+import { Footer } from "@/components/Footer";
 import { Navbar } from "@/components/Navbar";
 import { RequireCustomer } from "@/components/RequireCustomer";
-import { Footer } from "@/components/Footer";
-import { useCart } from "@/context/cart";
-import { formatGhs } from "@/lib/format-money";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/cart")({
-  component: CartPage,
-  head: () => ({ meta: [{ title: "Your cart — Randy's Commerce" }] }),
+  component: CartLayout,
 });
 
-const DELIVERY = 3.5;
-const FREE_DELIVERY_OVER_GHS = 200;
+const CART_NAV = [
+  { to: "/cart", label: "View cart", icon: ShoppingBag, exact: true },
+  { to: "/cart/items/new", label: "Add item", icon: Plus },
+] as const;
 
-function CartPage() {
-  const { items, setQty, remove, subtotal, count } = useCart();
-  const total = subtotal + (items.length ? DELIVERY : 0);
-
+function CartLayout() {
   return (
     <RequireCustomer>
       <div className="min-h-screen bg-background">
         <Navbar />
-        <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-          <h1 className="font-display text-4xl font-semibold">Your basket</h1>
-          <p className="mt-1 text-muted-foreground">
-            {count} item{count === 1 ? "" : "s"} ready to go.
-          </p>
-
-          {items.length === 0 ? (
-            <div className="mt-10 rounded-3xl border border-dashed border-border p-12 text-center">
-              <span className="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-primary/10 text-primary">
-                <ShoppingBag className="h-6 w-6" />
-              </span>
-              <p className="mt-4 text-lg font-medium">Your basket is empty.</p>
-              <p className="mt-1 text-sm text-muted-foreground">
-                Discover fresh picks and weekly essentials.
-              </p>
-              <Link
-                to="/shop"
-                className="mt-6 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground"
-              >
-                Start shopping <ArrowRight className="h-4 w-4" />
-              </Link>
-            </div>
-          ) : (
-            <div className="mt-10 grid gap-8 lg:grid-cols-[1fr_360px]">
-              <ul className="space-y-3">
-                {items.map(({ product, qty }) => (
-                  <li
-                    key={product.id}
-                    className="flex items-center gap-4 rounded-2xl border border-border/60 bg-card p-4 shadow-[var(--shadow-soft)]"
-                  >
-                    <div className="grid h-20 w-20 shrink-0 place-items-center rounded-xl bg-[image:var(--gradient-hero)] text-4xl">
-                      {product.emoji}
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="text-xs text-muted-foreground">{product.vendor}</p>
-                      <p className="truncate font-semibold">{product.name}</p>
-                      <p className="text-sm text-muted-foreground">
-                        {formatGhs(product.price)} {product.unit}
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-2 rounded-full border border-border bg-background p-1">
-                      <button
-                        onClick={() => setQty(product.id, qty - 1)}
-                        className="grid h-8 w-8 place-items-center rounded-full hover:bg-secondary"
-                        aria-label="Decrease"
-                      >
-                        <Minus className="h-4 w-4" />
-                      </button>
-                      <span className="min-w-6 text-center text-sm font-semibold">{qty}</span>
-                      <button
-                        onClick={() => setQty(product.id, qty + 1)}
-                        className="grid h-8 w-8 place-items-center rounded-full hover:bg-secondary"
-                        aria-label="Increase"
-                      >
-                        <Plus className="h-4 w-4" />
-                      </button>
-                    </div>
-                    <p className="hidden w-20 text-right font-semibold sm:block">
-                      {formatGhs(product.price * qty)}
-                    </p>
-                    <button
-                      onClick={() => remove(product.id)}
-                      className="grid h-9 w-9 place-items-center rounded-full text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
-                      aria-label="Remove"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </button>
-                  </li>
-                ))}
-              </ul>
-
-              <aside className="h-fit rounded-3xl border border-border/60 bg-card p-6 shadow-[var(--shadow-card)] lg:sticky lg:top-24">
-                <h2 className="font-display text-xl font-semibold">Order summary</h2>
-                <dl className="mt-5 space-y-3 text-sm">
-                  <Row label="Subtotal" value={formatGhs(subtotal)} />
-                  <Row label="Delivery" value={formatGhs(DELIVERY)} />
-                  <div className="border-t border-border pt-3">
-                    <Row
-                      label={<span className="text-base font-semibold">Total</span>}
-                      value={<span className="text-base font-semibold">{formatGhs(total)}</span>}
-                    />
-                  </div>
-                </dl>
+        <div className="border-b border-border/60 bg-[image:var(--gradient-hero)]">
+          <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+            <p className="text-xs font-semibold uppercase tracking-widest text-primary">Cart</p>
+            <h1 className="mt-1 font-display text-3xl font-semibold">Your basket</h1>
+            <nav className="mt-4 flex flex-wrap gap-2" aria-label="Cart actions">
+              {CART_NAV.map(({ to, label, icon: Icon, ...rest }) => (
                 <Link
-                  to="/checkout"
-                  className="mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-primary px-5 py-3.5 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-glow)] transition-transform hover:scale-[1.01]"
+                  key={to}
+                  to={to}
+                  className={cn(
+                    "inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition-colors",
+                    "border-border bg-card hover:border-primary/40",
+                  )}
+                  activeOptions={"exact" in rest && rest.exact ? { exact: true } : undefined}
+                  activeProps={{
+                    className: "border-primary bg-primary text-primary-foreground",
+                  }}
                 >
-                  Checkout <ArrowRight className="h-4 w-4" />
+                  <Icon className="h-4 w-4" />
+                  {label}
                 </Link>
-                <p className="mt-3 text-center text-xs text-muted-foreground">
-                  Free delivery on orders over {formatGhs(FREE_DELIVERY_OVER_GHS)}.
-                </p>
-              </aside>
-            </div>
-          )}
+              ))}
+            </nav>
+          </div>
+        </div>
+        <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+          <Outlet />
         </section>
         <Footer />
       </div>
     </RequireCustomer>
-  );
-}
-
-function Row({ label, value }: { label: React.ReactNode; value: React.ReactNode }) {
-  return (
-    <div className="flex items-center justify-between">
-      <dt className="text-muted-foreground">{label}</dt>
-      <dd className="text-foreground">{value}</dd>
-    </div>
   );
 }

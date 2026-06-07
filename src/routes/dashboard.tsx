@@ -10,8 +10,8 @@ export const Route = createFileRoute("/dashboard")({
   component: DashboardLayout,
   head: () => ({
     meta: [
-      { title: "Dashboard — Randy's Commerce" },
-      { name: "description", content: "Manage your business on Randy's Commerce." },
+      { title: "Dashboard — GoMarket" },
+      { name: "description", content: "Manage your business on GoMarket." },
     ],
   }),
 });
@@ -28,20 +28,30 @@ function DashboardLayout() {
   const { session, logout } = useAuth();
   const isRoot = path === "/dashboard";
   const isLogin = path === "/dashboard/login";
-  const isRoleWorkspace =
-    path === "/dashboard/admin" || path === "/dashboard/vendor" || path === "/dashboard/delivery";
+  const isAuthUtility =
+    path === "/dashboard/security" || path === "/dashboard/mfa/setup";
+  const isAdminWorkspace = path === "/dashboard/admin" || path.startsWith("/dashboard/admin/");
+  const isVendorWorkspace = path === "/dashboard/vendor" || path.startsWith("/dashboard/vendor/");
+  const isDeliveryWorkspace =
+    path === "/dashboard/delivery" || path.startsWith("/dashboard/delivery/");
+  const isRoleWorkspace = isAdminWorkspace || isVendorWorkspace || isDeliveryWorkspace;
 
   useEffect(() => {
-    if (session?.role === "customer") {
+    if (!session) return;
+    if (session.role === "customer") {
       navigate({ to: "/shop", replace: true });
+      return;
     }
-  }, [session, navigate]);
+    if (isRoot && !isLogin) {
+      navigate({ to: dashboardPathForRole(session.role), replace: true });
+    }
+  }, [session, navigate, isRoot, isLogin]);
 
   const tabs =
     session && session.role !== "customer" ? allTabs.filter((t) => t.role === session.role) : [];
   const showTabs = session && !isLogin && !isRoleWorkspace;
 
-  if (isRoleWorkspace) {
+  if (isRoleWorkspace || isLogin || isAuthUtility) {
     return (
       <div className="min-h-screen bg-background">
         <Outlet />
@@ -58,15 +68,11 @@ function DashboardLayout() {
               <LayoutDashboard className="h-5 w-5" />
             </span>
             <div>
-              <h1 className="font-display text-3xl font-semibold">
-                {isLogin ? "Sign in" : "Dashboards"}
-              </h1>
+              <h1 className="font-display text-3xl font-semibold">Dashboards</h1>
               <p className="text-sm text-muted-foreground">
-                {isLogin
-                  ? "Choose a role — session is stored locally in your browser."
-                  : session && session.role !== "customer"
-                    ? `Signed in as ${session.name} (${roleLabel(session.role)}).`
-                    : "Sign in to open your role dashboard."}
+                {session && session.role !== "customer"
+                  ? `Signed in as ${session.name} (${roleLabel(session.role)}).`
+                  : "Sign in to open your role dashboard."}
               </p>
             </div>
           </div>
@@ -127,49 +133,15 @@ function DashHome() {
     return (
       <div className="space-y-6">
         <p className="max-w-xl text-sm text-muted-foreground">
-          Use the <strong className="font-medium text-foreground">Sign in</strong> button above, or
-          pick a dashboard below. You will be asked to choose{" "}
-          <strong className="font-medium text-foreground">Vendor</strong>,{" "}
-          <strong className="font-medium text-foreground">Courier</strong>, or{" "}
-          <strong className="font-medium text-foreground">Admin</strong> — each role only sees its
-          own tools.
+          Sign in with your business account. GoMarket detects your role from the API and sends you
+          to the right workspace — vendor, courier, or admin.
         </p>
-        <div className="grid gap-4 sm:grid-cols-3">
-          {[
-            {
-              to: "/dashboard/vendor" as const,
-              title: "Vendor dashboard",
-              desc: "Products, orders, payouts.",
-              icon: Store,
-            },
-            {
-              to: "/dashboard/delivery" as const,
-              title: "Courier dashboard",
-              desc: "Active runs and earnings.",
-              icon: Bike,
-            },
-            {
-              to: "/dashboard/admin" as const,
-              title: "Admin",
-              desc: "Approvals and platform stats.",
-              icon: Shield,
-            },
-          ].map(({ to, title, desc, icon: Icon }) => (
-            <Link
-              key={to}
-              to="/dashboard/login"
-              search={{ redirect: to }}
-              className="rounded-3xl border border-border/60 bg-card p-6 shadow-[var(--shadow-soft)] transition-all hover:shadow-[var(--shadow-card)]"
-            >
-              <span className="grid h-11 w-11 place-items-center rounded-xl bg-primary/10 text-primary">
-                <Icon className="h-5 w-5" />
-              </span>
-              <h3 className="mt-4 text-lg font-semibold">{title}</h3>
-              <p className="mt-1 text-sm text-muted-foreground">{desc}</p>
-              <p className="mt-3 text-xs font-medium text-primary">Sign in to open →</p>
-            </Link>
-          ))}
-        </div>
+        <Link
+          to="/dashboard/login"
+          className="inline-flex max-w-sm items-center gap-2 rounded-lg bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition-all hover:shadow-md"
+        >
+          <LogIn className="h-4 w-4" /> Business sign in
+        </Link>
       </div>
     );
   }
