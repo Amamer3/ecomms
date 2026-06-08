@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft } from "lucide-react";
 import { getTransaction } from "@/lib/api";
 import { parseMoney } from "@/lib/api/client";
+import { AsyncState } from "@/components/AsyncState";
 import { CustomerDetailGrid, CustomerPageHeader } from "@/components/customer/customer-ui";
 import { formatGhs } from "@/lib/format-money";
 
@@ -13,20 +14,24 @@ export const Route = createFileRoute("/account/transactions/$paymentId")({
 function AccountTransactionDetailPage() {
   const { paymentId } = Route.useParams();
 
-  const { data: payment, isLoading } = useQuery({
+  const { data: payment, isLoading, isError, error, refetch, isFetching } = useQuery({
     queryKey: ["transaction", paymentId],
     queryFn: () => getTransaction(paymentId),
   });
 
-  if (isLoading) {
-    return <p className="text-sm text-muted-foreground">Loading payment…</p>;
-  }
-
-  if (!payment) {
-    return <p className="text-sm text-destructive">Payment not found.</p>;
-  }
-
   return (
+    <AsyncState
+      isLoading={isLoading}
+      isError={isError}
+      error={error}
+      onRetry={() => void refetch()}
+      isRetrying={isFetching && !isLoading}
+      loadingMessage="Loading payment…"
+      errorTitle="Couldn't load payment"
+    >
+      {!payment ? (
+        <p className="text-sm text-destructive">Payment not found.</p>
+      ) : (
     <div>
       <Link
         to="/account/transactions"
@@ -54,5 +59,7 @@ function AccountTransactionDetailPage() {
         ]}
       />
     </div>
+      )}
+    </AsyncState>
   );
 }

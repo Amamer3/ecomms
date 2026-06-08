@@ -3,7 +3,7 @@ import { useState } from "react";
 import { ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 import { createReview } from "@/lib/api";
-import { ApiError } from "@/lib/api/client";
+import { getErrorMessage } from "@/lib/errors";
 import { RequireCustomer } from "@/components/RequireCustomer";
 import { reviewInputCls, ReviewPageHeader, StarRating } from "@/components/reviews/review-ui";
 
@@ -67,7 +67,7 @@ function WriteReviewForm() {
       toast.success("Review submitted");
       navigate({ to: "/reviews" });
     } catch (err) {
-      toast.error(err instanceof ApiError ? err.message : "Could not submit review");
+      toast.error(getErrorMessage(err, "Could not submit review"));
     } finally {
       setSubmitting(false);
     }

@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 import { ArrowLeft } from "lucide-react";
 import { getOrderTracking } from "@/lib/api";
+import { AsyncState } from "@/components/AsyncState";
 import { CustomerDetailGrid, CustomerPageHeader } from "@/components/customer/customer-ui";
 import { CustomerJourneyMap } from "@/components/CustomerJourneyMap";
 import { customerTrackingToMap } from "@/lib/tracking-mappers";
@@ -14,7 +15,7 @@ export const Route = createFileRoute("/account/orders/$orderId/tracking")({
 function AccountOrderTrackingPage() {
   const { orderId } = Route.useParams();
 
-  const { data: tracking, isLoading } = useQuery({
+  const { data: tracking, isLoading, isError, error, refetch, isFetching } = useQuery({
     queryKey: ["tracking", orderId],
     queryFn: () => getOrderTracking(orderId),
     refetchInterval: 15_000,
@@ -25,15 +26,19 @@ function AccountOrderTrackingPage() {
     [tracking],
   );
 
-  if (isLoading) {
-    return <p className="text-sm text-muted-foreground">Loading tracking…</p>;
-  }
-
-  if (!tracking) {
-    return <p className="text-sm text-destructive">Tracking not available.</p>;
-  }
-
   return (
+    <AsyncState
+      isLoading={isLoading}
+      isError={isError}
+      error={error}
+      onRetry={() => void refetch()}
+      isRetrying={isFetching && !isLoading}
+      loadingMessage="Loading tracking…"
+      errorTitle="Couldn't load tracking"
+    >
+      {!tracking ? (
+        <p className="text-sm text-destructive">Tracking not available.</p>
+      ) : (
     <div>
       <Link
         to="/account/orders/$orderId"
@@ -81,5 +86,7 @@ function AccountOrderTrackingPage() {
         ]}
       />
     </div>
+      )}
+    </AsyncState>
   );
 }

@@ -5,6 +5,7 @@ import { useAuth } from "@/context/auth";
 import { useCart } from "@/context/cart";
 import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
+import { getErrorMessage } from "@/lib/errors";
 
 export function ProductCard({ product }: { product: ShopProduct }) {
   const { session } = useAuth();
@@ -25,7 +26,7 @@ export function ProductCard({ product }: { product: ShopProduct }) {
       await add(product.id);
       toast.success("Added to basket");
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Could not add to cart");
+      toast.error(getErrorMessage(e, "Could not add to cart"));
     }
   };
 

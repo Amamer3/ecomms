@@ -8,7 +8,8 @@ import { RequireCustomer } from "@/components/RequireCustomer";
 import { Footer } from "@/components/Footer";
 import { useCart } from "@/context/cart";
 import { checkout, createAddress, listAddresses, validatePromotion } from "@/lib/api";
-import { ApiError, parseMoney } from "@/lib/api/client";
+import { parseMoney } from "@/lib/api/client";
+import { getErrorMessage } from "@/lib/errors";
 import type { CheckoutResult } from "@/lib/api/types";
 import { formatGhs } from "@/lib/format-money";
 import { normalizeE164Phone } from "@/lib/phone";
@@ -105,7 +106,7 @@ function CheckoutPage() {
       await clear();
       toast.success(result.nextAction?.message ?? "Pending order created — approve MoMo on your phone");
     } catch (err) {
-      toast.error(err instanceof ApiError ? err.message : "Checkout failed");
+      toast.error(getErrorMessage(err, "Checkout failed"));
     } finally {
       setSubmitting(false);
     }

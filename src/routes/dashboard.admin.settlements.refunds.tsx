@@ -3,7 +3,9 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
 import { listAdminRefunds, processRefunds } from "@/lib/api";
-import { ApiError, parseMoney } from "@/lib/api/client";
+import { parseMoney } from "@/lib/api/client";
+import { getErrorMessage } from "@/lib/errors";
+import { AsyncState } from "@/components/AsyncState";
 import { AdminDataTable, AdminPageHeader } from "@/components/admin/admin-ui";
 import { formatGhs } from "@/lib/format-money";
 
@@ -16,7 +18,7 @@ function AdminRefundsPage() {
   const qc = useQueryClient();
   const [processing, setProcessing] = useState(false);
 
-  const { data: refunds = [], isLoading, refetch } = useQuery({
+  const { data: refunds = [], isLoading, isError, error, refetch, isFetching } = useQuery({
     queryKey: ["admin-refunds"],
     queryFn: () => listAdminRefunds({ limit: 50 }),
   });
@@ -29,7 +31,7 @@ function AdminRefundsPage() {
       void qc.invalidateQueries({ queryKey: ["admin-dashboard"] });
       void refetch();
     } catch (err) {
-      toast.error(err instanceof ApiError ? err.message : "Refund processing failed");
+      toast.error(getErrorMessage(err, "Refund processing failed"));
     } finally {
       setProcessing(false);
     }
@@ -56,9 +58,15 @@ function AdminRefundsPage() {
         </p>
       </div>
 
-      {isLoading ? (
-        <p className="text-sm text-muted-foreground">Loading refunds…</p>
-      ) : (
+      <AsyncState
+        isLoading={isLoading}
+        isError={isError}
+        error={error}
+        onRetry={() => void refetch()}
+        isRetrying={isFetching && !isLoading}
+        loadingMessage="Loading refunds…"
+        errorTitle="Couldn't load refunds"
+      >
         <AdminDataTable
           title={`${refunds.length} refund${refunds.length === 1 ? "" : "s"}`}
           headers={["Payment ID", "Status", "Amount", "Order"]}
@@ -69,7 +77,7 @@ function AdminRefundsPage() {
             r.orderId.slice(0, 8) + "…",
           ])}
         />
-      )}
+      </AsyncState>
     </div>
   );
 }

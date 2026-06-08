@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { setupMfa } from "@/lib/api";
-import { ApiError } from "@/lib/api/client";
+import { getErrorMessage } from "@/lib/errors";
 
 export const Route = createFileRoute("/dashboard/mfa/setup")({
   component: MfaSetupPage,
@@ -55,7 +55,7 @@ function MfaSetupInner() {
           toast.error("Could not start MFA enrolment");
         }
       } catch (err) {
-        toast.error(err instanceof ApiError ? err.message : "Could not start MFA setup");
+        toast.error(getErrorMessage(err, "Could not start MFA setup"));
       } finally {
         setLoading(false);
       }
@@ -76,7 +76,7 @@ function MfaSetupInner() {
         toast.success("Two-factor authentication enabled");
       }
     } catch (err) {
-      toast.error(err instanceof ApiError ? err.message : "Invalid code");
+      toast.error(getErrorMessage(err, "Invalid code"));
     } finally {
       setSubmitting(false);
     }

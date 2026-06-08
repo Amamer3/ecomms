@@ -46,6 +46,14 @@ export type OtpChallengeResponse = { challengeId: string; expiresInSeconds: numb
 
 export type MfaSetupResponse = { enabled: boolean; otpauthUri?: string };
 
+export type HealthResponse = {
+  status: string;
+  uptime: number;
+  timestamp: string;
+  db: string;
+  redis: string;
+};
+
 export type Category = {
   id: string;
   name: string;

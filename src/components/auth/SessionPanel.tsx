@@ -7,7 +7,9 @@ import { Button } from "@/components/ui/button";
 import { authPrimaryButtonClass } from "@/components/auth/AuthShell";
 import { useAuth } from "@/context/auth";
 import { getMe, refreshAuth } from "@/lib/api";
-import { ApiError, loadTokens, saveTokens } from "@/lib/api/client";
+import { loadTokens, saveTokens } from "@/lib/api/client";
+import { getErrorMessage } from "@/lib/errors";
+import { QueryErrorState } from "@/components/QueryErrorState";
 import type { PublicUser } from "@/lib/api/types";
 import { Link } from "@tanstack/react-router";
 
@@ -68,7 +70,7 @@ export function SessionPanel({
   const [refreshing, setRefreshing] = useState(false);
   const [signingOut, setSigningOut] = useState(false);
 
-  const { data: user, isLoading, isError, refetch, isFetching } = useQuery({
+  const { data: user, isLoading, isError, error, refetch, isFetching } = useQuery({
     queryKey: ["auth-me"],
     queryFn: getMe,
   });
@@ -87,7 +89,7 @@ export function SessionPanel({
       await refetch();
       toast.success("Session refreshed");
     } catch (err) {
-      toast.error(err instanceof ApiError ? err.message : "Could not refresh session");
+      toast.error(getErrorMessage(err, "Could not refresh session"));
     } finally {
       setRefreshing(false);
     }
@@ -100,7 +102,7 @@ export function SessionPanel({
       toast.success("Signed out");
       navigate({ to: logoutRedirect });
     } catch (err) {
-      toast.error(err instanceof ApiError ? err.message : "Sign out failed");
+      toast.error(getErrorMessage(err, "Sign out failed"));
     } finally {
       setSigningOut(false);
     }
@@ -118,7 +120,12 @@ export function SessionPanel({
           <Loader2 className="h-4 w-4 animate-spin" /> Loading account…
         </div>
       ) : isError || !user ? (
-        <p className="text-sm text-destructive">Could not load your account. Try refreshing the session.</p>
+        <QueryErrorState
+          error={error}
+          title="Couldn't load your account"
+          onRetry={() => void refetch()}
+          retrying={isFetching && !isLoading}
+        />
       ) : (
         <UserDetails user={user} />
       )}

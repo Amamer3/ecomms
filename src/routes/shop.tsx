@@ -2,7 +2,9 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Search, Store } from "lucide-react";
+import { AsyncState } from "@/components/AsyncState";
 import { Navbar } from "@/components/Navbar";
+import { QueryErrorState } from "@/components/QueryErrorState";
 import { Footer } from "@/components/Footer";
 import { ProductCard } from "@/components/ProductCard";
 import {
@@ -38,7 +40,14 @@ function Shop() {
   const navigate = Route.useNavigate();
   const [q, setQ] = useState(searchQ ?? "");
 
-  const { data: stores = [], isLoading: storesLoading } = useQuery({
+  const {
+    data: stores = [],
+    isLoading: storesLoading,
+    isError: storesError,
+    error: storesQueryError,
+    refetch: refetchStores,
+    isFetching: storesFetching,
+  } = useQuery({
     queryKey: ["stores"],
     queryFn: () => listStores({ limit: 50 }),
   });
@@ -51,7 +60,14 @@ function Shop() {
     queryFn: listCategories,
   });
 
-  const { data: products = [], isLoading: productsLoading } = useQuery({
+  const {
+    data: products = [],
+    isLoading: productsLoading,
+    isError: productsError,
+    error: productsQueryError,
+    refetch: refetchProducts,
+    isFetching: productsFetching,
+  } = useQuery({
     queryKey: ["products", selectedStore?.id, categoryId, q],
     queryFn: () =>
       listStoreProducts(selectedStore!.id, {
@@ -88,6 +104,17 @@ function Shop() {
     <div className="min-h-screen bg-background">
       <Navbar />
 
+      {storesError ? (
+        <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+          <QueryErrorState
+            error={storesQueryError}
+            title="Couldn't load stores"
+            onRetry={() => void refetchStores()}
+            retrying={storesFetching && !storesLoading}
+          />
+        </section>
+      ) : (
+      <>
       <section className="border-b border-border/60 bg-[image:var(--gradient-hero)]">
         <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
           <h1 className="font-display text-4xl font-semibold sm:text-5xl">Everything in store</h1>
@@ -144,23 +171,34 @@ function Shop() {
           ))}
         </div>
 
-        {productsLoading ? (
-          <p className="mt-16 text-center text-muted-foreground">Loading products…</p>
-        ) : shopProducts.length === 0 ? (
-          <div className="mt-16 rounded-3xl border border-dashed border-border p-12 text-center">
-            <p className="text-lg font-medium">Nothing matched your search.</p>
-            <Link to="/shop" className="mt-4 inline-block text-sm font-medium text-primary hover:underline">
-              Reset filters
-            </Link>
-          </div>
-        ) : (
-          <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-            {shopProducts.map((p) => (
-              <ProductCard key={p.id} product={p} />
-            ))}
-          </div>
-        )}
+        <AsyncState
+          isLoading={productsLoading}
+          isError={productsError}
+          error={productsQueryError}
+          onRetry={() => void refetchProducts()}
+          isRetrying={productsFetching && !productsLoading}
+          loadingMessage="Loading products…"
+          errorTitle="Couldn't load products"
+          className="mt-16 justify-center"
+        >
+          {shopProducts.length === 0 ? (
+            <div className="mt-16 rounded-3xl border border-dashed border-border p-12 text-center">
+              <p className="text-lg font-medium">Nothing matched your search.</p>
+              <Link to="/shop" className="mt-4 inline-block text-sm font-medium text-primary hover:underline">
+                Reset filters
+              </Link>
+            </div>
+          ) : (
+            <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+              {shopProducts.map((p) => (
+                <ProductCard key={p.id} product={p} />
+              ))}
+            </div>
+          )}
+        </AsyncState>
       </section>
+      </>
+      )}
 
       <Footer />
     </div>

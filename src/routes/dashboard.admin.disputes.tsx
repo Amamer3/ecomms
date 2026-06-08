@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { listAdminDisputes } from "@/lib/api";
+import { AsyncState } from "@/components/AsyncState";
 import { adminInputCls, AdminPageHeader } from "@/components/admin/admin-ui";
 
 export const Route = createFileRoute("/dashboard/admin/disputes")({
@@ -15,7 +16,7 @@ function AdminDisputesPage() {
   const [status, setStatus] = useState("");
   const [appliedStatus, setAppliedStatus] = useState<string | undefined>();
 
-  const { data: disputes = [], isLoading } = useQuery({
+  const { data: disputes = [], isLoading, isError, error, refetch, isFetching } = useQuery({
     queryKey: ["admin-disputes", appliedStatus],
     queryFn: () => listAdminDisputes({ status: appliedStatus, limit: 50 }),
   });
@@ -55,9 +56,15 @@ function AdminDisputesPage() {
         </button>
       </form>
 
-      {isLoading ? (
-        <p className="text-sm text-muted-foreground">Loading disputes…</p>
-      ) : (
+      <AsyncState
+        isLoading={isLoading}
+        isError={isError}
+        error={error}
+        onRetry={() => void refetch()}
+        isRetrying={isFetching && !isLoading}
+        loadingMessage="Loading disputes…"
+        errorTitle="Couldn't load disputes"
+      >
         <ul className="space-y-3">
           {disputes.map((d) => (
             <li key={d.id} className="rounded-2xl border border-border/60 bg-card p-4">
@@ -85,7 +92,7 @@ function AdminDisputesPage() {
             </li>
           )}
         </ul>
-      )}
+      </AsyncState>
     </div>
   );
 }

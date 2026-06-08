@@ -17,6 +17,7 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { HomeHero } from "@/components/home/HomeHero";
 import { ProductCard } from "@/components/ProductCard";
+import { QueryErrorState } from "@/components/QueryErrorState";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useQuery } from "@tanstack/react-query";
 import { listCategories, listStoreProducts, listStores } from "@/lib/api";
@@ -45,12 +46,7 @@ export const Route = createFileRoute("/")({
   }),
 });
 
-const TRUST_ITEMS = [
-  { icon: Truck, label: "Same-day delivery" },
-  { icon: Snowflake, label: "Cold-chain packed" },
-  { icon: ShieldCheck, label: "Vetted vendors" },
-  { icon: Leaf, label: "Local & fresh" },
-] as const;
+
 
 const HOW_IT_WORKS = [
   {
@@ -81,7 +77,14 @@ const WHY_US = [
 ] as const;
 
 function Home() {
-  const { data: stores = [], isLoading: storesLoading } = useQuery({
+  const {
+    data: stores = [],
+    isLoading: storesLoading,
+    isError: storesError,
+    error: storesQueryError,
+    refetch: refetchStores,
+    isFetching: storesFetching,
+  } = useQuery({
     queryKey: ["stores"],
     queryFn: () => listStores({ limit: 5 }),
   });
@@ -103,23 +106,10 @@ function Home() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navbar />
-
-      <HomeHero />
-
-      {/* Trust strip */}
-      <section className="border-y border-border/60 bg-card/50" aria-label="Why shop with us">
-        <div className="mx-auto flex max-w-7xl gap-6 overflow-x-auto px-4 py-4 sm:justify-center sm:gap-10 sm:px-6 sm:py-5 lg:px-8 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          {TRUST_ITEMS.map(({ icon: Icon, label }) => (
-            <div key={label} className="flex shrink-0 items-center gap-2.5 text-sm font-medium text-foreground/80">
-              <span className="grid h-8 w-8 place-items-center rounded-lg bg-primary/10 text-primary">
-                <Icon className="h-4 w-4" />
-              </span>
-              {label}
-            </div>
-          ))}
-        </div>
-      </section>
+      <Navbar overlay />
+      <div className="relative">
+        <HomeHero className="-mt-[5.75rem] sm:-mt-[6.5rem]" />
+      </div>
 
       {/* How it works */}
       <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
@@ -197,7 +187,7 @@ function Home() {
       </section>
 
       {/* Local stores */}
-      {(storesLoading || stores.length > 0) && (
+      {(storesLoading || stores.length > 0 || storesError) && (
         <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
           <SectionHeader
             title="Shop local stores"
@@ -205,7 +195,15 @@ function Home() {
             href="/shop"
             linkLabel="View all stores"
           />
-          {storesLoading ? (
+          {storesError ? (
+            <QueryErrorState
+              error={storesQueryError}
+              title="Couldn't load stores"
+              onRetry={() => void refetchStores()}
+              retrying={storesFetching && !storesLoading}
+              className="mt-8"
+            />
+          ) : storesLoading ? (
             <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {Array.from({ length: 3 }).map((_, i) => (
                 <Skeleton key={i} className="h-28 rounded-3xl" />

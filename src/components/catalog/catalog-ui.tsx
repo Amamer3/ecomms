@@ -1,7 +1,6 @@
 import { useQueryClient } from "@tanstack/react-query";
 import type { ReactNode } from "react";
-import { toast } from "sonner";
-import { ApiError } from "@/lib/api/client";
+import { runAction as executeAction } from "@/lib/run-action";
 
 export const catalogInputCls =
   "w-full rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20";
@@ -77,17 +76,8 @@ export function useVendorCatalogAction() {
     void qc.invalidateQueries({ queryKey: ["products"] });
   };
 
-  const runAction = async (label: string, fn: () => Promise<unknown>) => {
-    try {
-      await fn();
-      toast.success(label);
-      invalidate();
-      return true;
-    } catch (e) {
-      toast.error(e instanceof ApiError ? e.message : "Action failed");
-      return false;
-    }
-  };
+  const runAction = (label: string, fn: () => Promise<unknown>) =>
+    executeAction(label, fn, invalidate);
 
   return { runAction, invalidate };
 }

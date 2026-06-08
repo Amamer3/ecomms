@@ -5,7 +5,8 @@ import { Copy } from "lucide-react";
 import { toast } from "sonner";
 import { customerInputCls, CustomerDetailGrid, CustomerPageHeader } from "@/components/customer/customer-ui";
 import { claimReferral, getReferral } from "@/lib/api";
-import { ApiError, parseMoney } from "@/lib/api/client";
+import { parseMoney } from "@/lib/api/client";
+import { getErrorMessage } from "@/lib/errors";
 import { formatGhs } from "@/lib/format-money";
 
 export const Route = createFileRoute("/account/referral")({
@@ -43,7 +44,7 @@ function AccountReferralPage() {
       setCode("");
       void qc.invalidateQueries({ queryKey: ["referral"] });
     } catch (err) {
-      toast.error(err instanceof ApiError ? err.message : "Claim failed");
+      toast.error(getErrorMessage(err, "Claim failed"));
     } finally {
       setClaiming(false);
     }

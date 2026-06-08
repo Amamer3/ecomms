@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { listCategories } from "@/lib/api";
 import { categoryEmoji } from "@/lib/catalog-display";
+import { AsyncState } from "@/components/AsyncState";
 import { CatalogDataTable, CatalogPageHeader } from "@/components/catalog/catalog-ui";
 
 export const Route = createFileRoute("/catalog/categories")({
@@ -10,7 +11,7 @@ export const Route = createFileRoute("/catalog/categories")({
 });
 
 function CatalogCategoriesPage() {
-  const { data: categories = [], isLoading } = useQuery({
+  const { data: categories = [], isLoading, isError, error, refetch, isFetching } = useQuery({
     queryKey: ["categories"],
     queryFn: listCategories,
   });
@@ -21,9 +22,15 @@ function CatalogCategoriesPage() {
         title="Marketplace categories"
         description="Product groupings used across stores — perishable, frozen, pantry, and more."
       />
-      {isLoading ? (
-        <p className="text-sm text-muted-foreground">Loading categories…</p>
-      ) : (
+      <AsyncState
+        isLoading={isLoading}
+        isError={isError}
+        error={error}
+        onRetry={() => void refetch()}
+        isRetrying={isFetching && !isLoading}
+        loadingMessage="Loading categories…"
+        errorTitle="Couldn't load categories"
+      >
         <CatalogDataTable
           title={`${categories.length} categor${categories.length === 1 ? "y" : "ies"}`}
           headers={["Name", "Slug", "Type", "Sort"]}
@@ -36,7 +43,7 @@ function CatalogCategoriesPage() {
             String(c.sortOrder),
           ])}
         />
-      )}
+      </AsyncState>
     </div>
   );
 }

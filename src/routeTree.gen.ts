@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as VendorsRouteImport } from './routes/vendors'
+import { Route as StatusRouteImport } from './routes/status'
 import { Route as ShopRouteImport } from './routes/shop'
 import { Route as ReviewsRouteImport } from './routes/reviews'
 import { Route as LoginRouteImport } from './routes/login'
@@ -92,6 +93,11 @@ import { Route as AccountOrdersOrderIdTrackingRouteImport } from './routes/accou
 const VendorsRoute = VendorsRouteImport.update({
   id: '/vendors',
   path: '/vendors',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StatusRoute = StatusRouteImport.update({
+  id: '/status',
+  path: '/status',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ShopRoute = ShopRouteImport.update({
@@ -524,6 +530,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/reviews': typeof ReviewsRouteWithChildren
   '/shop': typeof ShopRoute
+  '/status': typeof StatusRoute
   '/vendors': typeof VendorsRouteWithChildren
   '/account/addresses': typeof AccountAddressesRoute
   '/account/disputes': typeof AccountDisputesRoute
@@ -600,6 +607,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof DashboardRouteWithChildren
   '/login': typeof LoginRoute
   '/shop': typeof ShopRoute
+  '/status': typeof StatusRoute
   '/account/addresses': typeof AccountAddressesRoute
   '/account/disputes': typeof AccountDisputesRoute
   '/account/orders': typeof AccountOrdersRouteWithChildren
@@ -677,6 +685,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/reviews': typeof ReviewsRouteWithChildren
   '/shop': typeof ShopRoute
+  '/status': typeof StatusRoute
   '/vendors': typeof VendorsRouteWithChildren
   '/account/addresses': typeof AccountAddressesRoute
   '/account/disputes': typeof AccountDisputesRoute
@@ -760,6 +769,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/reviews'
     | '/shop'
+    | '/status'
     | '/vendors'
     | '/account/addresses'
     | '/account/disputes'
@@ -836,6 +846,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/login'
     | '/shop'
+    | '/status'
     | '/account/addresses'
     | '/account/disputes'
     | '/account/orders'
@@ -912,6 +923,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/reviews'
     | '/shop'
+    | '/status'
     | '/vendors'
     | '/account/addresses'
     | '/account/disputes'
@@ -994,6 +1006,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   ReviewsRoute: typeof ReviewsRouteWithChildren
   ShopRoute: typeof ShopRoute
+  StatusRoute: typeof StatusRoute
   VendorsRoute: typeof VendorsRouteWithChildren
   PromotionsValidateRoute: typeof PromotionsValidateRoute
 }
@@ -1005,6 +1018,13 @@ declare module '@tanstack/react-router' {
       path: '/vendors'
       fullPath: '/vendors'
       preLoaderRoute: typeof VendorsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/status': {
+      id: '/status'
+      path: '/status'
+      fullPath: '/status'
+      preLoaderRoute: typeof StatusRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/shop': {
@@ -1934,6 +1954,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   ReviewsRoute: ReviewsRouteWithChildren,
   ShopRoute: ShopRoute,
+  StatusRoute: StatusRoute,
   VendorsRoute: VendorsRouteWithChildren,
   PromotionsValidateRoute: PromotionsValidateRoute,
 }

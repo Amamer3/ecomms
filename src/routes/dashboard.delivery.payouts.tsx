@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { listRiderPayouts } from "@/lib/api";
 import { parseMoney } from "@/lib/api/client";
+import { AsyncState } from "@/components/AsyncState";
 import { CatalogDataTable } from "@/components/catalog/catalog-ui";
 import { RiderPageHeader } from "@/components/rider/rider-ui";
 import { formatGhs } from "@/lib/format-money";
@@ -12,7 +13,7 @@ export const Route = createFileRoute("/dashboard/delivery/payouts")({
 });
 
 function RiderPayoutsPage() {
-  const { data: payouts = [], isLoading } = useQuery({
+  const { data: payouts = [], isLoading, isError, error, refetch, isFetching } = useQuery({
     queryKey: ["rider-payouts"],
     queryFn: () => listRiderPayouts({ limit: 50 }),
   });
@@ -24,9 +25,15 @@ function RiderPayoutsPage() {
         description="Settlement payouts issued to your courier account."
       />
 
-      {isLoading ? (
-        <p className="text-sm text-muted-foreground">Loading payouts…</p>
-      ) : (
+      <AsyncState
+        isLoading={isLoading}
+        isError={isError}
+        error={error}
+        onRetry={() => void refetch()}
+        isRetrying={isFetching && !isLoading}
+        loadingMessage="Loading payouts…"
+        errorTitle="Couldn't load payouts"
+      >
         <CatalogDataTable
           title={`${payouts.length} payout${payouts.length === 1 ? "" : "s"}`}
           headers={["Status", "Amount", "Created", "Completed"]}
@@ -37,7 +44,7 @@ function RiderPayoutsPage() {
             p.completedAt ? new Date(p.completedAt).toLocaleDateString() : "—",
           ])}
         />
-      )}
+      </AsyncState>
     </div>
   );
 }

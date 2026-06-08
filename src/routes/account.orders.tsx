@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { listCustomerOrders } from "@/lib/api";
 import { parseMoney } from "@/lib/api/client";
+import { AsyncState } from "@/components/AsyncState";
 import { CustomerPageHeader } from "@/components/customer/customer-ui";
 import { formatGhs } from "@/lib/format-money";
 
@@ -11,7 +12,7 @@ export const Route = createFileRoute("/account/orders")({
 });
 
 function AccountOrdersPage() {
-  const { data: orders = [], isLoading } = useQuery({
+  const { data: orders = [], isLoading, isError, error, refetch, isFetching } = useQuery({
     queryKey: ["customer-orders"],
     queryFn: () => listCustomerOrders({ limit: 50 }),
   });
@@ -30,14 +31,20 @@ function AccountOrdersPage() {
         description="Orders placed on your account."
       />
 
-      {isLoading ? (
-        <p className="text-sm text-muted-foreground">Loading orders…</p>
-      ) : (
+      <AsyncState
+        isLoading={isLoading}
+        isError={isError}
+        error={error}
+        onRetry={() => void refetch()}
+        isRetrying={isFetching && !isLoading}
+        loadingMessage="Loading orders…"
+        errorTitle="Couldn't load your orders"
+      >
         <div className="space-y-8">
           <OrderSection title="Active orders" orders={active} showTracking />
           <OrderSection title="Past orders" orders={past} />
         </div>
-      )}
+      </AsyncState>
     </div>
   );
 }

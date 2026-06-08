@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { listVendorStores } from "@/lib/api";
 import { storeLabel } from "@/lib/catalog-display";
+import { AsyncState } from "@/components/AsyncState";
 import { CatalogDataTable, CatalogPageHeader } from "@/components/catalog/catalog-ui";
 
 export const Route = createFileRoute("/dashboard/vendor/stores")({
@@ -10,7 +11,7 @@ export const Route = createFileRoute("/dashboard/vendor/stores")({
 });
 
 function VendorStoresPage() {
-  const { data: stores = [], isLoading } = useQuery({
+  const { data: stores = [], isLoading, isError, error, refetch, isFetching } = useQuery({
     queryKey: ["vendor-stores"],
     queryFn: listVendorStores,
   });
@@ -22,9 +23,15 @@ function VendorStoresPage() {
         description="Stores owned by your vendor account."
       />
 
-      {isLoading ? (
-        <p className="text-sm text-muted-foreground">Loading stores…</p>
-      ) : (
+      <AsyncState
+        isLoading={isLoading}
+        isError={isError}
+        error={error}
+        onRetry={() => void refetch()}
+        isRetrying={isFetching && !isLoading}
+        loadingMessage="Loading stores…"
+        errorTitle="Couldn't load stores"
+      >
         <CatalogDataTable
           title={`${stores.length} store${stores.length === 1 ? "" : "s"}`}
           headers={["Store", "City", "Status", "Products", ""]}
@@ -43,7 +50,7 @@ function VendorStoresPage() {
             </Link>,
           ])}
         />
-      )}
+      </AsyncState>
     </div>
   );
 }

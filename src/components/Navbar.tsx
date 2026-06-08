@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { LogIn, LogOut, Menu, ShoppingBag, Sprout } from "lucide-react";
+import { LogIn, LogOut, Menu, ShoppingBag } from "lucide-react";
 import { useAuth } from "@/context/auth";
 import { useCart } from "@/context/cart";
 import { appHomePathForRole } from "@/lib/auth-storage";
@@ -43,23 +43,31 @@ function loginSearch(path: string): { redirect: string | undefined } {
   return { redirect: path === "/login" ? undefined : path };
 }
 
-export function Navbar() {
+export function Navbar({ overlay = false }: { overlay?: boolean }) {
   const { count } = useCart();
   const { session, ready, logout } = useAuth();
   const path = useRouterState({ select: selectPathname });
   const navItems = session?.role === "customer" ? NAV_ITEMS_CUSTOMER : NAV_ITEMS_PUBLIC;
 
   return (
-    <header className="sticky top-0 z-50 px-3 pt-3 sm:px-4 sm:pt-4 lg:px-6">
-      <div className="mx-auto flex h-14 max-w-7xl items-center gap-3 rounded-2xl border border-border/60 bg-card/90 px-3 shadow-[var(--shadow-card)] backdrop-blur-md supports-[backdrop-filter]:bg-card/75 sm:h-[4.25rem] sm:gap-3 sm:px-5 lg:px-6">
-        <Link to="/" className="flex shrink-0 items-center gap-2">
-          <span className="grid h-9 w-9 place-items-center rounded-xl bg-[image:var(--gradient-primary)] text-primary-foreground shadow-[var(--shadow-soft)]">
-            <Sprout className="h-5 w-5" />
-          </span>
-          <BrandLogo className="text-xl" />
+    <header
+      className={cn(
+        "sticky top-0 z-50 px-3 pt-3 sm:px-4 sm:pt-4 lg:px-6",
+      )}
+    >
+      <div
+        className={cn(
+          "mx-auto flex h-14 max-w-7xl items-center gap-2 rounded-2xl border px-3 shadow-[var(--shadow-card)] backdrop-blur-xl sm:h-[4.25rem] sm:gap-3 sm:px-5 lg:px-6",
+          overlay
+            ? "border-white/60 bg-card/90 supports-[backdrop-filter]:bg-card/80"
+            : "border-border/60 bg-card/90 supports-[backdrop-filter]:bg-card/75",
+        )}
+      >
+        <Link to="/" className="shrink-0 transition-opacity hover:opacity-90">
+          <BrandLogo size="lg" className="h-8 sm:h-9" />
         </Link>
 
-        <nav className="hidden flex-1 items-center justify-center gap-8 md:flex" aria-label="Main">
+        <nav className="hidden flex-1 items-center justify-center gap-1 lg:gap-2 xl:gap-6 md:flex" aria-label="Main">
           {navItems.map(({ to, label }) => (
             <Link
               key={to}
@@ -184,10 +192,10 @@ export function Navbar() {
 
           <Link
             to="/cart"
-            className="relative inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow-[var(--shadow-soft)] transition-all hover:shadow-[var(--shadow-glow)]"
+            className="relative inline-flex items-center gap-1.5 rounded-full bg-primary px-3 py-2 text-sm font-medium text-primary-foreground shadow-[var(--shadow-soft)] transition-all hover:shadow-[var(--shadow-glow)] sm:gap-2 sm:px-4"
           >
             <ShoppingBag className="h-4 w-4" />
-            <span>Cart</span>
+            <span className="hidden sm:inline">Cart</span>
             {count > 0 && (
               <span className="ml-1 rounded-full bg-accent px-2 py-0.5 text-xs font-semibold text-accent-foreground">
                 {count}

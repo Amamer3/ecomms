@@ -17,7 +17,7 @@ import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/context/auth";
 import { requestOtp, resendOtp, verifyOtp } from "@/lib/api";
-import { ApiError } from "@/lib/api/client";
+import { getAuthErrorMessage } from "@/lib/errors";
 import { safeShopperPostLoginRedirect } from "@/lib/auth-storage";
 import { E164_PHONE_HINT, normalizeE164Phone } from "@/lib/phone";
 import { cn } from "@/lib/utils";
@@ -77,7 +77,7 @@ function ShopperLoginPage() {
       setCode("");
       toast.success("PIN sent to your phone");
     } catch (err) {
-      toast.error(err instanceof ApiError ? err.message : "Could not send PIN");
+      toast.error(getAuthErrorMessage(err, "Could not send PIN"));
     } finally {
       setSubmitting(false);
     }
@@ -98,7 +98,7 @@ function ShopperLoginPage() {
       toast.success("Signed in");
       navigate({ to: safeShopperPostLoginRedirect(redirect) });
     } catch (err) {
-      toast.error(err instanceof ApiError ? err.message : "Invalid PIN");
+      toast.error(getAuthErrorMessage(err, "Invalid PIN"));
     } finally {
       setSubmitting(false);
     }
@@ -112,7 +112,7 @@ function ShopperLoginPage() {
       await resendOtp(phone);
       toast.success("PIN resent");
     } catch (err) {
-      toast.error(err instanceof ApiError ? err.message : "Could not resend PIN");
+      toast.error(getAuthErrorMessage(err, "Could not resend PIN"));
     } finally {
       setResending(false);
     }

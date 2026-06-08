@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { listReviews } from "@/lib/api";
+import { AsyncState } from "@/components/AsyncState";
 import { reviewInputCls, ReviewList, ReviewPageHeader } from "@/components/reviews/review-ui";
 
 export const Route = createFileRoute("/reviews/")({
@@ -15,7 +16,7 @@ function ReviewsListPage() {
   const [riderId, setRiderId] = useState("");
   const [applied, setApplied] = useState<{ storeId?: string; productId?: string; riderId?: string }>({});
 
-  const { data: reviews = [], isLoading, refetch } = useQuery({
+  const { data: reviews = [], isLoading, isError, error, refetch, isFetching } = useQuery({
     queryKey: ["reviews", applied],
     queryFn: () =>
       listReviews({
@@ -82,11 +83,17 @@ function ReviewsListPage() {
         </button>
       </form>
 
-      {isLoading ? (
-        <p className="text-sm text-muted-foreground">Loading reviews…</p>
-      ) : (
+      <AsyncState
+        isLoading={isLoading}
+        isError={isError}
+        error={error}
+        onRetry={() => void refetch()}
+        isRetrying={isFetching && !isLoading}
+        loadingMessage="Loading reviews…"
+        errorTitle="Couldn't load reviews"
+      >
         <ReviewList reviews={reviews} />
-      )}
+      </AsyncState>
     </div>
   );
 }

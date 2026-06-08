@@ -2,6 +2,7 @@ import { apiRequest } from "./client";
 import type {
   Address,
   AdminDashboard,
+  HealthResponse,
   Cart,
   Category,
   CheckoutResult,
@@ -30,8 +31,7 @@ import type {
 } from "./types";
 
 // —— Health ——
-export const getHealth = () =>
-  apiRequest<{ status: string; uptime: number; timestamp: string; db: string; redis: string }>("/health");
+export const getHealth = () => apiRequest<HealthResponse>("/health");
 
 // —— Auth ——
 export const requestOtp = (phone: string) =>

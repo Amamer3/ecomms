@@ -3,7 +3,9 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
 import { generateLedger, listAdminLedger } from "@/lib/api";
-import { ApiError, parseMoney } from "@/lib/api/client";
+import { parseMoney } from "@/lib/api/client";
+import { getErrorMessage } from "@/lib/errors";
+import { AsyncState } from "@/components/AsyncState";
 import { AdminDataTable, AdminPageHeader } from "@/components/admin/admin-ui";
 import { formatGhs } from "@/lib/format-money";
 
@@ -16,7 +18,7 @@ function AdminLedgerPage() {
   const qc = useQueryClient();
   const [generating, setGenerating] = useState(false);
 
-  const { data: entries = [], isLoading, refetch } = useQuery({
+  const { data: entries = [], isLoading, isError, error, refetch, isFetching } = useQuery({
     queryKey: ["admin-ledger"],
     queryFn: () => listAdminLedger({ limit: 50 }),
   });
@@ -29,7 +31,7 @@ function AdminLedgerPage() {
       void qc.invalidateQueries({ queryKey: ["admin-dashboard"] });
       void refetch();
     } catch (err) {
-      toast.error(err instanceof ApiError ? err.message : "Ledger generation failed");
+      toast.error(getErrorMessage(err, "Ledger generation failed"));
     } finally {
       setGenerating(false);
     }
@@ -56,9 +58,15 @@ function AdminLedgerPage() {
         </p>
       </div>
 
-      {isLoading ? (
-        <p className="text-sm text-muted-foreground">Loading ledger…</p>
-      ) : (
+      <AsyncState
+        isLoading={isLoading}
+        isError={isError}
+        error={error}
+        onRetry={() => void refetch()}
+        isRetrying={isFetching && !isLoading}
+        loadingMessage="Loading ledger…"
+        errorTitle="Couldn't load ledger"
+      >
         <AdminDataTable
           title={`${entries.length} entr${entries.length === 1 ? "y" : "ies"}`}
           headers={["Type", "Status", "Amount", "Description", "Created"]}
@@ -70,7 +78,7 @@ function AdminLedgerPage() {
             new Date(e.createdAt).toLocaleDateString(),
           ])}
         />
-      )}
+      </AsyncState>
     </div>
   );
 }

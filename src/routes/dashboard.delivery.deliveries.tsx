@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { listRiderDeliveries } from "@/lib/api";
+import { AsyncState } from "@/components/AsyncState";
 import { RiderPageHeader } from "@/components/rider/rider-ui";
 
 export const Route = createFileRoute("/dashboard/delivery/deliveries")({
@@ -9,7 +10,7 @@ export const Route = createFileRoute("/dashboard/delivery/deliveries")({
 });
 
 function RiderDeliveriesPage() {
-  const { data: deliveries = [], isLoading } = useQuery({
+  const { data: deliveries = [], isLoading, isError, error, refetch, isFetching } = useQuery({
     queryKey: ["rider-deliveries"],
     queryFn: () => listRiderDeliveries({ limit: 50 }),
     refetchInterval: 20_000,
@@ -22,9 +23,15 @@ function RiderDeliveriesPage() {
         description="Deliveries offered or assigned to you."
       />
 
-      {isLoading ? (
-        <p className="text-sm text-muted-foreground">Loading deliveries…</p>
-      ) : (
+      <AsyncState
+        isLoading={isLoading}
+        isError={isError}
+        error={error}
+        onRetry={() => void refetch()}
+        isRetrying={isFetching && !isLoading}
+        loadingMessage="Loading deliveries…"
+        errorTitle="Couldn't load deliveries"
+      >
         <ul className="space-y-3">
           {deliveries.map((d) => (
             <li key={d.id} className="rounded-2xl border border-border/60 bg-card p-4">
@@ -46,7 +53,7 @@ function RiderDeliveriesPage() {
             </li>
           )}
         </ul>
-      )}
+      </AsyncState>
     </div>
   );
 }

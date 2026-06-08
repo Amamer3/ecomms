@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Plus } from "lucide-react";
 import { listPromotions } from "@/lib/api";
 import { parseMoney } from "@/lib/api/client";
+import { AsyncState } from "@/components/AsyncState";
 import { VendorPageHeader } from "@/components/vendor/vendor-ui";
 import { PromotionStatusBadge } from "@/components/promotions/promotion-ui";
 import { formatGhs } from "@/lib/format-money";
@@ -13,7 +14,7 @@ export const Route = createFileRoute("/dashboard/vendor/promotions")({
 });
 
 function VendorPromotionsPage() {
-  const { data: promotions = [], isLoading } = useQuery({
+  const { data: promotions = [], isLoading, isError, error, refetch, isFetching } = useQuery({
     queryKey: ["promotions", "vendor"],
     queryFn: () => listPromotions(),
   });
@@ -33,9 +34,15 @@ function VendorPromotionsPage() {
         </Link>
       </div>
 
-      {isLoading ? (
-        <p className="text-sm text-muted-foreground">Loading promotions…</p>
-      ) : (
+      <AsyncState
+        isLoading={isLoading}
+        isError={isError}
+        error={error}
+        onRetry={() => void refetch()}
+        isRetrying={isFetching && !isLoading}
+        loadingMessage="Loading promotions…"
+        errorTitle="Couldn't load promotions"
+      >
         <ul className="space-y-3">
           {promotions.map((p) => (
             <li key={p.id} className="rounded-2xl border border-border/60 bg-card p-4">
@@ -61,7 +68,7 @@ function VendorPromotionsPage() {
             </li>
           )}
         </ul>
-      )}
+      </AsyncState>
     </div>
   );
 }

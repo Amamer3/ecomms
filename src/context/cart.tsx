@@ -26,6 +26,7 @@ type CartCtx = {
   storeId: string | null;
   cart: Cart | null;
   loading: boolean;
+  error: unknown;
   items: CartLine[];
   add: (productId: string, qty?: number) => Promise<void>;
   remove: (itemId: string) => Promise<void>;
@@ -49,7 +50,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const enabled = ready && !!session && session.role === "customer" && !!storeId;
 
-  const { data: cart, isLoading, refetch } = useQuery({
+  const { data: cart, isLoading, isError, error, refetch, isFetching } = useQuery({
     queryKey: ["cart", storeId],
     queryFn: () => getCart(storeId!),
     enabled,
@@ -103,7 +104,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
     () => ({
       storeId,
       cart: cart ?? null,
-      loading: isLoading,
+      loading: isLoading || isFetching,
+      error: isError ? error : null,
       items,
       add,
       remove,
@@ -113,7 +115,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       count: items.reduce((n, i) => n + i.item.qty, 0),
       subtotal: cart ? parseMoney(cart.subtotal) : 0,
     }),
-    [storeId, cart, isLoading, items, add, remove, setQty, clear, refetch],
+    [storeId, cart, isLoading, isFetching, isError, error, items, add, remove, setQty, clear, refetch],
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;

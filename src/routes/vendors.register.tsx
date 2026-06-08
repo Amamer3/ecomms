@@ -6,7 +6,7 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { toast } from "sonner";
 import { registerVendor } from "@/lib/api";
-import { ApiError } from "@/lib/api/client";
+import { getErrorMessage } from "@/lib/errors";
 import { useAuth } from "@/context/auth";
 import { normalizeE164Phone } from "@/lib/phone";
 
@@ -87,7 +87,7 @@ function VendorRegister() {
       toast.success("Application submitted — pending admin approval");
       navigate({ to: "/dashboard/vendor" });
     } catch (err) {
-      toast.error(err instanceof ApiError ? err.message : "Registration failed");
+      toast.error(getErrorMessage(err, "Registration failed"));
     } finally {
       setSubmitting(false);
     }

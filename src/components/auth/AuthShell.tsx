@@ -100,7 +100,7 @@ function AuthPromoPanel({ slides }: { slides: AuthPromoSlide[] }) {
       />
 
       <div className="relative">
-        <BrandLogo className="text-2xl text-primary-foreground [&_span]:text-primary-foreground" />
+        <BrandLogo size="2xl" className="h-10" />
       </div>
 
       <div className="relative mx-auto flex max-w-sm flex-col items-center text-center">
@@ -151,7 +151,7 @@ export function SplitAuthLayout({
       <div className="grid w-full max-w-[1080px] overflow-hidden rounded-[2rem] border border-border/60 bg-card shadow-[var(--shadow-card)] lg:min-h-[min(720px,88vh)] lg:grid-cols-2">
         <div className="flex min-h-full flex-col px-8 py-8 sm:px-10 sm:py-10 lg:px-12 lg:py-12">
           <Link to="/" className="inline-block w-fit transition-opacity hover:opacity-80">
-            <BrandLogo className="text-2xl" />
+            <BrandLogo size="2xl" className="h-10 sm:h-11" />
           </Link>
 
           <div className="flex flex-1 flex-col justify-center py-8 lg:py-10">
@@ -218,7 +218,7 @@ export function BusinessAuthLayout({ children }: { children: ReactNode }) {
           />
           <div className="relative">
             <Link to="/" className="inline-block transition-opacity hover:opacity-80">
-              <BrandLogo className="text-2xl" />
+              <BrandLogo size="2xl" className="h-10 sm:h-11" />
             </Link>
           </div>
           <div className="relative max-w-md space-y-4">
@@ -249,7 +249,7 @@ export function BusinessAuthLayout({ children }: { children: ReactNode }) {
         <div className="flex min-h-screen flex-col">
           <header className="flex items-center justify-between border-b border-border/60 px-6 py-4 lg:border-b-0 lg:px-10 lg:pt-10">
             <Link to="/" className="lg:hidden">
-              <BrandLogo className="text-xl" />
+              <BrandLogo size="lg" className="h-9" />
             </Link>
             <span className="hidden text-sm text-muted-foreground lg:inline" />
             <Link

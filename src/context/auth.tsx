@@ -13,6 +13,7 @@ import {
   logout as apiLogout,
 } from "@/lib/api";
 import { ApiError, clearTokens, isTokenPair, loadTokens, saveTokens } from "@/lib/api/client";
+import { reportError } from "@/lib/errors";
 import type { LoginResponse, TokenPair } from "@/lib/api/types";
 import {
   AUTH_STORAGE_KEY,
@@ -72,7 +73,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         clearTokens();
         clearSessionFromStorage();
         setSession(null);
+        return;
       }
+      reportError(e, "auth:refreshMe");
     }
   }, [session?.name, resolveSessionName]);
 

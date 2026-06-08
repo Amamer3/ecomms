@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { listVendorProducts } from "@/lib/api";
 import { parseMoney } from "@/lib/api/client";
 import { formatGhs } from "@/lib/format-money";
+import { AsyncState } from "@/components/AsyncState";
 import { CatalogDataTable, CatalogPageHeader } from "@/components/catalog/catalog-ui";
 
 export const Route = createFileRoute("/dashboard/vendor/products")({
@@ -11,7 +12,7 @@ export const Route = createFileRoute("/dashboard/vendor/products")({
 });
 
 function VendorProductsPage() {
-  const { data: products = [], isLoading } = useQuery({
+  const { data: products = [], isLoading, isError, error, refetch, isFetching } = useQuery({
     queryKey: ["vendor-products"],
     queryFn: () => listVendorProducts({ limit: 100 }),
   });
@@ -31,9 +32,15 @@ function VendorProductsPage() {
         </Link>
       </div>
 
-      {isLoading ? (
-        <p className="text-sm text-muted-foreground">Loading products…</p>
-      ) : (
+      <AsyncState
+        isLoading={isLoading}
+        isError={isError}
+        error={error}
+        onRetry={() => void refetch()}
+        isRetrying={isFetching && !isLoading}
+        loadingMessage="Loading products…"
+        errorTitle="Couldn't load products"
+      >
         <CatalogDataTable
           title={`${products.length} product${products.length === 1 ? "" : "s"}`}
           headers={["Name", "Price", "Stock", "Status", ""]}
@@ -52,7 +59,7 @@ function VendorProductsPage() {
             </Link>,
           ])}
         />
-      )}
+      </AsyncState>
     </div>
   );
 }

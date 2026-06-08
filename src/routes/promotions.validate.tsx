@@ -5,7 +5,8 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { RequireCustomer } from "@/components/RequireCustomer";
 import { validatePromotion } from "@/lib/api";
-import { ApiError, parseMoney } from "@/lib/api/client";
+import { parseMoney } from "@/lib/api/client";
+import { getErrorMessage } from "@/lib/errors";
 import { customerInputCls, CustomerPageHeader } from "@/components/customer/customer-ui";
 import { formatGhs } from "@/lib/format-money";
 import { loadSelectedStoreId } from "@/lib/catalog-display";
@@ -39,7 +40,7 @@ function ValidatePromotionPage() {
         toast.error("Promotion not valid for this cart");
       }
     } catch (err) {
-      toast.error(err instanceof ApiError ? err.message : "Validation failed");
+      toast.error(getErrorMessage(err, "Validation failed"));
     } finally {
       setSubmitting(false);
     }

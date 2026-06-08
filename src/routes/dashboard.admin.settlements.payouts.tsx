@@ -3,7 +3,9 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
 import { listAdminPayouts, runAdminPayouts } from "@/lib/api";
-import { ApiError, parseMoney } from "@/lib/api/client";
+import { parseMoney } from "@/lib/api/client";
+import { getErrorMessage } from "@/lib/errors";
+import { AsyncState } from "@/components/AsyncState";
 import { AdminDataTable, AdminPageHeader } from "@/components/admin/admin-ui";
 import { formatGhs } from "@/lib/format-money";
 
@@ -16,7 +18,7 @@ function AdminPayoutsPage() {
   const qc = useQueryClient();
   const [running, setRunning] = useState(false);
 
-  const { data: payouts = [], isLoading, refetch } = useQuery({
+  const { data: payouts = [], isLoading, isError, error, refetch, isFetching } = useQuery({
     queryKey: ["admin-payouts"],
     queryFn: () => listAdminPayouts({ limit: 50 }),
   });
@@ -29,7 +31,7 @@ function AdminPayoutsPage() {
       void qc.invalidateQueries({ queryKey: ["admin-dashboard"] });
       void refetch();
     } catch (err) {
-      toast.error(err instanceof ApiError ? err.message : "Payout run failed");
+      toast.error(getErrorMessage(err, "Payout run failed"));
     } finally {
       setRunning(false);
     }
@@ -56,9 +58,15 @@ function AdminPayoutsPage() {
         </p>
       </div>
 
-      {isLoading ? (
-        <p className="text-sm text-muted-foreground">Loading payouts…</p>
-      ) : (
+      <AsyncState
+        isLoading={isLoading}
+        isError={isError}
+        error={error}
+        onRetry={() => void refetch()}
+        isRetrying={isFetching && !isLoading}
+        loadingMessage="Loading payouts…"
+        errorTitle="Couldn't load payouts"
+      >
         <AdminDataTable
           title={`${payouts.length} payout run${payouts.length === 1 ? "" : "s"}`}
           headers={["Run ID", "Status", "Amount", "Created", "Completed"]}
@@ -70,7 +78,7 @@ function AdminPayoutsPage() {
             p.completedAt ? new Date(p.completedAt).toLocaleDateString() : "—",
           ])}
         />
-      )}
+      </AsyncState>
     </div>
   );
 }

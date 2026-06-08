@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Plus } from "lucide-react";
 import { listPromotions } from "@/lib/api";
 import { parseMoney } from "@/lib/api/client";
+import { AsyncState } from "@/components/AsyncState";
 import { AdminPageHeader } from "@/components/admin/admin-ui";
 import { PromotionStatusBadge } from "@/components/promotions/promotion-ui";
 import { formatGhs } from "@/lib/format-money";
@@ -13,7 +14,7 @@ export const Route = createFileRoute("/dashboard/admin/promotions")({
 });
 
 function AdminPromotionsPage() {
-  const { data: promotions = [], isLoading } = useQuery({
+  const { data: promotions = [], isLoading, isError, error, refetch, isFetching } = useQuery({
     queryKey: ["promotions", "admin"],
     queryFn: () => listPromotions(),
   });
@@ -33,9 +34,15 @@ function AdminPromotionsPage() {
         </Link>
       </div>
 
-      {isLoading ? (
-        <p className="text-sm text-muted-foreground">Loading promotions…</p>
-      ) : (
+      <AsyncState
+        isLoading={isLoading}
+        isError={isError}
+        error={error}
+        onRetry={() => void refetch()}
+        isRetrying={isFetching && !isLoading}
+        loadingMessage="Loading promotions…"
+        errorTitle="Couldn't load promotions"
+      >
         <ul className="space-y-3">
           {promotions.map((p) => (
             <li key={p.id} className="rounded-2xl border border-border/60 bg-card p-4">
@@ -62,7 +69,7 @@ function AdminPromotionsPage() {
             </li>
           )}
         </ul>
-      )}
+      </AsyncState>
     </div>
   );
 }

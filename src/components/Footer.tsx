@@ -1,5 +1,4 @@
 import { Link } from "@tanstack/react-router";
-import { Sprout } from "lucide-react";
 import { BrandLogo } from "@/components/BrandLogo";
 import { APP_NAME } from "@/lib/brand";
 
@@ -9,12 +8,9 @@ export function Footer() {
       <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
         <div className="grid gap-10 md:grid-cols-4">
           <div>
-            <div className="flex items-center gap-2">
-              <span className="grid h-9 w-9 place-items-center rounded-xl bg-[image:var(--gradient-primary)] text-primary-foreground">
-                <Sprout className="h-5 w-5" />
-              </span>
-              <BrandLogo className="text-xl" />
-            </div>
+            <Link to="/" className="inline-block transition-opacity hover:opacity-90">
+              <BrandLogo size="lg" className="h-9" />
+            </Link>
             <p className="mt-4 max-w-xs text-sm text-muted-foreground">
               Everything for your kitchen and home — delivered fresh, fast, and fairly priced.
             </p>

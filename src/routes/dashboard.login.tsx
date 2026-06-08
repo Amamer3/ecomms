@@ -18,7 +18,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/context/auth";
 import { login, verifyMfa } from "@/lib/api";
-import { ApiError, isMfaChallenge, isMfaEnrollment, isTokenPair } from "@/lib/api/client";
+import { isMfaChallenge, isMfaEnrollment, isTokenPair } from "@/lib/api/client";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { getAuthErrorMessage } from "@/lib/errors";
 import type { MfaLoginChallenge } from "@/lib/api/types";
 import { postAuthRedirectPath, safePostLoginRedirect, safeShopperPostLoginRedirect } from "@/lib/auth-storage";
 
@@ -66,6 +68,7 @@ function DashboardLogin() {
   const [password, setPassword] = useState("");
   const [mfaSession, setMfaSession] = useState<StoredMfaSession | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
 
   useEffect(() => {
     setMfaSession(loadMfaSession());
@@ -102,6 +105,7 @@ function DashboardLogin() {
       return;
     }
     setSubmitting(true);
+    setFormError(null);
     try {
       const res = await login(identifier.trim(), password);
 
@@ -121,7 +125,9 @@ function DashboardLogin() {
         toast.success("Signed in");
       }
     } catch (err) {
-      toast.error(err instanceof ApiError ? err.message : "Sign in failed");
+      const message = getAuthErrorMessage(err, "Sign in failed");
+      setFormError(message);
+      toast.error(message);
     } finally {
       setSubmitting(false);
     }
@@ -130,6 +136,7 @@ function DashboardLogin() {
   const onMfaVerify = async (code: string) => {
     if (!mfaSession?.mfaToken || code.length < 6) return;
     setSubmitting(true);
+    setFormError(null);
     try {
       const tokens = await verifyMfa(mfaSession.mfaToken, code.trim());
       clearMfaSession();
@@ -137,7 +144,9 @@ function DashboardLogin() {
       navigate({ to: postAuthRedirectPath(tokens.user, redirect) });
       toast.success("Signed in");
     } catch (err) {
-      toast.error(err instanceof ApiError ? err.message : "Invalid code");
+      const message = getAuthErrorMessage(err, "Invalid code");
+      setFormError(message);
+      toast.error(message);
     } finally {
       setSubmitting(false);
     }
@@ -181,6 +190,12 @@ function DashboardLogin() {
       <div className="mt-8">
         <AuthStepIndicator steps={[...STEPS]} current={step} />
 
+        {formError && mfaSession ? (
+          <Alert variant="destructive" className="mb-5">
+            <AlertDescription>{formError}</AlertDescription>
+          </Alert>
+        ) : null}
+
         {mfaSession ? (
           enrolling ? (
             <MfaEnrollForm
@@ -199,6 +214,11 @@ function DashboardLogin() {
           )
         ) : (
           <form onSubmit={(e) => void onSubmit(e)} className="space-y-5">
+            {formError && (
+              <Alert variant="destructive">
+                <AlertDescription>{formError}</AlertDescription>
+              </Alert>
+            )}
             <div className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="identifier">Email or phone</Label>

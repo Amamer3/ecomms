@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { getAdminDashboard } from "@/lib/api";
 import { AdminPageHeader, AdminStat } from "@/components/admin/admin-ui";
+import { AsyncState } from "@/components/AsyncState";
 
 export const Route = createFileRoute("/dashboard/admin/")({
   component: AdminOverviewPage,
@@ -9,7 +10,7 @@ export const Route = createFileRoute("/dashboard/admin/")({
 });
 
 function AdminOverviewPage() {
-  const { data: stats, isLoading } = useQuery({
+  const { data: stats, isLoading, isError, error, refetch, isFetching } = useQuery({
     queryKey: ["admin-dashboard"],
     queryFn: getAdminDashboard,
   });
@@ -21,9 +22,15 @@ function AdminOverviewPage() {
         description="Live counts for orders, deliveries, refunds, payouts, disputes, and the notification outbox."
       />
 
-      {isLoading ? (
-        <p className="text-sm text-muted-foreground">Loading metrics…</p>
-      ) : (
+      <AsyncState
+        isLoading={isLoading}
+        isError={isError}
+        error={error}
+        onRetry={() => void refetch()}
+        isRetrying={isFetching && !isLoading}
+        loadingMessage="Loading metrics…"
+        errorTitle="Couldn't load dashboard metrics"
+      >
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <AdminStat label="Orders" value={String(stats?.orders ?? "—")} sub={`${stats?.pendingOrders ?? 0} pending`} />
           <AdminStat
@@ -52,7 +59,7 @@ function AdminOverviewPage() {
             sub="Settlement queue"
           />
         </div>
-      )}
+      </AsyncState>
     </div>
   );
 }

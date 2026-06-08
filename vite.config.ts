@@ -8,7 +8,7 @@ export default defineConfig({
   },
   plugins: [
     nitro({
-      preset: "vercel",
+      preset: process.env.NITRO_PRESET ?? "vercel",
       compatibilityDate: "2026-05-13",
     }),
   ],

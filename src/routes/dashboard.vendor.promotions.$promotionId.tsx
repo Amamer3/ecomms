@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { ArrowLeft } from "lucide-react";
 import { listPromotions, pausePromotion, updatePromotion } from "@/lib/api";
 import { parseMoney } from "@/lib/api/client";
+import { AsyncState } from "@/components/AsyncState";
 import { VendorPageHeader } from "@/components/vendor/vendor-ui";
 import {
   PromotionDetailGrid,
@@ -24,7 +25,7 @@ function VendorPromotionDetailPage() {
   const [value, setValue] = useState("");
   const [minSubtotal, setMinSubtotal] = useState("");
 
-  const { data: promotions = [], isLoading, refetch } = useQuery({
+  const { data: promotions = [], isLoading, isError, error, refetch, isFetching } = useQuery({
     queryKey: ["promotions", "vendor"],
     queryFn: () => listPromotions(),
   });
@@ -37,15 +38,8 @@ function VendorPromotionDetailPage() {
     setMinSubtotal(promotion.minSubtotal ?? "");
   }, [promotion]);
 
-  if (isLoading) {
-    return <p className="text-sm text-muted-foreground">Loading promotion…</p>;
-  }
-
-  if (!promotion) {
-    return <p className="text-sm text-destructive">Promotion not found.</p>;
-  }
-
   const onUpdate = async (e: React.FormEvent) => {
+    if (!promotion) return;
     e.preventDefault();
     setSubmitting(true);
     await runAction("Promotion updated", () =>
@@ -63,6 +57,18 @@ function VendorPromotionDetailPage() {
   };
 
   return (
+    <AsyncState
+      isLoading={isLoading}
+      isError={isError}
+      error={error}
+      onRetry={() => void refetch()}
+      isRetrying={isFetching && !isLoading}
+      loadingMessage="Loading promotion…"
+      errorTitle="Couldn't load promotion"
+    >
+      {!promotion ? (
+        <p className="text-sm text-destructive">Promotion not found.</p>
+      ) : (
     <div className="max-w-lg">
       <Link
         to="/dashboard/vendor/promotions"
@@ -130,5 +136,7 @@ function VendorPromotionDetailPage() {
         )}
       </form>
     </div>
+      )}
+    </AsyncState>
   );
 }

@@ -36,6 +36,24 @@ Set `VITE_API_URL` to your API origin (no path suffix), e.g. `https://grocery-ma
 | `npm run lint` | ESLint |
 | `npm run format` | Prettier write |
 
+## Docker
+
+Build and run the SSR app with Nitro's `node-server` preset:
+
+```bash
+# Copy env and set your API URL (inlined at build time)
+cp .env.example .env
+
+# Build and start
+docker compose up --build
+
+# Or build manually
+docker build --build-arg VITE_API_URL=https://your-api.example.com -t gomarket .
+docker run -p 3000:3000 gomarket
+```
+
+The app listens on port **3000**. Vercel deploys are unchanged — leave `NITRO_PRESET` unset (defaults to `vercel`).
+
 ## Production deployment (Vercel)
 
 1. Connect the repository to Vercel.

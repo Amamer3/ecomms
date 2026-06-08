@@ -2,9 +2,10 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
+import { AsyncState } from "@/components/AsyncState";
 import { customerInputCls, CustomerDetailGrid, CustomerPageHeader } from "@/components/customer/customer-ui";
 import { listCustomerDisputes, openDispute } from "@/lib/api";
-import { ApiError } from "@/lib/api/client";
+import { getErrorMessage } from "@/lib/errors";
 import type { Dispute } from "@/lib/api/types";
 
 export const Route = createFileRoute("/account/disputes")({
@@ -13,7 +14,7 @@ export const Route = createFileRoute("/account/disputes")({
 });
 
 function AccountDisputesPage() {
-  const { data: disputes = [], isLoading, refetch } = useQuery({
+  const { data: disputes = [], isLoading, isError, error, refetch, isFetching } = useQuery({
     queryKey: ["disputes"],
     queryFn: listCustomerDisputes,
   });
@@ -41,7 +42,7 @@ function AccountDisputesPage() {
       setDescription("");
       void refetch();
     } catch (err) {
-      toast.error(err instanceof ApiError ? err.message : "Failed to open dispute");
+      toast.error(getErrorMessage(err, "Failed to open dispute"));
     } finally {
       setSubmitting(false);
     }
@@ -105,19 +106,27 @@ function AccountDisputesPage() {
       </form>
 
       <h3 className="mb-4 text-sm font-semibold uppercase tracking-wide text-muted-foreground">Your disputes</h3>
-      {isLoading ? (
-        <p className="text-sm text-muted-foreground">Loading disputes…</p>
-      ) : disputes.length === 0 ? (
-        <p className="rounded-2xl border border-dashed border-border px-4 py-8 text-center text-sm text-muted-foreground">
-          No disputes yet
-        </p>
-      ) : (
-        <ul className="space-y-4">
-          {disputes.map((d) => (
-            <DisputeCard key={d.id} dispute={d} />
-          ))}
-        </ul>
-      )}
+      <AsyncState
+        isLoading={isLoading}
+        isError={isError}
+        error={error}
+        onRetry={() => void refetch()}
+        isRetrying={isFetching && !isLoading}
+        loadingMessage="Loading disputes…"
+        errorTitle="Couldn't load disputes"
+      >
+        {disputes.length === 0 ? (
+          <p className="rounded-2xl border border-dashed border-border px-4 py-8 text-center text-sm text-muted-foreground">
+            No disputes yet
+          </p>
+        ) : (
+          <ul className="space-y-4">
+            {disputes.map((d) => (
+              <DisputeCard key={d.id} dispute={d} />
+            ))}
+          </ul>
+        )}
+      </AsyncState>
     </div>
   );
 }

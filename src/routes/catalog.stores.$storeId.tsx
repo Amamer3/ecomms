@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import { ArrowLeft, Star } from "lucide-react";
 import { getStore, listCategories, listStoreProducts } from "@/lib/api";
 import { categoryEmoji, storeLabel, toShopProduct } from "@/lib/catalog-display";
+import { AsyncState } from "@/components/AsyncState";
 import { CatalogPageHeader } from "@/components/catalog/catalog-ui";
 import { ProductCard } from "@/components/ProductCard";
 
@@ -14,12 +15,26 @@ export const Route = createFileRoute("/catalog/stores/$storeId")({
 function CatalogStoreDetailPage() {
   const { storeId } = Route.useParams();
 
-  const { data: store, isLoading: storeLoading } = useQuery({
+  const {
+    data: store,
+    isLoading: storeLoading,
+    isError: storeError,
+    error: storeQueryError,
+    refetch: refetchStore,
+    isFetching: storeFetching,
+  } = useQuery({
     queryKey: ["store", storeId],
     queryFn: () => getStore(storeId),
   });
 
-  const { data: products = [], isLoading: productsLoading } = useQuery({
+  const {
+    data: products = [],
+    isLoading: productsLoading,
+    isError: productsError,
+    error: productsQueryError,
+    refetch: refetchProducts,
+    isFetching: productsFetching,
+  } = useQuery({
     queryKey: ["store-products", storeId],
     queryFn: () => listStoreProducts(storeId, { status: "ACTIVE", limit: 100 }),
     enabled: !!storeId,
@@ -36,15 +51,19 @@ function CatalogStoreDetailPage() {
     return m;
   }, [categories]);
 
-  if (storeLoading) {
-    return <p className="text-sm text-muted-foreground">Loading store…</p>;
-  }
-
-  if (!store) {
-    return <p className="text-sm text-destructive">Store not found.</p>;
-  }
-
   return (
+    <AsyncState
+      isLoading={storeLoading}
+      isError={storeError}
+      error={storeQueryError}
+      onRetry={() => void refetchStore()}
+      isRetrying={storeFetching && !storeLoading}
+      loadingMessage="Loading store…"
+      errorTitle="Couldn't load store"
+    >
+      {!store ? (
+        <p className="text-sm text-destructive">Store not found.</p>
+      ) : (
     <div>
       <Link
         to="/catalog/stores"
@@ -81,33 +100,43 @@ function CatalogStoreDetailPage() {
       </dl>
 
       <h2 className="mb-4 text-lg font-semibold">Active products</h2>
-      {productsLoading ? (
-        <p className="text-sm text-muted-foreground">Loading products…</p>
-      ) : products.length === 0 ? (
-        <p className="text-sm text-muted-foreground">No active products in this store.</p>
-      ) : (
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-          {products.map((p) => {
-            const shopProduct = toShopProduct(
-              p,
-              store.name,
-              categoryNameById.get(p.categoryId) ?? "Groceries",
-            );
-            return (
-              <div key={p.id} className="space-y-2">
-                <Link
-                  to="/catalog/products/$productId"
-                  params={{ productId: p.id }}
-                  className="block text-center text-xs font-medium text-primary hover:underline"
-                >
-                  View details
-                </Link>
-                <ProductCard product={shopProduct} />
-              </div>
-            );
-          })}
-        </div>
-      )}
+      <AsyncState
+        isLoading={productsLoading}
+        isError={productsError}
+        error={productsQueryError}
+        onRetry={() => void refetchProducts()}
+        isRetrying={productsFetching && !productsLoading}
+        loadingMessage="Loading products…"
+        errorTitle="Couldn't load products"
+      >
+        {products.length === 0 ? (
+          <p className="text-sm text-muted-foreground">No active products in this store.</p>
+        ) : (
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+            {products.map((p) => {
+              const shopProduct = toShopProduct(
+                p,
+                store.name,
+                categoryNameById.get(p.categoryId) ?? "Groceries",
+              );
+              return (
+                <div key={p.id} className="space-y-2">
+                  <Link
+                    to="/catalog/products/$productId"
+                    params={{ productId: p.id }}
+                    className="block text-center text-xs font-medium text-primary hover:underline"
+                  >
+                    View details
+                  </Link>
+                  <ProductCard product={shopProduct} />
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </AsyncState>
     </div>
+      )}
+    </AsyncState>
   );
 }

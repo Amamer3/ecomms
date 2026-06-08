@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { listAdminOrders } from "@/lib/api";
 import { parseMoney } from "@/lib/api/client";
+import { AsyncState } from "@/components/AsyncState";
 import { AdminDataTable, AdminPageHeader } from "@/components/admin/admin-ui";
 import { formatGhs } from "@/lib/format-money";
 
@@ -11,7 +12,7 @@ export const Route = createFileRoute("/dashboard/admin/orders")({
 });
 
 function AdminOrdersPage() {
-  const { data: orders = [], isLoading } = useQuery({
+  const { data: orders = [], isLoading, isError, error, refetch, isFetching } = useQuery({
     queryKey: ["admin-orders"],
     queryFn: () => listAdminOrders({ limit: 50 }),
   });
@@ -23,9 +24,15 @@ function AdminOrdersPage() {
         description="Browse fulfilment orders across the marketplace for operations and support."
       />
 
-      {isLoading ? (
-        <p className="text-sm text-muted-foreground">Loading orders…</p>
-      ) : (
+      <AsyncState
+        isLoading={isLoading}
+        isError={isError}
+        error={error}
+        onRetry={() => void refetch()}
+        isRetrying={isFetching && !isLoading}
+        loadingMessage="Loading orders…"
+        errorTitle="Couldn't load orders"
+      >
         <AdminDataTable
           title={`${orders.length} order${orders.length === 1 ? "" : "s"}`}
           headers={["Order", "Store", "Status", "Customer", "Total"]}
@@ -37,7 +44,7 @@ function AdminOrdersPage() {
             formatGhs(parseMoney(o.total)),
           ])}
         />
-      )}
+      </AsyncState>
     </div>
   );
 }

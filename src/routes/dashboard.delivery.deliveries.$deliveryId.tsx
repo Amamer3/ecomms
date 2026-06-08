@@ -12,6 +12,7 @@ import {
   pickupDelivery,
 } from "@/lib/api";
 import { deliveryToMap } from "@/lib/tracking-mappers";
+import { AsyncState } from "@/components/AsyncState";
 import { DeliveryTrackingMap } from "@/components/DeliveryTrackingMap";
 import { riderInputCls, RiderDetailGrid, RiderPageHeader, useRiderAction } from "@/components/rider/rider-ui";
 
@@ -24,27 +25,57 @@ function RiderDeliveryDetailPage() {
   const { runAction } = useRiderAction();
   const [handoverCode, setHandoverCode] = useState("");
 
-  const { data: delivery, isLoading, refetch } = useQuery({
+  const { data: delivery, isLoading, isError, error, refetch, isFetching } = useQuery({
     queryKey: ["rider-delivery", deliveryId],
     queryFn: () => getRiderDelivery(deliveryId),
   });
-
-  if (isLoading) {
-    return <p className="text-sm text-muted-foreground">Loading delivery…</p>;
-  }
-
-  if (!delivery) {
-    return <p className="text-sm text-destructive">Delivery not found.</p>;
-  }
-
-  const mapData = deliveryToMap(delivery);
-  const status = delivery.status;
 
   const act = (label: string, fn: () => Promise<unknown>) => {
     void runAction(label, fn).then((ok) => {
       if (ok) void refetch();
     });
   };
+
+  return (
+    <AsyncState
+      isLoading={isLoading}
+      isError={isError}
+      error={error}
+      onRetry={() => void refetch()}
+      isRetrying={isFetching && !isLoading}
+      loadingMessage="Loading delivery…"
+      errorTitle="Couldn't load delivery"
+    >
+      {!delivery ? (
+        <p className="text-sm text-destructive">Delivery not found.</p>
+      ) : (
+    <DeliveryDetail
+      delivery={delivery}
+      deliveryId={deliveryId}
+      handoverCode={handoverCode}
+      setHandoverCode={setHandoverCode}
+      act={act}
+    />
+      )}
+    </AsyncState>
+  );
+}
+
+function DeliveryDetail({
+  delivery,
+  deliveryId,
+  handoverCode,
+  setHandoverCode,
+  act,
+}: {
+  delivery: NonNullable<Awaited<ReturnType<typeof getRiderDelivery>>>;
+  deliveryId: string;
+  handoverCode: string;
+  setHandoverCode: (v: string) => void;
+  act: (label: string, fn: () => Promise<unknown>) => void;
+}) {
+  const mapData = deliveryToMap(delivery);
+  const status = delivery.status;
 
   return (
     <div>

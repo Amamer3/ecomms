@@ -116,44 +116,67 @@ export type RequestOptions = {
   headers?: Record<string, string>;
 };
 
+function isFetchNetworkError(error: unknown): boolean {
+  if (error instanceof TypeError) return true;
+  if (error instanceof Error && error.message.toLowerCase().includes("fetch")) return true;
+  return false;
+}
+
+function toRequestError(error: unknown): ApiError {
+  if (error instanceof ApiError) return error;
+  if (isFetchNetworkError(error)) {
+    return new ApiError(0, "Unable to reach the server. Check your connection and try again.", {
+      error: "NETWORK",
+      message: "Network request failed",
+    });
+  }
+  const message = error instanceof Error ? error.message : "Request failed";
+  return new ApiError(0, message, { error: "REQUEST", message });
+}
+
 export async function apiRequest<T>(path: string, options: RequestOptions = {}): Promise<T> {
   const { method = "GET", body, auth = false, query, headers: extraHeaders } = options;
-  const url = buildApiUrl(path, query);
 
-  const headers: Record<string, string> = { accept: "application/json", ...extraHeaders };
-  if (body !== undefined) headers["content-type"] = "application/json";
+  try {
+    const url = buildApiUrl(path, query);
 
-  let tokens = auth ? loadTokens() : null;
-  if (auth && tokens) headers.authorization = `Bearer ${tokens.accessToken}`;
+    const headers: Record<string, string> = { accept: "application/json", ...extraHeaders };
+    if (body !== undefined) headers["content-type"] = "application/json";
 
-  const doFetch = async (t?: StoredTokens | null) => {
-    const h = { ...headers };
-    if (auth && t) h.authorization = `Bearer ${t.accessToken}`;
-    return fetch(url.toString(), {
-      method,
-      headers: h,
-      body: body !== undefined ? JSON.stringify(body) : undefined,
-    });
-  };
+    let tokens = auth ? loadTokens() : null;
+    if (auth && tokens) headers.authorization = `Bearer ${tokens.accessToken}`;
 
-  let res = await doFetch(tokens);
-
-  if (auth && res.status === 401 && tokens?.refreshToken) {
-    if (!refreshPromise) {
-      refreshPromise = refreshTokens(tokens.refreshToken).finally(() => {
-        refreshPromise = null;
+    const doFetch = async (t?: StoredTokens | null) => {
+      const h = { ...headers };
+      if (auth && t) h.authorization = `Bearer ${t.accessToken}`;
+      return fetch(url.toString(), {
+        method,
+        headers: h,
+        body: body !== undefined ? JSON.stringify(body) : undefined,
       });
-    }
-    const refreshed = await refreshPromise;
-    if (refreshed) {
-      tokens = refreshed;
-      res = await doFetch(refreshed);
-    }
-  }
+    };
 
-  if (!res.ok) throw await parseError(res);
-  if (res.status === 204) return undefined as T;
-  return (await res.json()) as T;
+    let res = await doFetch(tokens);
+
+    if (auth && res.status === 401 && tokens?.refreshToken) {
+      if (!refreshPromise) {
+        refreshPromise = refreshTokens(tokens.refreshToken).finally(() => {
+          refreshPromise = null;
+        });
+      }
+      const refreshed = await refreshPromise;
+      if (refreshed) {
+        tokens = refreshed;
+        res = await doFetch(refreshed);
+      }
+    }
+
+    if (!res.ok) throw await parseError(res);
+    if (res.status === 204) return undefined as T;
+    return (await res.json()) as T;
+  } catch (error) {
+    throw toRequestError(error);
+  }
 }
 
 export function isTokenPair(data: LoginResponse): data is TokenPair {

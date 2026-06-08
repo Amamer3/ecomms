@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Search, Star } from "lucide-react";
 import { listStores } from "@/lib/api";
 import { storeLabel } from "@/lib/catalog-display";
+import { AsyncState } from "@/components/AsyncState";
 import { CatalogPageHeader } from "@/components/catalog/catalog-ui";
 
 export const Route = createFileRoute("/catalog/stores")({
@@ -15,7 +16,7 @@ function CatalogStoresPage() {
   const [q, setQ] = useState("");
   const [city, setCity] = useState("");
 
-  const { data: stores = [], isLoading } = useQuery({
+  const { data: stores = [], isLoading, isError, error, refetch, isFetching } = useQuery({
     queryKey: ["stores", q, city],
     queryFn: () =>
       listStores({
@@ -50,11 +51,18 @@ function CatalogStoresPage() {
         />
       </div>
 
-      {isLoading ? (
-        <p className="text-sm text-muted-foreground">Loading stores…</p>
-      ) : stores.length === 0 ? (
-        <p className="text-sm text-muted-foreground">No open stores found.</p>
-      ) : (
+      <AsyncState
+        isLoading={isLoading}
+        isError={isError}
+        error={error}
+        onRetry={() => void refetch()}
+        isRetrying={isFetching && !isLoading}
+        loadingMessage="Loading stores…"
+        errorTitle="Couldn't load stores"
+      >
+        {stores.length === 0 ? (
+          <p className="text-sm text-muted-foreground">No open stores found.</p>
+        ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {stores.map((store) => (
             <Link
@@ -77,7 +85,8 @@ function CatalogStoresPage() {
             </Link>
           ))}
         </div>
-      )}
+        )}
+      </AsyncState>
     </div>
   );
 }

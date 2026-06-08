@@ -1,7 +1,7 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { useEffect, useState, type ComponentType, type ReactNode } from "react";
 import { selectPathname } from "@/lib/router-pathname";
-import { KeyRound, LogOut, Menu, ShoppingBag, Sprout } from "lucide-react";
+import { KeyRound, LogOut, Menu, ShoppingBag } from "lucide-react";
 import { BrandLogo } from "@/components/BrandLogo";
 import { useAuth } from "@/context/auth";
 import { cn } from "@/lib/utils";
@@ -139,11 +139,8 @@ export function DashboardRoleShell({
         aria-label="Workspace navigation"
       >
         <div className="flex h-16 items-center border-b border-border/60 px-4">
-          <Link to="/" className="flex items-center gap-2 text-foreground transition-opacity hover:opacity-90">
-            <span className="grid h-9 w-9 place-items-center rounded-xl bg-[image:var(--gradient-primary)] text-primary-foreground shadow-[var(--shadow-soft)]">
-              <Sprout className="h-5 w-5" />
-            </span>
-            <BrandLogo className="text-lg" />
+          <Link to="/" className="transition-opacity hover:opacity-90">
+            <BrandLogo size="md" className="h-8" />
           </Link>
         </div>
         <div className="border-b border-border/60 px-4 py-4">

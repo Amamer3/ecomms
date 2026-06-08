@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft } from "lucide-react";
 import { getCustomerOrder } from "@/lib/api";
 import { parseMoney } from "@/lib/api/client";
+import { AsyncState } from "@/components/AsyncState";
 import { CustomerDetailGrid, CustomerPageHeader } from "@/components/customer/customer-ui";
 import { formatGhs } from "@/lib/format-money";
 
@@ -13,20 +14,24 @@ export const Route = createFileRoute("/account/orders/$orderId")({
 function AccountOrderDetailPage() {
   const { orderId } = Route.useParams();
 
-  const { data: order, isLoading } = useQuery({
+  const { data: order, isLoading, isError, error, refetch, isFetching } = useQuery({
     queryKey: ["customer-order", orderId],
     queryFn: () => getCustomerOrder(orderId),
   });
 
-  if (isLoading) {
-    return <p className="text-sm text-muted-foreground">Loading order…</p>;
-  }
-
-  if (!order) {
-    return <p className="text-sm text-destructive">Order not found.</p>;
-  }
-
   return (
+    <AsyncState
+      isLoading={isLoading}
+      isError={isError}
+      error={error}
+      onRetry={() => void refetch()}
+      isRetrying={isFetching && !isLoading}
+      loadingMessage="Loading order…"
+      errorTitle="Couldn't load order"
+    >
+      {!order ? (
+        <p className="text-sm text-destructive">Order not found.</p>
+      ) : (
     <div>
       <Link
         to="/account/orders"
@@ -73,5 +78,7 @@ function AccountOrderDetailPage() {
         View delivery tracking
       </Link>
     </div>
+      )}
+    </AsyncState>
   );
 }

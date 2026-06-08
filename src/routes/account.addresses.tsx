@@ -4,6 +4,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { createAddress, listAddresses } from "@/lib/api";
 import { ApiError } from "@/lib/api/client";
+import { AsyncState } from "@/components/AsyncState";
 import { customerInputCls, CustomerPageHeader } from "@/components/customer/customer-ui";
 import { normalizeE164Phone } from "@/lib/phone";
 
@@ -13,7 +14,7 @@ export const Route = createFileRoute("/account/addresses")({
 });
 
 function AccountAddressesPage() {
-  const { data: addresses = [], isLoading, refetch } = useQuery({
+  const { data: addresses = [], isLoading, isError, error, refetch, isFetching } = useQuery({
     queryKey: ["addresses"],
     queryFn: listAddresses,
   });
@@ -68,9 +69,15 @@ function AccountAddressesPage() {
         description="Saved addresses for checkout and deliveries."
       />
 
-      {isLoading ? (
-        <p className="text-sm text-muted-foreground">Loading addresses…</p>
-      ) : (
+      <AsyncState
+        isLoading={isLoading}
+        isError={isError}
+        error={error}
+        onRetry={() => void refetch()}
+        isRetrying={isFetching && !isLoading}
+        loadingMessage="Loading addresses…"
+        errorTitle="Couldn't load addresses"
+      >
         <ul className="mb-8 divide-y divide-border rounded-2xl border border-border bg-card">
           {addresses.map((a) => (
             <li key={a.id} className="px-4 py-3 text-sm">
@@ -93,7 +100,7 @@ function AccountAddressesPage() {
             <li className="px-4 py-8 text-center text-muted-foreground">No addresses yet</li>
           )}
         </ul>
-      )}
+      </AsyncState>
 
       <form
         onSubmit={(e) => void onSubmit(e)}

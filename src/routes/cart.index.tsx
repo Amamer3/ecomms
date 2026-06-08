@@ -3,6 +3,7 @@ import { Minus, Plus, Trash2, ShoppingBag, ArrowRight } from "lucide-react";
 import { useCart } from "@/context/cart";
 import { parseMoney } from "@/lib/api/client";
 import { formatGhs } from "@/lib/format-money";
+import { QueryErrorState } from "@/components/QueryErrorState";
 import { CustomerPageHeader } from "@/components/customer/customer-ui";
 import { toast } from "sonner";
 
@@ -12,7 +13,8 @@ export const Route = createFileRoute("/cart/")({
 });
 
 function CartViewPage() {
-  const { items, setQty, remove, subtotal, count, loading, storeId, clear, cart } = useCart();
+  const { items, setQty, remove, subtotal, count, loading, error, storeId, clear, cart, refresh } =
+    useCart();
 
   const onClear = async () => {
     await clear();
@@ -39,6 +41,16 @@ function CartViewPage() {
         title="Active cart"
         description={`Store cart ${cart?.id?.slice(0, 8) ?? ""} · status ${cart?.status ?? "—"}`}
       />
+
+      {error ? (
+        <QueryErrorState
+          error={error}
+          title="Couldn't load your cart"
+          onRetry={refresh}
+          retrying={loading}
+          className="mb-6"
+        />
+      ) : null}
 
       <p className="mb-6 text-sm text-muted-foreground">
         {loading ? "Loading…" : `${count} item${count === 1 ? "" : "s"}`}

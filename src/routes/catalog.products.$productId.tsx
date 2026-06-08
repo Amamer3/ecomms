@@ -4,6 +4,7 @@ import { ArrowLeft } from "lucide-react";
 import { getProduct, listCategories, getStore } from "@/lib/api";
 import { parseMoney } from "@/lib/api/client";
 import { categoryEmoji } from "@/lib/catalog-display";
+import { AsyncState } from "@/components/AsyncState";
 import { CatalogPageHeader } from "@/components/catalog/catalog-ui";
 import { formatGhs } from "@/lib/format-money";
 
@@ -14,7 +15,7 @@ export const Route = createFileRoute("/catalog/products/$productId")({
 function CatalogProductDetailPage() {
   const { productId } = Route.useParams();
 
-  const { data: product, isLoading } = useQuery({
+  const { data: product, isLoading, isError, error, refetch, isFetching } = useQuery({
     queryKey: ["product", productId],
     queryFn: () => getProduct(productId),
   });
@@ -32,15 +33,19 @@ function CatalogProductDetailPage() {
 
   const category = categories.find((c) => c.id === product?.categoryId);
 
-  if (isLoading) {
-    return <p className="text-sm text-muted-foreground">Loading product…</p>;
-  }
-
-  if (!product) {
-    return <p className="text-sm text-destructive">Product not found.</p>;
-  }
-
   return (
+    <AsyncState
+      isLoading={isLoading}
+      isError={isError}
+      error={error}
+      onRetry={() => void refetch()}
+      isRetrying={isFetching && !isLoading}
+      loadingMessage="Loading product…"
+      errorTitle="Couldn't load product"
+    >
+      {!product ? (
+        <p className="text-sm text-destructive">Product not found.</p>
+      ) : (
     <div className="max-w-3xl">
       <Link
         to="/catalog/stores/$storeId"
@@ -110,5 +115,7 @@ function CatalogProductDetailPage() {
         </dl>
       </div>
     </div>
+      )}
+    </AsyncState>
   );
 }
