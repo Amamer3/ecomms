@@ -18,22 +18,22 @@ function DeliveryLanding() {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      <section className="mx-auto grid max-w-7xl gap-12 px-4 py-16 sm:px-6 lg:grid-cols-2 lg:items-center lg:px-8 lg:py-24">
+      <section className="mx-auto grid max-w-7xl gap-8 px-4 py-12 sm:gap-12 sm:px-6 sm:py-16 lg:grid-cols-2 lg:items-center lg:px-8 lg:py-24">
         <div>
           <span className="inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent/10 px-3 py-1 text-xs font-medium text-accent-foreground">
             <Bike className="h-3.5 w-3.5" /> For couriers
           </span>
-          <h1 className="mt-5 font-display text-5xl font-semibold leading-[1.05] sm:text-6xl">
+          <h1 className="mt-4 font-display text-3xl font-semibold leading-[1.08] sm:mt-5 sm:text-5xl lg:text-6xl">
             Earn on your schedule.
           </h1>
-          <p className="mt-5 max-w-lg text-lg text-muted-foreground">
+          <p className="mt-4 max-w-lg text-base text-muted-foreground sm:mt-5 sm:text-lg">
             Pick the hours that work for you and deliver fresh orders across the city. Smart routes, friendly customers,
             weekly payouts.
           </p>
-          <div className="mt-8 flex flex-wrap gap-3">
+          <div className="mt-6 flex flex-col gap-3 sm:mt-8 sm:flex-row sm:flex-wrap">
             <Link
               to="/delivery/apply"
-              className="inline-flex items-center gap-2 rounded-full px-6 py-3.5 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-warm)]"
+              className="inline-flex items-center justify-center gap-2 rounded-full px-6 py-3.5 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-warm)]"
               style={{ backgroundImage: "var(--gradient-warm)" }}
             >
               Start an application <ArrowRight className="h-4 w-4" />
@@ -41,7 +41,7 @@ function DeliveryLanding() {
             <Link
               to="/dashboard/login"
               search={{ redirect: "/dashboard/delivery" }}
-              className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-6 py-3.5 text-sm font-semibold"
+              className="inline-flex items-center justify-center gap-2 rounded-full border border-border bg-card px-6 py-3.5 text-sm font-semibold"
             >
               Partner sign in
             </Link>

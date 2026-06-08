@@ -85,53 +85,60 @@ function CartViewPage() {
             {items.map(({ item }) => (
               <li
                 key={item.id}
-                className="flex items-center gap-4 rounded-2xl border border-border/60 bg-card p-4 shadow-[var(--shadow-soft)]"
+                className="rounded-2xl border border-border/60 bg-card p-3 shadow-[var(--shadow-soft)] sm:p-4"
               >
-                <div className="grid h-20 w-20 shrink-0 place-items-center rounded-xl bg-[image:var(--gradient-hero)] text-3xl">
-                  🛒
-                </div>
-                <div className="min-w-0 flex-1">
-                  <Link
-                    to="/cart/items/$itemId"
-                    params={{ itemId: item.id }}
-                    className="truncate font-semibold text-primary hover:underline"
+                <div className="flex items-start gap-3 sm:gap-4">
+                  <div className="grid h-16 w-16 shrink-0 place-items-center rounded-xl bg-[image:var(--gradient-hero)] text-2xl sm:h-20 sm:w-20 sm:text-3xl">
+                    🛒
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <Link
+                      to="/cart/items/$itemId"
+                      params={{ itemId: item.id }}
+                      className="line-clamp-2 font-semibold text-primary hover:underline sm:truncate"
+                    >
+                      {item.name}
+                    </Link>
+                    <p className="mt-0.5 text-sm text-muted-foreground">
+                      {formatGhs(parseMoney(item.unitPriceSnapshot))} {item.unit}
+                    </p>
+                    <p className="mt-1 font-semibold sm:hidden">
+                      {formatGhs(parseMoney(item.lineTotal))}
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => void remove(item.id)}
+                    className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+                    aria-label="Remove"
                   >
-                    {item.name}
-                  </Link>
-                  <p className="text-sm text-muted-foreground">
-                    {formatGhs(parseMoney(item.unitPriceSnapshot))} {item.unit}
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                </div>
+                <div className="mt-3 flex items-center justify-between gap-3 border-t border-border/50 pt-3 sm:mt-0 sm:border-0 sm:pt-0">
+                  <div className="flex items-center gap-2 rounded-full border border-border bg-background p-1">
+                    <button
+                      type="button"
+                      onClick={() => void setQty(item.id, item.qty - 1)}
+                      className="grid h-8 w-8 place-items-center rounded-full hover:bg-secondary"
+                      aria-label="Decrease"
+                    >
+                      <Minus className="h-4 w-4" />
+                    </button>
+                    <span className="min-w-6 text-center text-sm font-semibold">{item.qty}</span>
+                    <button
+                      type="button"
+                      onClick={() => void setQty(item.id, item.qty + 1)}
+                      className="grid h-8 w-8 place-items-center rounded-full hover:bg-secondary"
+                      aria-label="Increase"
+                    >
+                      <Plus className="h-4 w-4" />
+                    </button>
+                  </div>
+                  <p className="hidden font-semibold sm:block">
+                    {formatGhs(parseMoney(item.lineTotal))}
                   </p>
                 </div>
-                <div className="flex items-center gap-2 rounded-full border border-border bg-background p-1">
-                  <button
-                    type="button"
-                    onClick={() => void setQty(item.id, item.qty - 1)}
-                    className="grid h-8 w-8 place-items-center rounded-full hover:bg-secondary"
-                    aria-label="Decrease"
-                  >
-                    <Minus className="h-4 w-4" />
-                  </button>
-                  <span className="min-w-6 text-center text-sm font-semibold">{item.qty}</span>
-                  <button
-                    type="button"
-                    onClick={() => void setQty(item.id, item.qty + 1)}
-                    className="grid h-8 w-8 place-items-center rounded-full hover:bg-secondary"
-                    aria-label="Increase"
-                  >
-                    <Plus className="h-4 w-4" />
-                  </button>
-                </div>
-                <p className="hidden w-20 text-right font-semibold sm:block">
-                  {formatGhs(parseMoney(item.lineTotal))}
-                </p>
-                <button
-                  type="button"
-                  onClick={() => void remove(item.id)}
-                  className="grid h-9 w-9 place-items-center rounded-full text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
-                  aria-label="Remove"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </button>
               </li>
             ))}
           </ul>

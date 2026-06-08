@@ -23,6 +23,7 @@ import { useQuery } from "@tanstack/react-query";
 import { listCategories, listStoreProducts, listStores } from "@/lib/api";
 import { categoryEmoji, storeLabel, toShopProduct } from "@/lib/catalog-display";
 import { cn } from "@/lib/utils";
+import { useClientReady } from "@/lib/use-client-ready";
 import vendorImg from "@/assets/vendor-market.jpg";
 import riderImg from "@/assets/delivery-rider.jpg";
 
@@ -77,6 +78,7 @@ const WHY_US = [
 ] as const;
 
 function Home() {
+  const clientReady = useClientReady();
   const {
     data: stores = [],
     isLoading: storesLoading,
@@ -104,15 +106,20 @@ function Home() {
     toShopProduct(p, store?.name ?? "Store", catName.get(p.categoryId) ?? "Groceries"),
   );
 
+  const categoriesPending = !clientReady || categoriesLoading;
+  const storesPending = !clientReady || storesLoading;
+  const productsPending = !clientReady || productsLoading;
+  const showStoresSection = !clientReady || storesPending || stores.length > 0 || storesError;
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar overlay />
       <div className="relative">
-        <HomeHero className="-mt-[5.75rem] sm:-mt-[6.5rem]" />
+        <HomeHero className="pt-[var(--navbar-offset)]" />
       </div>
 
       {/* How it works */}
-      <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
+      <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8 lg:py-20">
         <SectionHeader
           title="How GoMarket works"
           subtitle="From market to doorstep in three simple steps."
@@ -141,7 +148,7 @@ function Home() {
       </section>
 
       {/* Categories */}
-      <section className="bg-secondary/30 py-16 lg:py-20">
+      <section className="bg-secondary/30 py-12 sm:py-16 lg:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionHeader
             title="Shop by category"
@@ -149,7 +156,7 @@ function Home() {
             href="/shop"
             linkLabel="See all"
           />
-          {categoriesLoading ? (
+          {categoriesPending ? (
             <div className="mt-8 flex gap-4 overflow-hidden sm:grid sm:grid-cols-3 lg:grid-cols-4">
               {Array.from({ length: 8 }).map((_, i) => (
                 <Skeleton key={i} className="h-36 w-40 shrink-0 rounded-3xl sm:h-40 sm:w-auto" />
@@ -187,8 +194,8 @@ function Home() {
       </section>
 
       {/* Local stores */}
-      {(storesLoading || stores.length > 0 || storesError) && (
-        <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
+      {showStoresSection && (
+        <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8 lg:py-20">
           <SectionHeader
             title="Shop local stores"
             subtitle="Fresh picks from vendors near you."
@@ -203,7 +210,7 @@ function Home() {
               retrying={storesFetching && !storesLoading}
               className="mt-8"
             />
-          ) : storesLoading ? (
+          ) : storesPending ? (
             <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {Array.from({ length: 3 }).map((_, i) => (
                 <Skeleton key={i} className="h-28 rounded-3xl" />
@@ -253,10 +260,52 @@ function Home() {
         </section>
       )}
 
-      {/* Why us */}
-      <section className="bg-secondary/40 py-16 lg:py-20">
+      
+
+      {/* Featured products */}
+      <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8 lg:py-20">
+        <SectionHeader
+          title="Today's picks"
+          subtitle="Hand-selected freshness, ready to drop in your basket."
+          href="/shop"
+          linkLabel="Browse all"
+        />
+        {productsPending ? (
+          <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <div key={i} className="space-y-3 rounded-3xl border border-border/60 p-4">
+                <Skeleton className="aspect-square rounded-2xl" />
+                <Skeleton className="h-3 w-1/2" />
+                <Skeleton className="h-4 w-3/4" />
+                <Skeleton className="h-6 w-1/3" />
+              </div>
+            ))}
+          </div>
+        ) : featured.length === 0 ? (
+          <EmptyPanel
+            className="mt-8"
+            message="No featured products yet — explore the full shop."
+            action={{ to: "/shop", label: "Go to shop" }}
+          />
+        ) : (
+          <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
+            {featured.map((p) => (
+              <ProductCard key={p.id} product={p} />
+            ))}
+          </div>
+        )}
+        <div className="mt-8 text-center sm:hidden">
+          <Link to="/shop" className="inline-flex items-center gap-1 text-sm font-semibold text-primary">
+            Browse all products <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
+      </section>
+
+
+{/* Why us */}
+<section className="bg-secondary/40 py-12 sm:py-16 lg:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <h2 className="max-w-2xl font-display text-3xl font-semibold sm:text-4xl">
+          <h2 className="max-w-2xl font-display text-2xl font-semibold sm:text-3xl lg:text-4xl">
             Why thousands choose GoMarket
           </h2>
           <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
@@ -276,47 +325,11 @@ function Home() {
         </div>
       </section>
 
-      {/* Featured products */}
-      <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
-        <SectionHeader
-          title="Today's picks"
-          subtitle="Hand-selected freshness, ready to drop in your basket."
-          href="/shop"
-          linkLabel="Browse all"
-        />
-        {productsLoading ? (
-          <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-            {Array.from({ length: 8 }).map((_, i) => (
-              <div key={i} className="space-y-3 rounded-3xl border border-border/60 p-4">
-                <Skeleton className="aspect-square rounded-2xl" />
-                <Skeleton className="h-3 w-1/2" />
-                <Skeleton className="h-4 w-3/4" />
-                <Skeleton className="h-6 w-1/3" />
-              </div>
-            ))}
-          </div>
-        ) : featured.length === 0 ? (
-          <EmptyPanel
-            className="mt-8"
-            message="No featured products yet — explore the full shop."
-            action={{ to: "/shop", label: "Go to shop" }}
-          />
-        ) : (
-          <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-            {featured.map((p) => (
-              <ProductCard key={p.id} product={p} />
-            ))}
-          </div>
-        )}
-        <div className="mt-8 text-center sm:hidden">
-          <Link to="/shop" className="inline-flex items-center gap-1 text-sm font-semibold text-primary">
-            Browse all products <ArrowRight className="h-4 w-4" />
-          </Link>
-        </div>
-      </section>
+
+
 
       {/* Partner CTAs */}
-      <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 lg:px-8 lg:pb-20">
+      <section className="mx-auto max-w-7xl px-4 pb-12 sm:px-6 sm:pb-16 lg:px-8 lg:pb-20">
         <div className="grid gap-6 md:grid-cols-2">
           <PartnerCard
             badge="For vendors"
@@ -343,7 +356,7 @@ function Home() {
 
       {/* Bottom CTA */}
       <section className="mx-auto max-w-7xl px-4 pb-20 sm:px-6 lg:px-8">
-        <div className="relative overflow-hidden rounded-[2rem] bg-[image:var(--gradient-primary)] px-8 py-12 text-center shadow-[var(--shadow-glow)] sm:px-12 sm:py-16">
+        <div className="relative overflow-hidden rounded-3xl bg-[image:var(--gradient-primary)] px-5 py-10 text-center shadow-[var(--shadow-glow)] sm:rounded-[2rem] sm:px-12 sm:py-16">
           <div
             className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-white/10 blur-2xl"
             aria-hidden
@@ -352,16 +365,16 @@ function Home() {
             className="pointer-events-none absolute -bottom-20 -left-10 h-56 w-56 rounded-full bg-white/5 blur-2xl"
             aria-hidden
           />
-          <h2 className="relative font-display text-3xl font-semibold text-primary-foreground sm:text-4xl">
+          <h2 className="relative font-display text-2xl font-semibold text-primary-foreground sm:text-3xl lg:text-4xl">
             Ready for fresher groceries?
           </h2>
           <p className="relative mx-auto mt-3 max-w-lg text-sm text-primary-foreground/85 sm:text-base">
             Join thousands of households getting farm-fresh food delivered today.
           </p>
-          <div className="relative mt-8 flex flex-wrap items-center justify-center gap-3">
+          <div className="relative mt-8 flex flex-col items-stretch gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-center">
             <Link
               to="/shop"
-              className="inline-flex items-center gap-2 rounded-full bg-card px-6 py-3.5 text-sm font-semibold text-foreground shadow-[var(--shadow-card)] transition-all hover:scale-[1.02] active:scale-[0.98]"
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-card px-6 py-3.5 text-sm font-semibold text-foreground shadow-[var(--shadow-card)] transition-all hover:scale-[1.02] active:scale-[0.98]"
             >
               Start shopping
               <ArrowRight className="h-4 w-4" />
@@ -369,7 +382,7 @@ function Home() {
             <Link
               to="/login"
               search={{ redirect: "/shop" }}
-              className="inline-flex items-center gap-2 rounded-full border border-primary-foreground/30 px-6 py-3.5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary-foreground/10"
+              className="inline-flex items-center justify-center gap-2 rounded-full border border-primary-foreground/30 px-6 py-3.5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary-foreground/10"
             >
               Create account
             </Link>
@@ -396,8 +409,8 @@ function SectionHeader({
   return (
     <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
       <div>
-        <h2 className="font-display text-3xl font-semibold sm:text-4xl">{title}</h2>
-        <p className="mt-2 text-muted-foreground">{subtitle}</p>
+        <h2 className="font-display text-2xl font-semibold sm:text-3xl lg:text-4xl">{title}</h2>
+        <p className="mt-2 text-sm text-muted-foreground sm:text-base">{subtitle}</p>
       </div>
       {href && linkLabel && (
         <Link
@@ -459,11 +472,11 @@ function PartnerCard({
   return (
     <div className="group relative overflow-hidden rounded-[2rem] border border-border/60 bg-card shadow-[var(--shadow-card)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[var(--shadow-glow)]">
       <div className="grid sm:grid-cols-2">
-        <div className="flex flex-col p-8 sm:p-10">
+        <div className="flex flex-col p-6 sm:p-8 lg:p-10">
           <span className="inline-flex w-fit items-center gap-2 rounded-full bg-foreground/5 px-3 py-1 text-xs font-medium text-foreground/70">
             <Icon className="h-3.5 w-3.5" aria-hidden /> {badge}
           </span>
-          <h3 className="mt-4 font-display text-2xl font-semibold leading-tight sm:text-3xl">{title}</h3>
+          <h3 className="mt-4 font-display text-xl font-semibold leading-tight sm:text-2xl lg:text-3xl">{title}</h3>
           <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{body}</p>
           <Link
             to={href}

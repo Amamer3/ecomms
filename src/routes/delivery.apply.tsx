@@ -80,7 +80,7 @@ function DeliveryApply() {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      <section className="mx-auto max-w-3xl px-4 py-16 sm:px-6 lg:px-8">
+      <section className="mx-auto max-w-3xl px-4 py-10 sm:px-6 sm:py-16 lg:px-8">
         <Link to="/delivery" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
           <ArrowLeft className="h-4 w-4" /> Back
         </Link>
@@ -88,7 +88,7 @@ function DeliveryApply() {
           <span className="inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent/10 px-3 py-1 text-xs font-medium">
             <Bike className="h-3.5 w-3.5" /> Courier registration
           </span>
-          <h1 className="mt-4 font-display text-4xl font-semibold">Join as a courier</h1>
+          <h1 className="mt-4 font-display text-2xl font-semibold sm:text-4xl">Join as a courier</h1>
         </div>
 
         <form onSubmit={(e) => void onSubmit(e)} className="mt-10 grid gap-5 rounded-3xl border border-border/60 bg-card p-6 sm:p-8">

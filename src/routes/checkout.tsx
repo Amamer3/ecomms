@@ -342,7 +342,14 @@ function CheckoutPage() {
                 disabled={submitting}
                 className="mt-6 w-full rounded-full bg-primary px-5 py-3.5 text-sm font-semibold text-primary-foreground disabled:opacity-50"
               >
-                {submitting ? "Creating order…" : "Place order & pay with MoMo"}
+                {submitting ? (
+                  "Creating order…"
+                ) : (
+                  <>
+                    <span className="sm:hidden">Place order</span>
+                    <span className="hidden sm:inline">Place order & pay with MoMo</span>
+                  </>
+                )}
               </button>
             </aside>
           </form>

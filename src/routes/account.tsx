@@ -74,13 +74,16 @@ function AccountLayoutInner() {
 
       <div className="mx-auto flex max-w-5xl flex-col gap-8 px-4 py-8 sm:px-6 lg:flex-row lg:px-8">
         <aside className="shrink-0 lg:w-52">
-          <nav className="flex flex-wrap gap-2 lg:flex-col lg:gap-1" aria-label="Account">
+          <nav
+            className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] lg:mx-0 lg:flex-col lg:gap-1 lg:overflow-visible lg:px-0 lg:pb-0 [&::-webkit-scrollbar]:hidden"
+            aria-label="Account"
+          >
             {ACCOUNT_NAV.map(({ to, label, icon: Icon }) => (
               <Link
                 key={to}
                 to={to}
                 className={cn(
-                  "inline-flex items-center gap-2 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors",
+                  "inline-flex shrink-0 items-center gap-2 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors",
                   "text-muted-foreground hover:bg-muted/60 hover:text-foreground",
                 )}
                 activeProps={{

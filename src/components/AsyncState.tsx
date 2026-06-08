@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { Loader2 } from "lucide-react";
 import { QueryErrorState } from "@/components/QueryErrorState";
+import { useClientReady } from "@/lib/use-client-ready";
 
 type AsyncStateProps = {
   isLoading?: boolean;
@@ -25,7 +26,9 @@ export function AsyncState({
   children,
   className,
 }: AsyncStateProps) {
-  if (isLoading) {
+  const clientReady = useClientReady();
+
+  if (!clientReady || isLoading) {
     return (
       <div
         className={`flex items-center gap-2 text-sm text-muted-foreground ${className ?? ""}`}

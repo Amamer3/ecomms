@@ -147,9 +147,9 @@ export function SplitAuthLayout({
   promoSlides: AuthPromoSlide[];
 }) {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-muted/40 px-4 py-8 sm:px-6 sm:py-10">
-      <div className="grid w-full max-w-[1080px] overflow-hidden rounded-[2rem] border border-border/60 bg-card shadow-[var(--shadow-card)] lg:min-h-[min(720px,88vh)] lg:grid-cols-2">
-        <div className="flex min-h-full flex-col px-8 py-8 sm:px-10 sm:py-10 lg:px-12 lg:py-12">
+    <div className="flex min-h-screen items-center justify-center bg-muted/40 px-3 py-6 sm:px-6 sm:py-10">
+      <div className="grid w-full max-w-[1080px] overflow-hidden rounded-2xl border border-border/60 bg-card shadow-[var(--shadow-card)] sm:rounded-[2rem] lg:min-h-[min(720px,88vh)] lg:grid-cols-2">
+        <div className="flex min-h-full flex-col px-5 py-6 sm:px-10 sm:py-10 lg:px-12 lg:py-12">
           <Link to="/" className="inline-block w-fit transition-opacity hover:opacity-80">
             <BrandLogo size="2xl" className="h-10 sm:h-11" />
           </Link>

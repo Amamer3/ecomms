@@ -125,7 +125,7 @@ function RootComponent() {
           <AppErrorBoundary>
             <Outlet />
           </AppErrorBoundary>
-          <Toaster richColors position="top-right" />
+          <Toaster richColors position="top-center" className="sm:!top-4 sm:!right-4 sm:!left-auto" />
         </CartProvider>
       </AuthProvider>
     </QueryClientProvider>

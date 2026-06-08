@@ -16,6 +16,7 @@ import {
   type ShopProduct,
 } from "@/lib/catalog-display";
 import { listCategories, listStoreProducts, listStores } from "@/lib/api";
+import { useClientReady } from "@/lib/use-client-ready";
 import { z } from "zod";
 
 const search = z.object({
@@ -36,6 +37,7 @@ export const Route = createFileRoute("/shop")({
 });
 
 function Shop() {
+  const clientReady = useClientReady();
   const { categoryId, storeId: searchStoreId, q: searchQ } = Route.useSearch();
   const navigate = Route.useNavigate();
   const [q, setQ] = useState(searchQ ?? "");
@@ -116,19 +118,21 @@ function Shop() {
       ) : (
       <>
       <section className="border-b border-border/60 bg-[image:var(--gradient-hero)]">
-        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-          <h1 className="font-display text-4xl font-semibold sm:text-5xl">Everything in store</h1>
+        <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
+          <h1 className="font-display text-3xl font-semibold sm:text-4xl lg:text-5xl">Everything in store</h1>
           <p className="mt-2 text-muted-foreground">
-            {storesLoading ? "Loading stores…" : `${stores.length} open store${stores.length === 1 ? "" : "s"}`}
+            {!clientReady || storesLoading
+              ? "Loading stores…"
+              : `${stores.length} open store${stores.length === 1 ? "" : "s"}`}
           </p>
 
           {stores.length > 0 && (
-            <div className="mt-4 flex flex-wrap gap-2">
+            <div className="-mx-1 mt-4 flex gap-2 overflow-x-auto px-1 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
               {stores.map((s) => (
                 <button
                   key={s.id}
                   onClick={() => setStore(s.id)}
-                  className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition-all ${
+                  className={`inline-flex shrink-0 items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition-all ${
                     selectedStore?.id === s.id
                       ? "border-primary bg-primary text-primary-foreground"
                       : "border-border bg-card hover:border-primary/40"
@@ -158,8 +162,8 @@ function Shop() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-        <div className="flex flex-wrap gap-2">
+      <section className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8">
+        <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           <Pill active={!categoryId} onClick={() => setCat(undefined)} label="All" />
           {categories.map((c) => (
             <Pill
@@ -189,7 +193,7 @@ function Shop() {
               </Link>
             </div>
           ) : (
-            <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+            <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
               {shopProducts.map((p) => (
                 <ProductCard key={p.id} product={p} />
               ))}
@@ -209,7 +213,7 @@ function Pill({ active, onClick, label }: { active: boolean; onClick: () => void
   return (
     <button
       onClick={onClick}
-      className={`rounded-full border px-4 py-2 text-sm font-medium transition-all ${
+      className={`shrink-0 rounded-full border px-4 py-2 text-sm font-medium transition-all ${
         active
           ? "border-primary bg-primary text-primary-foreground shadow-[var(--shadow-soft)]"
           : "border-border bg-card text-foreground/70 hover:border-primary/40 hover:text-foreground"

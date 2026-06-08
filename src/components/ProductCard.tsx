@@ -31,7 +31,7 @@ export function ProductCard({ product }: { product: ShopProduct }) {
   };
 
   return (
-    <div className="group relative flex flex-col overflow-hidden rounded-3xl border border-border/60 bg-card p-4 shadow-[var(--shadow-soft)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[var(--shadow-card)]">
+    <div className="group relative flex flex-col overflow-hidden rounded-2xl border border-border/60 bg-card p-3 shadow-[var(--shadow-soft)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[var(--shadow-card)] sm:rounded-3xl sm:p-4">
       <div className="relative aspect-square overflow-hidden rounded-2xl bg-[image:var(--gradient-hero)]">
         {product.imageUrl ? (
           <img src={product.imageUrl} alt={product.name} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" />
@@ -44,20 +44,20 @@ export function ProductCard({ product }: { product: ShopProduct }) {
           </span>
         )}
       </div>
-      <div className="mt-4 flex flex-1 flex-col">
-        <p className="text-xs text-muted-foreground">{product.vendor}</p>
-        <h3 className="mt-0.5 text-base font-semibold leading-tight text-foreground">{product.name}</h3>
-        <div className="mt-auto flex items-end justify-between pt-4">
-          <div>
-            <p className="text-lg font-bold text-foreground">{formatGhs(product.price)}</p>
-            <p className="text-xs text-muted-foreground">{product.unit}</p>
+      <div className="mt-3 flex flex-1 flex-col sm:mt-4">
+        <p className="truncate text-[11px] text-muted-foreground sm:text-xs">{product.vendor}</p>
+        <h3 className="mt-0.5 line-clamp-2 text-sm font-semibold leading-tight text-foreground sm:text-base">{product.name}</h3>
+        <div className="mt-auto flex items-end justify-between gap-2 pt-3 sm:pt-4">
+          <div className="min-w-0">
+            <p className="text-base font-bold text-foreground sm:text-lg">{formatGhs(product.price)}</p>
+            <p className="truncate text-[11px] text-muted-foreground sm:text-xs">{product.unit}</p>
           </div>
           <button
             onClick={() => void onAdd()}
             aria-label={`Add ${product.name} to cart`}
-            className="grid h-10 w-10 place-items-center rounded-full bg-primary text-primary-foreground shadow-[var(--shadow-soft)] transition-all hover:scale-105 hover:shadow-[var(--shadow-glow)] active:scale-95"
+            className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-primary text-primary-foreground shadow-[var(--shadow-soft)] transition-all hover:scale-105 hover:shadow-[var(--shadow-glow)] active:scale-95 sm:h-10 sm:w-10"
           >
-            <Plus className="h-5 w-5" />
+            <Plus className="h-4 w-4 sm:h-5 sm:w-5" />
           </button>
         </div>
       </div>

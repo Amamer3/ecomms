@@ -33,15 +33,15 @@ export function HomeHero({
 
       {/* Decorative fruit — top left */}
       <div
-        className="pointer-events-none absolute left-3 top-[5.5rem] opacity-[0.08] sm:left-6 sm:top-[6.5rem] md:top-[7rem] lg:left-[max(1rem,calc(50%-36rem))]"
+        className="pointer-events-none absolute left-3 top-[calc(var(--navbar-offset)+0.5rem)] opacity-[0.08] sm:left-6 md:top-[calc(var(--navbar-offset)+2rem)] lg:left-[max(1rem,calc(50%-36rem))]"
         aria-hidden
       >
         <KiwiOutline className="h-12 w-12 text-primary sm:h-16 sm:w-16 md:h-20 md:w-20" />
       </div>
 
       <div className="relative mx-auto grid max-w-7xl grid-cols-1 md:grid-cols-2 md:items-stretch md:min-h-[min(88vh,760px)]">
-        {/* Copy — full block vertically centered to match image column height */}
-        <div className="relative z-10 flex min-h-0 flex-col justify-center px-4 pb-8 pt-[5.75rem] sm:px-6 sm:pb-10 sm:pt-[6.5rem] md:h-full md:px-8 md:pb-16 md:pt-[6.5rem] lg:px-10 lg:pb-20 xl:px-12">
+        {/* Copy — below image on mobile, left column on desktop */}
+        <div className="relative z-10 order-2 flex min-h-0 flex-col justify-center px-4 pb-8 pt-4 sm:px-6 sm:pb-10 sm:pt-6 md:order-1 md:h-full md:px-8 md:pb-16 md:pt-10 lg:px-10 lg:pb-20 xl:px-12">
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs font-semibold uppercase tracking-wider text-foreground/80 sm:text-sm sm:normal-case sm:tracking-wide">
             <span className="flex shrink-0 flex-col gap-1" aria-hidden>
               <span className="h-0.5 w-6 rounded-full bg-accent sm:w-8" />
@@ -53,7 +53,7 @@ export function HomeHero({
             </span>
           </div>
 
-          <h1 className="mt-4 max-w-xl font-display text-[1.85rem] font-semibold leading-[1.1] tracking-tight text-foreground sm:mt-6 sm:text-4xl md:text-[2.75rem] lg:text-[3.35rem] xl:text-[3.6rem]">
+          <h1 className="mt-3 max-w-xl font-display text-[1.65rem] font-semibold leading-[1.12] tracking-tight text-foreground sm:mt-6 sm:text-4xl md:text-[2.75rem] lg:text-[3.35rem] xl:text-[3.6rem]">
             Make Healthy Life With{" "}
             <span className="bg-[image:var(--gradient-primary)] bg-clip-text text-transparent">
               Fresh
@@ -83,8 +83,8 @@ export function HomeHero({
           </div>
         </div>
 
-        {/* Visual */}
-        <div className="relative flex min-h-[min(56vw,300px)] flex-col items-stretch justify-end px-4 pb-8 pt-4 sm:min-h-[340px] sm:px-6 sm:pb-10 md:h-full md:min-h-0 md:px-6 md:pb-12 md:pt-8 lg:pb-14">
+        {/* Visual — first on mobile, right column on desktop */}
+        <div className="relative order-1 flex min-h-[min(72vw,340px)] flex-col items-stretch justify-end px-4 pb-4 pt-0 sm:min-h-[380px] sm:px-6 sm:pb-6 md:order-2 md:h-full md:min-h-0 md:px-6 md:pb-12 md:pt-8 lg:pb-14">
           <div
             className="hero-green-panel pointer-events-none absolute inset-0 z-0 bg-[image:var(--gradient-hero-panel)] md:left-[-5%] lg:left-[-8%]"
             aria-hidden
@@ -98,7 +98,7 @@ export function HomeHero({
           </span>
 
           {/* Image stage — blend removes black PNG background on green */}
-          <div className="relative z-10 flex h-full min-h-[min(52vw,280px)] w-full flex-1 items-end justify-center sm:min-h-[300px] md:min-h-0">
+          <div className="relative z-10 flex h-full min-h-[min(68vw,300px)] w-full flex-1 items-end justify-center sm:min-h-[320px] md:min-h-0">
             <div
               className="pointer-events-none absolute bottom-[8%] left-1/2 h-[55%] w-[75%] -translate-x-1/2 rounded-full bg-white/10 blur-2xl"
               aria-hidden
@@ -113,7 +113,7 @@ export function HomeHero({
             />
           </div>
 
-          <DeliveryBadge className="relative z-20 mt-5 w-full max-w-[17rem] sm:absolute sm:bottom-10 sm:left-6 sm:mt-0 sm:w-auto md:bottom-12 md:left-8 lg:bottom-14 lg:left-10" />
+          <DeliveryBadge className="relative z-20 mx-auto mt-3 w-full max-w-[17rem] sm:absolute sm:bottom-10 sm:left-6 sm:mx-0 sm:mt-0 sm:w-auto md:bottom-12 md:left-8 lg:bottom-14 lg:left-10" />
         </div>
       </div>
 

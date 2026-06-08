@@ -4,10 +4,10 @@ import { APP_NAME } from "@/lib/brand";
 
 export function Footer() {
   return (
-    <footer className="mt-24 border-t border-border/60 bg-secondary/40">
-      <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
-        <div className="grid gap-10 md:grid-cols-4">
-          <div>
+    <footer className="mt-12 border-t border-border/60 bg-secondary/40 sm:mt-24">
+      <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
+        <div className="grid grid-cols-2 gap-8 sm:gap-10 md:grid-cols-4">
+          <div className="col-span-2 md:col-span-1">
             <Link to="/" className="inline-block transition-opacity hover:opacity-90">
               <BrandLogo size="lg" className="h-9" />
             </Link>
