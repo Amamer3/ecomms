@@ -8,7 +8,8 @@ import { toast } from "sonner";
 import { registerRider } from "@/lib/api";
 import { getErrorMessage } from "@/lib/errors";
 import { useAuth } from "@/context/auth";
-import { normalizeE164Phone } from "@/lib/phone";
+import { PhoneInput } from "@/components/PhoneInput";
+import { defaultGhanaPhoneInput, normalizeE164Phone } from "@/lib/phone";
 
 export const Route = createFileRoute("/delivery/apply")({
   component: DeliveryApply,
@@ -32,7 +33,7 @@ function DeliveryApply() {
   const [form, setForm] = useState({
     fullName: "",
     email: "",
-    phone: "+233",
+    phone: defaultGhanaPhoneInput(),
     password: "",
     vehicleType: "motorbike",
     plateNumber: "",
@@ -96,7 +97,7 @@ function DeliveryApply() {
             <input className={inputCls} value={form.fullName} onChange={(e) => update("fullName", e.target.value)} />
           </Field>
           <Field label="Phone" error={errors.phone}>
-            <input className={inputCls} value={form.phone} onChange={(e) => update("phone", e.target.value)} />
+            <PhoneInput className={inputCls} value={form.phone} onChange={(v) => update("phone", v)} />
           </Field>
           <Field label="Email (optional)" error={errors.email}>
             <input type="email" className={inputCls} value={form.email} onChange={(e) => update("email", e.target.value)} />

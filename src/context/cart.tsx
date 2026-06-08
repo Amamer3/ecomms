@@ -17,7 +17,7 @@ import {
 } from "@/lib/api";
 import { parseMoney } from "@/lib/api/client";
 import type { Cart, CartItem } from "@/lib/api/types";
-import { loadSelectedStoreId, type ShopProduct } from "@/lib/catalog-display";
+import { loadSelectedStoreId, saveSelectedStoreId, type ShopProduct } from "@/lib/catalog-display";
 import { useAuth } from "@/context/auth";
 
 export type CartLine = { item: CartItem; product?: ShopProduct };
@@ -28,7 +28,7 @@ type CartCtx = {
   loading: boolean;
   error: unknown;
   items: CartLine[];
-  add: (productId: string, qty?: number) => Promise<void>;
+  add: (productId: string, itemStoreId: string, qty?: number) => Promise<void>;
   remove: (itemId: string) => Promise<void>;
   setQty: (itemId: string, qty: number) => Promise<void>;
   clear: () => Promise<void>;
@@ -61,12 +61,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }, [queryClient, storeId]);
 
   const add = useCallback(
-    async (productId: string, qty = 1) => {
-      if (!storeId) throw new Error("Select a store before adding to cart");
-      await addCartItem(storeId, productId, qty);
-      invalidate();
+    async (productId: string, itemStoreId: string, qty = 1) => {
+      await addCartItem(itemStoreId, productId, qty);
+      setStoreId(itemStoreId);
+      saveSelectedStoreId(itemStoreId);
+      void queryClient.invalidateQueries({ queryKey: ["cart", itemStoreId] });
     },
-    [storeId, invalidate],
+    [queryClient],
   );
 
   const remove = useCallback(

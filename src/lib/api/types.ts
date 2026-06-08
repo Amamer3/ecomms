@@ -241,6 +241,15 @@ export type CustomerTracking = {
   } | null;
 };
 
+export type PaymentNextAction = {
+  type?: "MOMO_OTP_REQUIRED" | "MOMO_PROMPT_PENDING" | string;
+  message?: string;
+};
+
+export function needsMomoOtpVerification(nextAction?: PaymentNextAction): boolean {
+  return nextAction?.type === "MOMO_OTP_REQUIRED";
+}
+
 export type CheckoutResult = {
   order: {
     id: string;
@@ -259,7 +268,12 @@ export type CheckoutResult = {
     items: OrderItem[];
   };
   payment: Payment;
-  nextAction?: { type?: string; message?: string };
+  nextAction?: PaymentNextAction;
+};
+
+export type PaymentOtpVerifyResult = {
+  payment: Payment;
+  nextAction: PaymentNextAction;
 };
 
 export type Payment = {

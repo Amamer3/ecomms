@@ -3,7 +3,7 @@ import { formatGhs } from "@/lib/format-money";
 import type { ShopProduct } from "@/lib/catalog-display";
 import { useAuth } from "@/context/auth";
 import { useCart } from "@/context/cart";
-import { useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { getErrorMessage } from "@/lib/errors";
 
@@ -23,7 +23,7 @@ export function ProductCard({ product }: { product: ShopProduct }) {
       return;
     }
     try {
-      await add(product.id);
+      await add(product.id, product.storeId);
       toast.success("Added to basket");
     } catch (e) {
       toast.error(getErrorMessage(e, "Could not add to cart"));
@@ -45,7 +45,13 @@ export function ProductCard({ product }: { product: ShopProduct }) {
         )}
       </div>
       <div className="mt-3 flex flex-1 flex-col sm:mt-4">
-        <p className="truncate text-[11px] text-muted-foreground sm:text-xs">{product.vendor}</p>
+        <Link
+          to="/catalog/stores/$storeId"
+          params={{ storeId: product.storeId }}
+          className="inline-flex max-w-full items-center truncate rounded-full bg-secondary/80 px-2 py-0.5 text-[10px] font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground sm:text-[11px]"
+        >
+          {product.vendor}
+        </Link>
         <h3 className="mt-0.5 line-clamp-2 text-sm font-semibold leading-tight text-foreground sm:text-base">{product.name}</h3>
         <div className="mt-auto flex items-end justify-between gap-2 pt-3 sm:pt-4">
           <div className="min-w-0">

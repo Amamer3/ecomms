@@ -2,23 +2,24 @@ import type { Category, Product, StoreSummary } from "@/lib/api/types";
 import { parseMoney } from "@/lib/api/client";
 
 const CATEGORY_EMOJI: Record<string, string> = {
-  PERISHABLE: "🥬",
-  FROZEN: "❄️",
-  PANTRY: "🫙",
-  BEVERAGES: "🥤",
-  HOUSEHOLD: "🧴",
-  PERSONAL_CARE: "🧼",
-  ELECTRONICS: "📱",
-  OTHER: "🛒",
+  PERISHABLE: "",
+  FROZEN: "",
+  PANTRY: "",
+  BEVERAGES: "",
+  HOUSEHOLD: "",
+  PERSONAL_CARE: "",
+  ELECTRONICS: "",
+  OTHER: "",
 };
 
 export function categoryEmoji(type: Category["type"]): string {
-  return CATEGORY_EMOJI[type] ?? "🛒";
+  return CATEGORY_EMOJI[type] ?? "";
 }
 
 /** UI product card shape (no mock catalog). */
 export type ShopProduct = {
   id: string;
+  storeId: string;
   name: string;
   vendor: string;
   price: number;
@@ -33,6 +34,7 @@ export type ShopProduct = {
 export function toShopProduct(product: Product, storeName: string, categoryName: string): ShopProduct {
   return {
     id: product.id,
+    storeId: product.storeId,
     name: product.name,
     vendor: storeName,
     price: parseMoney(product.price),

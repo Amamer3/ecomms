@@ -12,14 +12,14 @@ import {
   authPillFieldClass,
 } from "@/components/auth/AuthShell";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/context/auth";
 import { requestOtp, resendOtp, verifyOtp } from "@/lib/api";
 import { getAuthErrorMessage } from "@/lib/errors";
 import { safeShopperPostLoginRedirect } from "@/lib/auth-storage";
-import { E164_PHONE_HINT, normalizeE164Phone } from "@/lib/phone";
+import { PhoneInput } from "@/components/PhoneInput";
+import { defaultGhanaPhoneInput, E164_PHONE_HINT, normalizeE164Phone } from "@/lib/phone";
 import { cn } from "@/lib/utils";
 
 const STEPS = [
@@ -39,7 +39,7 @@ function ShopperLoginPage() {
   const { redirect } = Route.useSearch();
   const { session, ready, setSessionFromTokens } = useAuth();
   const navigate = useNavigate();
-  const [phoneInput, setPhoneInput] = useState("+233");
+  const [phoneInput, setPhoneInput] = useState(defaultGhanaPhoneInput);
   const [e164Phone, setE164Phone] = useState<string | null>(null);
   const [code, setCode] = useState("");
   const [step, setStep] = useState<"phone" | "code">("phone");
@@ -151,14 +151,11 @@ function ShopperLoginPage() {
                   className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
                   aria-hidden
                 />
-                <Input
+                <PhoneInput
                   id="phone"
-                  type="tel"
                   value={phoneInput}
-                  onChange={(e) => setPhoneInput(e.target.value)}
-                  autoComplete="tel"
+                  onChange={setPhoneInput}
                   required
-                  placeholder="+233200000001"
                   className={cn(authPillFieldClass, "pl-11")}
                 />
               </div>

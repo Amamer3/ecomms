@@ -8,7 +8,8 @@ import { toast } from "sonner";
 import { registerVendor } from "@/lib/api";
 import { getErrorMessage } from "@/lib/errors";
 import { useAuth } from "@/context/auth";
-import { normalizeE164Phone } from "@/lib/phone";
+import { PhoneInput } from "@/components/PhoneInput";
+import { defaultGhanaPhoneInput, normalizeE164Phone } from "@/lib/phone";
 
 export const Route = createFileRoute("/vendors/register")({
   component: VendorRegister,
@@ -38,7 +39,7 @@ function VendorRegister() {
     businessName: "",
     contactName: "",
     email: "",
-    phone: "+233",
+    phone: defaultGhanaPhoneInput(),
     password: "",
     storeName: "",
     city: "Accra",
@@ -120,7 +121,7 @@ function VendorRegister() {
               <input type="email" className={inputCls} value={form.email} onChange={(e) => update("email", e.target.value)} />
             </Field>
             <Field label="Phone" error={errors.phone}>
-              <input className={inputCls} value={form.phone} onChange={(e) => update("phone", e.target.value)} />
+              <PhoneInput className={inputCls} value={form.phone} onChange={(v) => update("phone", v)} />
             </Field>
           </div>
           <Field label="Password" error={errors.password}>

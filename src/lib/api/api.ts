@@ -6,6 +6,7 @@ import type {
   Cart,
   Category,
   CheckoutResult,
+  PaymentOtpVerifyResult,
   CustomerOrder,
   CustomerProfile,
   CustomerTracking,
@@ -155,6 +156,13 @@ export const claimReferral = (code: string) =>
 // —— Checkout ——
 export const checkout = (body: Record<string, unknown>) =>
   apiRequest<CheckoutResult>("/checkout", { method: "POST", body, auth: true });
+
+export const verifyPaymentOtp = (paymentId: string, otp: string) =>
+  apiRequest<PaymentOtpVerifyResult>(`/customer/transactions/${paymentId}/verify-otp`, {
+    method: "POST",
+    body: { otp: otp.trim() },
+    auth: true,
+  });
 
 // —— Vendor ——
 export const getVendorProfile = () => apiRequest<VendorProfile>("/vendor/profile", { auth: true });

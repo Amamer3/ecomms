@@ -6,7 +6,9 @@ import { createAddress, listAddresses } from "@/lib/api";
 import { ApiError } from "@/lib/api/client";
 import { AsyncState } from "@/components/AsyncState";
 import { customerInputCls, CustomerPageHeader } from "@/components/customer/customer-ui";
-import { normalizeE164Phone } from "@/lib/phone";
+import { PhoneInput } from "@/components/PhoneInput";
+import { useAuth } from "@/context/auth";
+import { ghanaPhoneInputFrom, normalizeE164Phone } from "@/lib/phone";
 
 export const Route = createFileRoute("/account/addresses")({
   component: AccountAddressesPage,
@@ -14,6 +16,7 @@ export const Route = createFileRoute("/account/addresses")({
 });
 
 function AccountAddressesPage() {
+  const { session } = useAuth();
   const { data: addresses = [], isLoading, isError, error, refetch, isFetching } = useQuery({
     queryKey: ["addresses"],
     queryFn: listAddresses,
@@ -29,7 +32,7 @@ function AccountAddressesPage() {
     lat: "5.6037",
     lng: "-0.187",
     landmark: "",
-    contactPhone: "+233",
+    contactPhone: ghanaPhoneInputFrom(session?.phone),
     isDefault: true,
   });
   const [submitting, setSubmitting] = useState(false);
@@ -53,7 +56,13 @@ function AccountAddressesPage() {
         isDefault: form.isDefault,
       });
       toast.success("Address created");
-      setForm((f) => ({ ...f, line1: "", line2: "", landmark: "" }));
+      setForm((f) => ({
+        ...f,
+        line1: "",
+        line2: "",
+        landmark: "",
+        contactPhone: ghanaPhoneInputFrom(session?.phone),
+      }));
       void refetch();
     } catch (e) {
       toast.error(e instanceof ApiError ? e.message : "Could not create address");
@@ -161,10 +170,10 @@ function AccountAddressesPage() {
         </label>
         <label className="block">
           <span className="mb-1.5 block text-sm font-medium">Contact phone</span>
-          <input
+          <PhoneInput
             className={customerInputCls}
             value={form.contactPhone}
-            onChange={(e) => setForm((f) => ({ ...f, contactPhone: e.target.value }))}
+            onChange={(v) => setForm((f) => ({ ...f, contactPhone: v }))}
           />
         </label>
         <label className="flex items-center gap-2 text-sm">

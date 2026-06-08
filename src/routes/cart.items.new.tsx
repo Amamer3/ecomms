@@ -29,7 +29,11 @@ function CartAddItemPage() {
     }
     setSubmitting(true);
     try {
-      await add(productId.trim(), quantity);
+      if (!activeStoreId) {
+        toast.error("Enter a store ID or add items from the shop");
+        return;
+      }
+      await add(productId.trim(), activeStoreId, quantity);
       toast.success("Item added");
       navigate({ to: "/cart" });
     } catch (err) {

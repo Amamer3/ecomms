@@ -1,23 +1,28 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowLeft, CheckCircle2, ShoppingBag } from "lucide-react";
+import { ArrowLeft, CheckCircle2, Loader2, ShoppingBag, Smartphone } from "lucide-react";
 import { toast } from "sonner";
 import { Navbar } from "@/components/Navbar";
 import { RequireCustomer } from "@/components/RequireCustomer";
 import { Footer } from "@/components/Footer";
+import { PhoneInput } from "@/components/PhoneInput";
+import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
+import { Label } from "@/components/ui/label";
+import { useAuth } from "@/context/auth";
 import { useCart } from "@/context/cart";
-import { checkout, createAddress, listAddresses, validatePromotion } from "@/lib/api";
+import { checkout, createAddress, listAddresses, validatePromotion, verifyPaymentOtp } from "@/lib/api";
 import { parseMoney } from "@/lib/api/client";
 import { getErrorMessage } from "@/lib/errors";
-import type { CheckoutResult } from "@/lib/api/types";
+import { needsMomoOtpVerification, type CheckoutResult } from "@/lib/api/types";
 import { formatGhs } from "@/lib/format-money";
-import { normalizeE164Phone } from "@/lib/phone";
+import { ghanaPhoneInputFrom, normalizeE164Phone } from "@/lib/phone";
 import {
   customerInputCls,
   CustomerDetailGrid,
   CustomerPageHeader,
 } from "@/components/customer/customer-ui";
+import { PageHero } from "@/components/PageHero";
 
 export const Route = createFileRoute("/checkout")({
   component: CheckoutPage,
@@ -25,18 +30,23 @@ export const Route = createFileRoute("/checkout")({
 });
 
 function CheckoutPage() {
+  const { session } = useAuth();
   const { items, subtotal, storeId, clear } = useCart();
-  const [done, setDone] = useState<CheckoutResult | null>(null);
+  const sessionPhone = ghanaPhoneInputFrom(session?.phone);
+  const [checkoutResult, setCheckoutResult] = useState<CheckoutResult | null>(null);
+  const [phase, setPhase] = useState<"form" | "otp" | "complete">("form");
+  const [otpCode, setOtpCode] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [verifyingOtp, setVerifyingOtp] = useState(false);
   const [promoCode, setPromoCode] = useState("");
-  const [momoNumber, setMomoNumber] = useState("");
+  const [momoNumber, setMomoNumber] = useState(sessionPhone);
   const [notes, setNotes] = useState("");
   const [addressForm, setAddressForm] = useState({
     line1: "",
     city: "Accra",
     lat: 5.6037,
     lng: -0.187,
-    contactPhone: "",
+    contactPhone: sessionPhone,
   });
 
   const { data: addresses = [], refetch: refetchAddresses } = useQuery({
@@ -99,12 +109,21 @@ function CheckoutPage() {
         notes: notes.trim() || undefined,
         promoCode: promoCode.trim() || undefined,
         channel: "MOMO",
+        provider: "MOOLRE",
         idempotencyKey: crypto.randomUUID(),
       });
 
-      setDone(result);
+      setCheckoutResult(result);
       await clear();
-      toast.success(result.nextAction?.message ?? "Pending order created — approve MoMo on your phone");
+
+      if (needsMomoOtpVerification(result.nextAction)) {
+        setPhase("otp");
+        setOtpCode("");
+        toast.success(result.nextAction?.message ?? "Verification code sent to your phone");
+      } else {
+        setPhase("complete");
+        toast.success(result.nextAction?.message ?? "Approve the MoMo payment on your phone");
+      }
     } catch (err) {
       toast.error(getErrorMessage(err, "Checkout failed"));
     } finally {
@@ -112,8 +131,104 @@ function CheckoutPage() {
     }
   };
 
-  if (done) {
-    const { order, payment, nextAction } = done;
+  const submitOtp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!checkoutResult) return;
+    if (otpCode.trim().length < 4) {
+      toast.error("Enter the verification code from your phone");
+      return;
+    }
+
+    setVerifyingOtp(true);
+    try {
+      const verified = await verifyPaymentOtp(checkoutResult.payment.id, otpCode);
+      setCheckoutResult({
+        ...checkoutResult,
+        payment: verified.payment,
+        nextAction: verified.nextAction,
+      });
+      setPhase("complete");
+      toast.success(
+        verified.nextAction?.message ?? "Code accepted — approve the MoMo payment on your phone",
+      );
+    } catch (err) {
+      toast.error(getErrorMessage(err, "Invalid verification code"));
+    } finally {
+      setVerifyingOtp(false);
+    }
+  };
+
+  if (phase === "otp" && checkoutResult) {
+    const { order, payment, nextAction } = checkoutResult;
+    return (
+      <RequireCustomer>
+        <div className="min-h-screen bg-background">
+          <Navbar />
+          <section className="mx-auto max-w-lg px-4 py-16 sm:px-6">
+            <span className="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-primary/10 text-primary">
+              <Smartphone className="h-8 w-8" />
+            </span>
+            <h1 className="mt-6 text-center font-display text-3xl font-semibold">
+              Verify your number
+            </h1>
+            <p className="mt-3 text-center text-muted-foreground">
+              {nextAction?.message ??
+                "Enter the verification code sent to your MoMo number. After this, approve the payment on your phone — we never ask for your MoMo PIN here."}
+            </p>
+            <p className="mt-2 text-center text-sm text-muted-foreground">
+              Order {order.orderNumber} · {formatGhs(parseMoney(order.total))}
+            </p>
+            {payment.momoNumber ? (
+              <p className="mt-1 text-center text-sm font-medium">{payment.momoNumber}</p>
+            ) : null}
+
+            <form onSubmit={(e) => void submitOtp(e)} className="mt-8 space-y-6">
+              <div className="space-y-3">
+                <Label htmlFor="payment-otp" className="block text-center">
+                  Verification code
+                </Label>
+                <InputOTP
+                  id="payment-otp"
+                  maxLength={6}
+                  value={otpCode}
+                  onChange={setOtpCode}
+                  disabled={verifyingOtp}
+                  containerClassName="justify-center gap-2"
+                >
+                  <InputOTPGroup className="gap-2">
+                    {Array.from({ length: 6 }).map((_, i) => (
+                      <InputOTPSlot
+                        key={i}
+                        index={i}
+                        className="h-12 w-11 rounded-xl border border-input text-lg font-semibold first:rounded-xl last:rounded-xl"
+                      />
+                    ))}
+                  </InputOTPGroup>
+                </InputOTP>
+              </div>
+              <button
+                type="submit"
+                disabled={verifyingOtp || otpCode.trim().length < 4}
+                className="flex w-full items-center justify-center gap-2 rounded-full bg-primary px-5 py-3.5 text-sm font-semibold text-primary-foreground disabled:opacity-50"
+              >
+                {verifyingOtp ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" /> Verifying…
+                  </>
+                ) : (
+                  "Verify & send payment to phone"
+                )}
+              </button>
+            </form>
+          </section>
+          <Footer />
+        </div>
+      </RequireCustomer>
+    );
+  }
+
+  if (phase === "complete" && checkoutResult) {
+    const { order, payment, nextAction } = checkoutResult;
     return (
       <RequireCustomer>
         <div className="min-h-screen bg-background">
@@ -127,7 +242,7 @@ function CheckoutPage() {
             </h1>
             <p className="mt-3 text-center text-muted-foreground">
               {nextAction?.message ??
-                "A pending MoMo payment prompt was sent. Approve it on your phone to confirm."}
+                "A MoMo payment prompt was sent to your phone. Approve it there to complete payment — your MoMo PIN is only entered on your phone."}
             </p>
 
             <div className="mt-8 space-y-6">
@@ -149,11 +264,6 @@ function CheckoutPage() {
                 ]}
               />
 
-              {nextAction?.type && (
-                <p className="text-center font-mono text-xs text-muted-foreground">
-                  Next action: {nextAction.type}
-                </p>
-              )}
             </div>
 
             <div className="mt-8 flex flex-wrap justify-center gap-3">
@@ -223,21 +333,19 @@ function CheckoutPage() {
   return (
     <RequireCustomer>
       <div className="min-h-screen bg-background">
-        <Navbar />
-        <div className="border-b border-border/60 bg-[image:var(--gradient-hero)]">
-          <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-            <Link
-              to="/cart"
-              className="mb-4 inline-flex items-center gap-1 text-sm font-medium text-muted-foreground hover:text-foreground"
-            >
-              <ArrowLeft className="h-4 w-4" /> Back to cart
-            </Link>
-            <CustomerPageHeader
-              title="Checkout"
-              description="Create a pending order and pending MoMo payment from your active store cart."
-            />
-          </div>
-        </div>
+        <Navbar overlay />
+        <PageHero>
+          <Link
+            to="/cart"
+            className="mb-4 inline-flex items-center gap-1 text-sm font-medium text-muted-foreground hover:text-foreground"
+          >
+            <ArrowLeft className="h-4 w-4" /> Back to cart
+          </Link>
+          <CustomerPageHeader
+            title="Checkout"
+            description="Create a pending order and pending MoMo payment from your active store cart."
+          />
+        </PageHero>
 
         <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
           <form onSubmit={(e) => void submit(e)} className="grid gap-8 lg:grid-cols-[1fr_360px]">
@@ -287,6 +395,7 @@ function CheckoutPage() {
                     />
                     <Field
                       label="Contact phone"
+                      phone
                       value={addressForm.contactPhone}
                       onChange={(v) => setAddressForm((f) => ({ ...f, contactPhone: v }))}
                     />
@@ -304,14 +413,16 @@ function CheckoutPage() {
 
               <Section title="Mobile Money payment">
                 <p className="text-sm text-muted-foreground sm:col-span-2">
-                  Submitting creates a pending order and sends a MoMo payment prompt to your phone.
+                  Placing your order may send a verification code to your MoMo number — enter it on
+                  the next screen. After that, approve the payment on your phone. We never ask for
+                  your MoMo PIN in the browser.
                 </p>
                 <Field
                   label="MoMo number"
+                  phone
                   required
                   value={momoNumber}
                   onChange={setMomoNumber}
-                  placeholder="+233200000001"
                   full
                 />
                 <Field label="Promo code (optional)" value={promoCode} onChange={setPromoCode} full />
@@ -372,24 +483,30 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 function Field({
   label,
   full,
+  phone,
   value,
   onChange,
   ...rest
 }: {
   label: string;
   full?: boolean;
+  phone?: boolean;
   value: string;
   onChange: (v: string) => void;
 } & Omit<React.InputHTMLAttributes<HTMLInputElement>, "value" | "onChange">) {
   return (
     <label className={`flex flex-col gap-1.5 ${full ? "sm:col-span-2" : ""}`}>
       <span className="text-xs font-medium text-foreground/80">{label}</span>
-      <input
-        {...rest}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className={customerInputCls}
-      />
+      {phone ? (
+        <PhoneInput {...rest} value={value} onChange={onChange} className={customerInputCls} />
+      ) : (
+        <input
+          {...rest}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          className={customerInputCls}
+        />
+      )}
     </label>
   );
 }

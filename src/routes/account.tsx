@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { Footer } from "@/components/Footer";
 import { Navbar } from "@/components/Navbar";
+import { PageHero } from "@/components/PageHero";
 import { RequireCustomer } from "@/components/RequireCustomer";
 import { getCustomerProfile } from "@/lib/api";
 import { customerProfileDisplayName } from "@/lib/auth-storage";
@@ -48,29 +49,27 @@ function AccountLayoutInner() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navbar />
-      <div className="border-b border-border/60 bg-[image:var(--gradient-hero)]">
-        <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
-          <p className="text-xs font-semibold uppercase tracking-wide text-primary">Customer</p>
-          <div className="mt-2 flex flex-wrap items-center justify-between gap-4">
-            <div>
-              <h1 className="font-display text-3xl font-semibold">{displayName}</h1>
-              <p className="mt-1 text-sm text-muted-foreground">{profile?.phone ?? session?.phone}</p>
-              {profile?.loyalty && (
-                <p className="mt-1 text-xs font-medium text-primary">
-                  {formatTier(profile.loyalty.tier)} member
-                </p>
-              )}
-            </div>
-            <Link
-              to="/account"
-              className="text-sm font-medium text-primary hover:underline"
-            >
-              Account home
-            </Link>
+      <Navbar overlay />
+      <PageHero maxWidth="5xl">
+        <p className="text-xs font-semibold uppercase tracking-wide text-primary">Customer</p>
+        <div className="mt-2 flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <h1 className="font-display text-3xl font-semibold">{displayName}</h1>
+            <p className="mt-1 text-sm text-muted-foreground">{profile?.phone ?? session?.phone}</p>
+            {profile?.loyalty && (
+              <p className="mt-1 text-xs font-medium text-primary">
+                {formatTier(profile.loyalty.tier)} member
+              </p>
+            )}
           </div>
+          <Link
+            to="/account"
+            className="text-sm font-medium text-primary hover:underline"
+          >
+            Account home
+          </Link>
         </div>
-      </div>
+      </PageHero>
 
       <div className="mx-auto flex max-w-5xl flex-col gap-8 px-4 py-8 sm:px-6 lg:flex-row lg:px-8">
         <aside className="shrink-0 lg:w-52">

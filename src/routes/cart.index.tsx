@@ -24,7 +24,7 @@ function CartViewPage() {
   if (!storeId) {
     return (
       <div className="rounded-3xl border border-dashed border-border p-12 text-center">
-        <p className="text-muted-foreground">Select a store on the shop page first.</p>
+        <p className="text-muted-foreground">Add items from the shop to start your basket.</p>
         <Link
           to="/shop"
           className="mt-4 inline-flex rounded-full bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground"
