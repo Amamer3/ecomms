@@ -60,6 +60,7 @@ import { Route as DashboardDeliveryProfileRouteImport } from './routes/dashboard
 import { Route as DashboardDeliveryPayoutsRouteImport } from './routes/dashboard.delivery.payouts'
 import { Route as DashboardDeliveryEarningsRouteImport } from './routes/dashboard.delivery.earnings'
 import { Route as DashboardDeliveryDeliveriesRouteImport } from './routes/dashboard.delivery.deliveries'
+import { Route as DashboardAdminUsersRouteImport } from './routes/dashboard.admin.users'
 import { Route as DashboardAdminSettlementsRouteImport } from './routes/dashboard.admin.settlements'
 import { Route as DashboardAdminPromotionsRouteImport } from './routes/dashboard.admin.promotions'
 import { Route as DashboardAdminPaymentsRouteImport } from './routes/dashboard.admin.payments'
@@ -82,6 +83,7 @@ import { Route as DashboardVendorOrdersOrderIdRouteImport } from './routes/dashb
 import { Route as DashboardDeliveryDeliveriesDeliveryIdRouteImport } from './routes/dashboard.delivery.deliveries.$deliveryId'
 import { Route as DashboardAdminVendorsTierRouteImport } from './routes/dashboard.admin.vendors.tier'
 import { Route as DashboardAdminVendorsApproveRouteImport } from './routes/dashboard.admin.vendors.approve'
+import { Route as DashboardAdminUsersUserIdRouteImport } from './routes/dashboard.admin.users.$userId'
 import { Route as DashboardAdminSettlementsRefundsRouteImport } from './routes/dashboard.admin.settlements.refunds'
 import { Route as DashboardAdminSettlementsPayoutsRouteImport } from './routes/dashboard.admin.settlements.payouts'
 import { Route as DashboardAdminSettlementsLedgerRouteImport } from './routes/dashboard.admin.settlements.ledger'
@@ -352,6 +354,11 @@ const DashboardDeliveryDeliveriesRoute =
     path: '/deliveries',
     getParentRoute: () => DashboardDeliveryRoute,
   } as any)
+const DashboardAdminUsersRoute = DashboardAdminUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => DashboardAdminRoute,
+} as any)
 const DashboardAdminSettlementsRoute =
   DashboardAdminSettlementsRouteImport.update({
     id: '/settlements',
@@ -477,6 +484,12 @@ const DashboardAdminVendorsApproveRoute =
     path: '/vendors/approve',
     getParentRoute: () => DashboardAdminRoute,
   } as any)
+const DashboardAdminUsersUserIdRoute =
+  DashboardAdminUsersUserIdRouteImport.update({
+    id: '/$userId',
+    path: '/$userId',
+    getParentRoute: () => DashboardAdminUsersRoute,
+  } as any)
 const DashboardAdminSettlementsRefundsRoute =
   DashboardAdminSettlementsRefundsRouteImport.update({
     id: '/refunds',
@@ -580,6 +593,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/admin/payments': typeof DashboardAdminPaymentsRouteWithChildren
   '/dashboard/admin/promotions': typeof DashboardAdminPromotionsRouteWithChildren
   '/dashboard/admin/settlements': typeof DashboardAdminSettlementsRouteWithChildren
+  '/dashboard/admin/users': typeof DashboardAdminUsersRouteWithChildren
   '/dashboard/delivery/deliveries': typeof DashboardDeliveryDeliveriesRouteWithChildren
   '/dashboard/delivery/earnings': typeof DashboardDeliveryEarningsRoute
   '/dashboard/delivery/payouts': typeof DashboardDeliveryPayoutsRoute
@@ -604,6 +618,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/admin/settlements/ledger': typeof DashboardAdminSettlementsLedgerRoute
   '/dashboard/admin/settlements/payouts': typeof DashboardAdminSettlementsPayoutsRoute
   '/dashboard/admin/settlements/refunds': typeof DashboardAdminSettlementsRefundsRoute
+  '/dashboard/admin/users/$userId': typeof DashboardAdminUsersUserIdRoute
   '/dashboard/admin/vendors/approve': typeof DashboardAdminVendorsApproveRoute
   '/dashboard/admin/vendors/tier': typeof DashboardAdminVendorsTierRoute
   '/dashboard/delivery/deliveries/$deliveryId': typeof DashboardDeliveryDeliveriesDeliveryIdRoute
@@ -652,6 +667,7 @@ export interface FileRoutesByTo {
   '/dashboard/admin/orders': typeof DashboardAdminOrdersRoute
   '/dashboard/admin/payments': typeof DashboardAdminPaymentsRouteWithChildren
   '/dashboard/admin/promotions': typeof DashboardAdminPromotionsRouteWithChildren
+  '/dashboard/admin/users': typeof DashboardAdminUsersRouteWithChildren
   '/dashboard/delivery/deliveries': typeof DashboardDeliveryDeliveriesRouteWithChildren
   '/dashboard/delivery/earnings': typeof DashboardDeliveryEarningsRoute
   '/dashboard/delivery/payouts': typeof DashboardDeliveryPayoutsRoute
@@ -676,6 +692,7 @@ export interface FileRoutesByTo {
   '/dashboard/admin/settlements/ledger': typeof DashboardAdminSettlementsLedgerRoute
   '/dashboard/admin/settlements/payouts': typeof DashboardAdminSettlementsPayoutsRoute
   '/dashboard/admin/settlements/refunds': typeof DashboardAdminSettlementsRefundsRoute
+  '/dashboard/admin/users/$userId': typeof DashboardAdminUsersUserIdRoute
   '/dashboard/admin/vendors/approve': typeof DashboardAdminVendorsApproveRoute
   '/dashboard/admin/vendors/tier': typeof DashboardAdminVendorsTierRoute
   '/dashboard/delivery/deliveries/$deliveryId': typeof DashboardDeliveryDeliveriesDeliveryIdRoute
@@ -737,6 +754,7 @@ export interface FileRoutesById {
   '/dashboard/admin/payments': typeof DashboardAdminPaymentsRouteWithChildren
   '/dashboard/admin/promotions': typeof DashboardAdminPromotionsRouteWithChildren
   '/dashboard/admin/settlements': typeof DashboardAdminSettlementsRouteWithChildren
+  '/dashboard/admin/users': typeof DashboardAdminUsersRouteWithChildren
   '/dashboard/delivery/deliveries': typeof DashboardDeliveryDeliveriesRouteWithChildren
   '/dashboard/delivery/earnings': typeof DashboardDeliveryEarningsRoute
   '/dashboard/delivery/payouts': typeof DashboardDeliveryPayoutsRoute
@@ -761,6 +779,7 @@ export interface FileRoutesById {
   '/dashboard/admin/settlements/ledger': typeof DashboardAdminSettlementsLedgerRoute
   '/dashboard/admin/settlements/payouts': typeof DashboardAdminSettlementsPayoutsRoute
   '/dashboard/admin/settlements/refunds': typeof DashboardAdminSettlementsRefundsRoute
+  '/dashboard/admin/users/$userId': typeof DashboardAdminUsersUserIdRoute
   '/dashboard/admin/vendors/approve': typeof DashboardAdminVendorsApproveRoute
   '/dashboard/admin/vendors/tier': typeof DashboardAdminVendorsTierRoute
   '/dashboard/delivery/deliveries/$deliveryId': typeof DashboardDeliveryDeliveriesDeliveryIdRoute
@@ -823,6 +842,7 @@ export interface FileRouteTypes {
     | '/dashboard/admin/payments'
     | '/dashboard/admin/promotions'
     | '/dashboard/admin/settlements'
+    | '/dashboard/admin/users'
     | '/dashboard/delivery/deliveries'
     | '/dashboard/delivery/earnings'
     | '/dashboard/delivery/payouts'
@@ -847,6 +867,7 @@ export interface FileRouteTypes {
     | '/dashboard/admin/settlements/ledger'
     | '/dashboard/admin/settlements/payouts'
     | '/dashboard/admin/settlements/refunds'
+    | '/dashboard/admin/users/$userId'
     | '/dashboard/admin/vendors/approve'
     | '/dashboard/admin/vendors/tier'
     | '/dashboard/delivery/deliveries/$deliveryId'
@@ -895,6 +916,7 @@ export interface FileRouteTypes {
     | '/dashboard/admin/orders'
     | '/dashboard/admin/payments'
     | '/dashboard/admin/promotions'
+    | '/dashboard/admin/users'
     | '/dashboard/delivery/deliveries'
     | '/dashboard/delivery/earnings'
     | '/dashboard/delivery/payouts'
@@ -919,6 +941,7 @@ export interface FileRouteTypes {
     | '/dashboard/admin/settlements/ledger'
     | '/dashboard/admin/settlements/payouts'
     | '/dashboard/admin/settlements/refunds'
+    | '/dashboard/admin/users/$userId'
     | '/dashboard/admin/vendors/approve'
     | '/dashboard/admin/vendors/tier'
     | '/dashboard/delivery/deliveries/$deliveryId'
@@ -979,6 +1002,7 @@ export interface FileRouteTypes {
     | '/dashboard/admin/payments'
     | '/dashboard/admin/promotions'
     | '/dashboard/admin/settlements'
+    | '/dashboard/admin/users'
     | '/dashboard/delivery/deliveries'
     | '/dashboard/delivery/earnings'
     | '/dashboard/delivery/payouts'
@@ -1003,6 +1027,7 @@ export interface FileRouteTypes {
     | '/dashboard/admin/settlements/ledger'
     | '/dashboard/admin/settlements/payouts'
     | '/dashboard/admin/settlements/refunds'
+    | '/dashboard/admin/users/$userId'
     | '/dashboard/admin/vendors/approve'
     | '/dashboard/admin/vendors/tier'
     | '/dashboard/delivery/deliveries/$deliveryId'
@@ -1391,6 +1416,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardDeliveryDeliveriesRouteImport
       parentRoute: typeof DashboardDeliveryRoute
     }
+    '/dashboard/admin/users': {
+      id: '/dashboard/admin/users'
+      path: '/users'
+      fullPath: '/dashboard/admin/users'
+      preLoaderRoute: typeof DashboardAdminUsersRouteImport
+      parentRoute: typeof DashboardAdminRoute
+    }
     '/dashboard/admin/settlements': {
       id: '/dashboard/admin/settlements'
       path: '/settlements'
@@ -1544,6 +1576,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/dashboard/admin/vendors/approve'
       preLoaderRoute: typeof DashboardAdminVendorsApproveRouteImport
       parentRoute: typeof DashboardAdminRoute
+    }
+    '/dashboard/admin/users/$userId': {
+      id: '/dashboard/admin/users/$userId'
+      path: '/$userId'
+      fullPath: '/dashboard/admin/users/$userId'
+      preLoaderRoute: typeof DashboardAdminUsersUserIdRouteImport
+      parentRoute: typeof DashboardAdminUsersRoute
     }
     '/dashboard/admin/settlements/refunds': {
       id: '/dashboard/admin/settlements/refunds'
@@ -1784,12 +1823,24 @@ const DashboardAdminSettlementsRouteWithChildren =
     DashboardAdminSettlementsRouteChildren,
   )
 
+interface DashboardAdminUsersRouteChildren {
+  DashboardAdminUsersUserIdRoute: typeof DashboardAdminUsersUserIdRoute
+}
+
+const DashboardAdminUsersRouteChildren: DashboardAdminUsersRouteChildren = {
+  DashboardAdminUsersUserIdRoute: DashboardAdminUsersUserIdRoute,
+}
+
+const DashboardAdminUsersRouteWithChildren =
+  DashboardAdminUsersRoute._addFileChildren(DashboardAdminUsersRouteChildren)
+
 interface DashboardAdminRouteChildren {
   DashboardAdminDisputesRoute: typeof DashboardAdminDisputesRouteWithChildren
   DashboardAdminOrdersRoute: typeof DashboardAdminOrdersRoute
   DashboardAdminPaymentsRoute: typeof DashboardAdminPaymentsRouteWithChildren
   DashboardAdminPromotionsRoute: typeof DashboardAdminPromotionsRouteWithChildren
   DashboardAdminSettlementsRoute: typeof DashboardAdminSettlementsRouteWithChildren
+  DashboardAdminUsersRoute: typeof DashboardAdminUsersRouteWithChildren
   DashboardAdminIndexRoute: typeof DashboardAdminIndexRoute
   DashboardAdminRidersApproveRoute: typeof DashboardAdminRidersApproveRoute
   DashboardAdminVendorsApproveRoute: typeof DashboardAdminVendorsApproveRoute
@@ -1802,6 +1853,7 @@ const DashboardAdminRouteChildren: DashboardAdminRouteChildren = {
   DashboardAdminPaymentsRoute: DashboardAdminPaymentsRouteWithChildren,
   DashboardAdminPromotionsRoute: DashboardAdminPromotionsRouteWithChildren,
   DashboardAdminSettlementsRoute: DashboardAdminSettlementsRouteWithChildren,
+  DashboardAdminUsersRoute: DashboardAdminUsersRouteWithChildren,
   DashboardAdminIndexRoute: DashboardAdminIndexRoute,
   DashboardAdminRidersApproveRoute: DashboardAdminRidersApproveRoute,
   DashboardAdminVendorsApproveRoute: DashboardAdminVendorsApproveRoute,

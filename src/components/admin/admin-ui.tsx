@@ -90,6 +90,7 @@ export function useAdminAction() {
     void qc.invalidateQueries({ queryKey: ["admin-refunds"] });
     void qc.invalidateQueries({ queryKey: ["admin-ledger"] });
     void qc.invalidateQueries({ queryKey: ["admin-payouts"] });
+    void qc.invalidateQueries({ queryKey: ["admin-users"] });
   };
 
   const runAction = (label: string, fn: () => Promise<unknown>) =>

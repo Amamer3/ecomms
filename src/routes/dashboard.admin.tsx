@@ -1,5 +1,5 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
-import { Bike, CreditCard, Landmark, LayoutDashboard, Percent, Scale, ShoppingBag, Store, Tag, Webhook } from "lucide-react";
+import { Bike, CreditCard, Landmark, LayoutDashboard, Percent, Scale, ShoppingBag, Store, Tag, Users, Webhook } from "lucide-react";
 import { DashboardRoleShell } from "@/components/DashboardRoleShell";
 import { RequireDashboardRole } from "@/components/RequireDashboardRole";
 
@@ -14,6 +14,7 @@ const ADMIN_NAV = [
   { to: "/dashboard/admin/payments/callback", label: "Pay callback", icon: Webhook },
   { to: "/dashboard/admin/promotions", label: "Promotions", icon: Tag },
   { to: "/dashboard/admin/disputes", label: "Disputes", icon: Scale },
+  { to: "/dashboard/admin/users", label: "Users", icon: Users },
   { to: "/dashboard/admin/settlements", label: "Settlements", icon: Landmark },
   { to: "/dashboard/admin/vendors/approve", label: "Approve vendor", icon: Store },
   { to: "/dashboard/admin/riders/approve", label: "Approve courier", icon: Bike },

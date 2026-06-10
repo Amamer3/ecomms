@@ -2,6 +2,9 @@ import { apiRequest } from "./client";
 import type {
   Address,
   AdminDashboard,
+  AdminPasswordResetResult,
+  AdminUser,
+  AdminUserList,
   HealthResponse,
   Cart,
   Category,
@@ -246,6 +249,28 @@ export const listRiderPayouts = (query?: { limit?: number; offset?: number }) =>
 
 // —— Admin ——
 export const getAdminDashboard = () => apiRequest<AdminDashboard>("/admin/dashboard", { auth: true });
+
+export const listAdminUsers = (query?: {
+  role?: string;
+  status?: string;
+  search?: string;
+  limit?: number;
+  offset?: number;
+}) => apiRequest<AdminUserList>("/admin/users", { auth: true, query });
+
+export const updateAdminUser = (id: string, body: Record<string, unknown>) =>
+  apiRequest<AdminUser>(`/admin/users/${id}`, { method: "PATCH", body, auth: true });
+
+export const deleteAdminUser = (id: string) =>
+  apiRequest<AdminUser>(`/admin/users/${id}`, { method: "DELETE", auth: true });
+
+export const updateAdminUserStatus = (id: string, status: string) =>
+  apiRequest<AdminUser>(`/admin/users/${id}/status`, { method: "PATCH", body: { status }, auth: true });
+
+export const resetAdminUserPassword = (
+  id: string,
+  body: { password: string; revokeSessions?: boolean },
+) => apiRequest<AdminPasswordResetResult>(`/admin/users/${id}/password`, { method: "POST", body, auth: true });
 
 export const approveVendor = (id: string) =>
   apiRequest<VendorProfile>(`/admin/vendors/${id}/approve`, { method: "POST", auth: true });

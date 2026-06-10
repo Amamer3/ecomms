@@ -371,6 +371,67 @@ export type AdminDashboard = {
   openDisputes: number;
 };
 
+export type UserStatus = PublicUser["status"];
+
+export type AdminUserCustomerProfile = {
+  id: string;
+  firstName?: string | null;
+  lastName?: string | null;
+  defaultAddressId?: string | null;
+};
+
+export type AdminUserVendorProfile = {
+  id: string;
+  businessName: string;
+  contactName?: string | null;
+  approvalStatus: "ACTIVE" | "PENDING_APPROVAL" | "SUSPENDED" | "DELETED";
+  approvedAt?: string | null;
+  tier: "STANDARD" | "PREMIUM" | "ELITE";
+  commissionRate: string;
+  storeCount: number;
+};
+
+export type AdminUserRiderProfile = {
+  id: string;
+  fullName?: string | null;
+  vehicleType?: string | null;
+  plateNumber?: string | null;
+  approvalStatus: "ACTIVE" | "PENDING_APPROVAL" | "SUSPENDED" | "DELETED";
+  availability: "ONLINE" | "OFFLINE" | "ON_DELIVERY";
+  rating?: number;
+  ratingCount?: number;
+};
+
+export type AdminUser = {
+  id: string;
+  role: ApiRole;
+  phone: string;
+  email?: string | null;
+  status: UserStatus;
+  phoneVerifiedAt?: string | null;
+  emailVerifiedAt?: string | null;
+  lastLoginAt?: string | null;
+  createdAt: string;
+  updatedAt: string;
+  customerProfile?: AdminUserCustomerProfile | null;
+  vendorProfile?: AdminUserVendorProfile | null;
+  riderProfile?: AdminUserRiderProfile | null;
+};
+
+export type AdminUserList = {
+  items: AdminUser[];
+  total: number;
+  limit: number;
+  offset: number;
+};
+
+export type AdminPasswordResetResult = {
+  id: string;
+  passwordReset: boolean;
+  sessionsRevoked: boolean;
+  updatedAt: string;
+};
+
 export type Dispute = {
   id: string;
   orderId: string;
