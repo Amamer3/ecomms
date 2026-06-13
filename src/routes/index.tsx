@@ -148,7 +148,7 @@ function Home() {
       </section>
 
       {/* Categories */}
-      <section className="bg-secondary/30 py-12 sm:py-16 lg:py-20">
+      {/* <section className="bg-secondary/30 py-12 sm:py-16 lg:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionHeader
             title="Shop by category"
@@ -191,7 +191,7 @@ function Home() {
             </div>
           )}
         </div>
-      </section>
+      </section> */}
 
       {/* Local stores */}
       {showStoresSection && (
@@ -329,7 +329,7 @@ function Home() {
 
 
       {/* Partner CTAs */}
-      <section className="mx-auto max-w-7xl px-4 pb-12 sm:px-6 sm:pb-16 lg:px-8 lg:pb-20">
+      <section className="mx-auto max-w-7xl px-4 pt-12 pb-12 sm:px-6 sm:pb-16 lg:px-8 lg:pb-20">
         <div className="grid gap-6 md:grid-cols-2">
           <PartnerCard
             badge="For vendors"
@@ -355,7 +355,7 @@ function Home() {
       </section>
 
       {/* Bottom CTA */}
-      <section className="mx-auto max-w-7xl px-4 pb-20 sm:px-6 lg:px-8">
+      <section className="mx-auto max-w-7xl px-4 pb-8 sm:px-6 lg:px-8">
         <div className="relative overflow-hidden rounded-3xl bg-[image:var(--gradient-primary)] px-5 py-10 text-center shadow-[var(--shadow-glow)] sm:rounded-[2rem] sm:px-12 sm:py-16">
           <div
             className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-white/10 blur-2xl"

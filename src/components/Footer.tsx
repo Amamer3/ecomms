@@ -9,7 +9,10 @@ export function Footer() {
         <div className="grid grid-cols-2 gap-8 sm:gap-10 md:grid-cols-4">
           <div className="col-span-2 md:col-span-1">
             <Link to="/" className="inline-block transition-opacity hover:opacity-90">
-              <BrandLogo size="lg" className="h-9" />
+              <BrandLogo
+                size="2xl"
+                className="h-12 w-auto max-w-[min(100%,260px)] sm:h-14 sm:max-w-[min(100%,300px)]"
+              />
             </Link>
             <p className="mt-4 max-w-xs text-sm text-muted-foreground">
               Everything for your kitchen and home — delivered fresh, fast, and fairly priced.
