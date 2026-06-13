@@ -6,7 +6,6 @@ import {
   AuthBackButton,
   AuthDivider,
   AuthFooterLink,
-  AuthStepIndicator,
   ShopperAuthLayout,
   authPillButtonClass,
   authPillFieldClass,
@@ -21,11 +20,6 @@ import { safeShopperPostLoginRedirect } from "@/lib/auth-storage";
 import { PhoneInput } from "@/components/PhoneInput";
 import { defaultGhanaPhoneInput, E164_PHONE_HINT, normalizeE164Phone } from "@/lib/phone";
 import { cn } from "@/lib/utils";
-
-const STEPS = [
-  { id: "phone", label: "Phone" },
-  { id: "code", label: "Verify" },
-] as const;
 
 export const Route = createFileRoute("/login")({
   validateSearch: (search: Record<string, unknown>) => ({
@@ -128,7 +122,7 @@ function ShopperLoginPage() {
         />
       }
     >
-      <header>
+      <header className="text-center">
         <h1 className="font-display text-3xl font-semibold tracking-tight text-foreground sm:text-[2rem]">
           {step === "phone" ? "Welcome back!" : "Verify your PIN"}
         </h1>
@@ -140,8 +134,6 @@ function ShopperLoginPage() {
       </header>
 
       <div className="mt-8">
-        <AuthStepIndicator steps={[...STEPS]} current={step} />
-
         {step === "phone" ? (
           <form onSubmit={(e) => void sendOtp(e)} className="space-y-5">
             <div className="space-y-2">

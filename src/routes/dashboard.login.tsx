@@ -5,7 +5,6 @@ import { Loader2, ShoppingBag } from "lucide-react";
 import { toast } from "sonner";
 import {
   AuthDivider,
-  AuthStepIndicator,
   BusinessLoginLayout,
   authPillButtonClass,
   authPillFieldClass,
@@ -41,12 +40,6 @@ export const Route = createFileRoute("/dashboard/login")({
   component: DashboardLogin,
   head: () => ({ meta: [{ title: "Business sign in — GoMarket" }] }),
 });
-
-const STEPS = [
-  { id: "credentials", label: "Account" },
-  { id: "setup", label: "Set up" },
-  { id: "verify", label: "Verify" },
-] as const;
 
 function loadMfaSession(): StoredMfaSession | null {
   try {
@@ -170,7 +163,7 @@ function DashboardLogin() {
         </p>
       }
     >
-      <header>
+      <header className="text-center">
         <h1 className="font-display text-3xl font-semibold tracking-tight text-foreground sm:text-[2rem]">
           {step === "credentials"
             ? "Welcome back!"
@@ -188,8 +181,6 @@ function DashboardLogin() {
       </header>
 
       <div className="mt-8">
-        <AuthStepIndicator steps={[...STEPS]} current={step} />
-
         {formError && mfaSession ? (
           <Alert variant="destructive" className="mb-5">
             <AlertDescription>{formError}</AlertDescription>

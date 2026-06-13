@@ -11,7 +11,7 @@ export const authFieldClass =
   "h-11 rounded-lg border-border/80 bg-card text-[15px] shadow-none transition-shadow placeholder:text-muted-foreground/70 focus-visible:border-primary/40 focus-visible:ring-2 focus-visible:ring-primary/15 md:text-sm";
 
 export const authPillFieldClass =
-  "h-12 rounded-full border-border/80 bg-background text-[15px] shadow-none transition-shadow placeholder:text-muted-foreground/70 focus-visible:border-primary/40 focus-visible:ring-2 focus-visible:ring-primary/15 md:text-sm";
+  "h-12 w-full rounded-full border-border/80 bg-background text-[15px] shadow-none transition-shadow placeholder:text-muted-foreground/70 focus-visible:border-primary/40 focus-visible:ring-2 focus-visible:ring-primary/15 md:text-sm";
 
 export const authPrimaryButtonClass =
   "h-11 w-full rounded-lg text-sm font-semibold shadow-sm transition-all hover:shadow-md";
@@ -80,7 +80,7 @@ function AuthPromoPanel({ slides }: { slides: AuthPromoSlide[] }) {
   }, [slides.length]);
 
   return (
-    <aside className="relative hidden min-h-full flex-col justify-between overflow-hidden bg-primary px-10 py-10 text-primary-foreground lg:flex">
+    <aside className="relative hidden min-h-full flex-col overflow-hidden bg-primary px-10 py-10 text-primary-foreground lg:flex">
       <div
         className="pointer-events-none absolute inset-0 opacity-30"
         style={{
@@ -99,25 +99,23 @@ function AuthPromoPanel({ slides }: { slides: AuthPromoSlide[] }) {
         aria-hidden
       />
 
-      <div className="relative">
-        <BrandLogo size="2xl" className="h-10" />
-      </div>
-
-      <div className="relative mx-auto flex max-w-sm flex-col items-center text-center">
-        <div className="relative mb-8 grid h-36 w-36 place-items-center">
-          <span
-            className="absolute inset-0 rounded-full bg-primary-foreground/10 blur-2xl"
-            aria-hidden
-          />
-          <span className="relative grid h-28 w-28 place-items-center rounded-[2rem] bg-primary-foreground/15 ring-1 ring-primary-foreground/20">
-            <Icon className="h-14 w-14 text-primary-foreground" strokeWidth={1.25} aria-hidden />
-          </span>
+      <div className="relative flex flex-1 flex-col justify-center">
+        <div className="relative mx-auto flex max-w-sm flex-col items-center text-center">
+          <div className="relative mb-8 grid h-36 w-36 place-items-center">
+            <span
+              className="absolute inset-0 rounded-full bg-primary-foreground/10 blur-2xl"
+              aria-hidden
+            />
+            <span className="relative grid h-28 w-28 place-items-center rounded-[2rem] bg-primary-foreground/15 ring-1 ring-primary-foreground/20">
+              <Icon className="h-14 w-14 text-primary-foreground" strokeWidth={1.25} aria-hidden />
+            </span>
+          </div>
+          <h2 className="font-display text-3xl font-semibold leading-snug tracking-tight">{slide.title}</h2>
+          <p className="mt-4 text-sm leading-relaxed text-primary-foreground/85">{slide.description}</p>
         </div>
-        <h2 className="font-display text-3xl font-semibold leading-snug tracking-tight">{slide.title}</h2>
-        <p className="mt-4 text-sm leading-relaxed text-primary-foreground/85">{slide.description}</p>
       </div>
 
-      <div className="relative flex justify-center gap-2" role="tablist" aria-label="Feature highlights">
+      <div className="relative mt-auto flex justify-center gap-2 pt-10" role="tablist" aria-label="Feature highlights">
         {slides.map((item, index) => (
           <button
             key={item.title}
@@ -150,9 +148,11 @@ export function SplitAuthLayout({
     <div className="flex min-h-screen items-center justify-center bg-muted/40 px-3 py-6 sm:px-6 sm:py-10">
       <div className="grid w-full max-w-[1080px] overflow-hidden rounded-2xl border border-border/60 bg-card shadow-[var(--shadow-card)] sm:rounded-[2rem] lg:min-h-[min(720px,88vh)] lg:grid-cols-2">
         <div className="flex min-h-full flex-col px-5 py-6 sm:px-10 sm:py-10 lg:px-12 lg:py-12">
-          <Link to="/" className="inline-block w-fit transition-opacity hover:opacity-80">
-            <BrandLogo size="2xl" className="h-10 sm:h-11" />
-          </Link>
+          <div className="flex justify-center pt-6 sm:pt-8">
+            <Link to="/" className="inline-block w-fit transition-opacity hover:opacity-80">
+              <BrandLogo size="2xl" className="h-14 w-auto max-w-[min(100%,280px)] sm:h-16" />
+            </Link>
+          </div>
 
           <div className="flex flex-1 flex-col justify-center py-8 lg:py-10">
             <div className="mx-auto w-full max-w-md">{children}</div>
