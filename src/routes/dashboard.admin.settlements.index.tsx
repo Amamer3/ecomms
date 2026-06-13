@@ -1,31 +1,37 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
 import { ArrowRight, Banknote, BookOpen, RotateCcw } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
 import { getAdminDashboard } from "@/lib/api";
-import { AdminPageHeader } from "@/components/admin/admin-ui";
+import { AdminQuickLink } from "@/components/admin/admin-ui";
 
 export const Route = createFileRoute("/dashboard/admin/settlements/")({
   component: SettlementsHubPage,
 });
 
-const LINKS = [
+const WORKFLOW = [
   {
-    to: "/dashboard/admin/settlements/refunds",
+    step: 1,
     label: "Refunds",
+    to: "/dashboard/admin/settlements/refunds",
+    description: "Scan cancelled or rejected paid orders and create refund records.",
+    action: "Run refund scan",
     icon: RotateCcw,
-    description: "List refunds and scan cancelled orders to create them.",
   },
   {
-    to: "/dashboard/admin/settlements/ledger",
+    step: 2,
     label: "Ledger",
+    to: "/dashboard/admin/settlements/ledger",
+    description: "Generate settlement ledger entries for completed paid orders.",
+    action: "Generate entries",
     icon: BookOpen,
-    description: "Settlement ledger entries for completed paid orders.",
   },
   {
-    to: "/dashboard/admin/settlements/payouts",
+    step: 3,
     label: "Payouts",
+    to: "/dashboard/admin/settlements/payouts",
+    description: "Create vendor and courier payout runs from pending ledger balances.",
+    action: "Run payouts",
     icon: Banknote,
-    description: "Vendor and courier payout runs from pending ledger entries.",
   },
 ] as const;
 
@@ -35,42 +41,94 @@ function SettlementsHubPage() {
     queryFn: getAdminDashboard,
   });
 
+  const pendingRefunds = stats?.pendingRefunds ?? 0;
+  const pendingPayouts = stats?.pendingPayouts ?? 0;
+  const nextStep =
+    pendingRefunds > 0
+      ? WORKFLOW[0]
+      : pendingPayouts > 0
+        ? WORKFLOW[2]
+        : WORKFLOW[1];
+
   return (
-    <div>
-      <AdminPageHeader
-        title="Settlement operations"
-        description="Manage refunds, ledger generation, and payout runs."
-      />
+    <div className="space-y-8">
+      <section className="rounded-2xl border border-border/60 bg-card/50 p-5 shadow-[var(--shadow-soft)] sm:p-6">
+        <h3 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">Recommended workflow</h3>
+        <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted-foreground">
+          Run settlement tasks in order: refunds first, then ledger generation, then payout runs. Each step
+          prepares data for the next.
+        </p>
 
-      <div className="mb-8 grid gap-4 sm:grid-cols-2">
-        <div className="rounded-2xl border border-border/60 bg-card p-4">
-          <p className="text-xs text-muted-foreground">Pending refunds</p>
-          <p className="text-2xl font-semibold">{stats?.pendingRefunds ?? "—"}</p>
-        </div>
-        <div className="rounded-2xl border border-border/60 bg-card p-4">
-          <p className="text-xs text-muted-foreground">Pending payouts</p>
-          <p className="text-2xl font-semibold">{stats?.pendingPayouts ?? "—"}</p>
-        </div>
-      </div>
+        <ol className="mt-6 grid gap-4 lg:grid-cols-3">
+          {WORKFLOW.map(({ step, label, to, description, action, icon: Icon }) => (
+            <li
+              key={to}
+              className="relative rounded-2xl border border-border/60 bg-card p-4 shadow-[var(--shadow-soft)]"
+            >
+              <div className="flex items-start gap-3">
+                <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-primary/10 text-sm font-bold text-primary">
+                  {step}
+                </span>
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2">
+                    <Icon className="h-4 w-4 text-primary" />
+                    <h4 className="font-semibold text-foreground">{label}</h4>
+                  </div>
+                  <p className="mt-1 text-sm text-muted-foreground">{description}</p>
+                  <Link
+                    to={to}
+                    className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-primary hover:underline"
+                  >
+                    {action}
+                    <ArrowRight className="h-3.5 w-3.5" />
+                  </Link>
+                </div>
+              </div>
+            </li>
+          ))}
+        </ol>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {LINKS.map(({ to, label, icon: Icon, description }) => (
-          <Link
-            key={to}
-            to={to}
-            className="group rounded-3xl border border-border/60 bg-card p-6 shadow-[var(--shadow-soft)] transition-all hover:-translate-y-0.5 hover:shadow-[var(--shadow-card)]"
-          >
-            <span className="grid h-11 w-11 place-items-center rounded-xl bg-primary/10 text-primary">
-              <Icon className="h-5 w-5" />
-            </span>
-            <h3 className="mt-4 text-lg font-semibold">{label}</h3>
-            <p className="mt-1 text-sm text-muted-foreground">{description}</p>
-            <span className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-primary">
-              Open <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-            </span>
-          </Link>
-        ))}
-      </div>
+        {(pendingRefunds > 0 || pendingPayouts > 0) && (
+          <div className="mt-6 flex flex-wrap items-center justify-between gap-4 rounded-xl border border-amber-500/25 bg-amber-500/[0.06] px-4 py-3">
+            <p className="text-sm text-foreground">
+              {pendingRefunds > 0
+                ? `${pendingRefunds} refund${pendingRefunds === 1 ? "" : "s"} need attention.`
+                : `${pendingPayouts} payout${pendingPayouts === 1 ? "" : "s"} are queued.`}{" "}
+              <span className="text-muted-foreground">Start with {nextStep.label.toLowerCase()}.</span>
+            </p>
+            <Link
+              to={nextStep.to}
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm transition-all hover:shadow-md"
+            >
+              {nextStep.action}
+            </Link>
+          </div>
+        )}
+      </section>
+
+      <section>
+        <h3 className="mb-4 text-sm font-semibold uppercase tracking-wide text-muted-foreground">Settlement areas</h3>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <AdminQuickLink
+            to="/dashboard/admin/settlements/refunds"
+            label="Refunds"
+            description="Review refund records and scan orders that need money returned."
+            icon={RotateCcw}
+          />
+          <AdminQuickLink
+            to="/dashboard/admin/settlements/ledger"
+            label="Ledger"
+            description="Settlement ledger entries for vendors and couriers on completed orders."
+            icon={BookOpen}
+          />
+          <AdminQuickLink
+            to="/dashboard/admin/settlements/payouts"
+            label="Payouts"
+            description="Payout runs that move funds to vendor and rider accounts."
+            icon={Banknote}
+          />
+        </div>
+      </section>
     </div>
   );
 }

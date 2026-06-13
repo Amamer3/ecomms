@@ -41,7 +41,11 @@ function VendorOrderDetailPage() {
   }
 
   const customerName =
-    [order.customer.firstName, order.customer.lastName].filter(Boolean).join(" ") || order.customer.phone;
+    [order.customer?.firstName, order.customer?.lastName].filter(Boolean).join(" ") ||
+    order.customer?.phone ||
+    order.customerPhone ||
+    order.customerId ||
+    "—";
 
   const act = (label: string, fn: () => Promise<unknown>) => {
     void runAction(label, fn).then((ok) => {
@@ -64,14 +68,14 @@ function VendorOrderDetailPage() {
 
       <VendorPageHeader
         title={order.orderNumber}
-        description={`${customerName} · ${order.storeName}`}
+        description={`${customerName} · ${order.storeName ?? order.store?.name ?? "—"}`}
       />
 
       <VendorDetailGrid
         rows={[
           { label: "Status", value: order.status },
           { label: "Customer", value: customerName },
-          { label: "Phone", value: order.customer.phone },
+          { label: "Phone", value: order.customer?.phone ?? order.customerPhone ?? "—" },
           { label: "Subtotal", value: formatGhs(parseMoney(order.subtotal)) },
           { label: "Delivery", value: formatGhs(parseMoney(order.deliveryFee)) },
           { label: "Total", value: formatGhs(parseMoney(order.total)) },

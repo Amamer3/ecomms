@@ -63,6 +63,7 @@ import { Route as DashboardDeliveryDeliveriesRouteImport } from './routes/dashbo
 import { Route as DashboardAdminUsersRouteImport } from './routes/dashboard.admin.users'
 import { Route as DashboardAdminSettlementsRouteImport } from './routes/dashboard.admin.settlements'
 import { Route as DashboardAdminPromotionsRouteImport } from './routes/dashboard.admin.promotions'
+import { Route as DashboardAdminProfileRouteImport } from './routes/dashboard.admin.profile'
 import { Route as DashboardAdminPaymentsRouteImport } from './routes/dashboard.admin.payments'
 import { Route as DashboardAdminOrdersRouteImport } from './routes/dashboard.admin.orders'
 import { Route as DashboardAdminDisputesRouteImport } from './routes/dashboard.admin.disputes'
@@ -72,7 +73,9 @@ import { Route as CartItemsNewRouteImport } from './routes/cart.items.new'
 import { Route as CartItemsItemIdRouteImport } from './routes/cart.items.$itemId'
 import { Route as AccountTransactionsPaymentIdRouteImport } from './routes/account.transactions.$paymentId'
 import { Route as AccountOrdersOrderIdRouteImport } from './routes/account.orders.$orderId'
+import { Route as DashboardAdminUsersIndexRouteImport } from './routes/dashboard.admin.users.index'
 import { Route as DashboardAdminSettlementsIndexRouteImport } from './routes/dashboard.admin.settlements.index'
+import { Route as DashboardAdminPromotionsIndexRouteImport } from './routes/dashboard.admin.promotions.index'
 import { Route as AccountOrdersOrderIdIndexRouteImport } from './routes/account.orders.$orderId.index'
 import { Route as DashboardVendorStoresStoreIdRouteImport } from './routes/dashboard.vendor.stores.$storeId'
 import { Route as DashboardVendorPromotionsNewRouteImport } from './routes/dashboard.vendor.promotions.new'
@@ -82,6 +85,7 @@ import { Route as DashboardVendorProductsProductIdRouteImport } from './routes/d
 import { Route as DashboardVendorOrdersOrderIdRouteImport } from './routes/dashboard.vendor.orders.$orderId'
 import { Route as DashboardDeliveryDeliveriesDeliveryIdRouteImport } from './routes/dashboard.delivery.deliveries.$deliveryId'
 import { Route as DashboardAdminVendorsTierRouteImport } from './routes/dashboard.admin.vendors.tier'
+import { Route as DashboardAdminVendorsProductsRouteImport } from './routes/dashboard.admin.vendors.products'
 import { Route as DashboardAdminVendorsApproveRouteImport } from './routes/dashboard.admin.vendors.approve'
 import { Route as DashboardAdminUsersUserIdRouteImport } from './routes/dashboard.admin.users.$userId'
 import { Route as DashboardAdminSettlementsRefundsRouteImport } from './routes/dashboard.admin.settlements.refunds'
@@ -90,7 +94,7 @@ import { Route as DashboardAdminSettlementsLedgerRouteImport } from './routes/da
 import { Route as DashboardAdminRidersApproveRouteImport } from './routes/dashboard.admin.riders.approve'
 import { Route as DashboardAdminPromotionsNewRouteImport } from './routes/dashboard.admin.promotions.new'
 import { Route as DashboardAdminPromotionsPromotionIdRouteImport } from './routes/dashboard.admin.promotions.$promotionId'
-import { Route as DashboardAdminPaymentsCallbackRouteImport } from './routes/dashboard.admin.payments.callback'
+import { Route as DashboardAdminOrdersOrderIdRouteImport } from './routes/dashboard.admin.orders.$orderId'
 import { Route as DashboardAdminDisputesDisputeIdRouteImport } from './routes/dashboard.admin.disputes.$disputeId'
 import { Route as AccountOrdersOrderIdTrackingRouteImport } from './routes/account.orders.$orderId.tracking'
 
@@ -371,6 +375,11 @@ const DashboardAdminPromotionsRoute =
     path: '/promotions',
     getParentRoute: () => DashboardAdminRoute,
   } as any)
+const DashboardAdminProfileRoute = DashboardAdminProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => DashboardAdminRoute,
+} as any)
 const DashboardAdminPaymentsRoute = DashboardAdminPaymentsRouteImport.update({
   id: '/payments',
   path: '/payments',
@@ -418,11 +427,23 @@ const AccountOrdersOrderIdRoute = AccountOrdersOrderIdRouteImport.update({
   path: '/$orderId',
   getParentRoute: () => AccountOrdersRoute,
 } as any)
+const DashboardAdminUsersIndexRoute =
+  DashboardAdminUsersIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => DashboardAdminUsersRoute,
+  } as any)
 const DashboardAdminSettlementsIndexRoute =
   DashboardAdminSettlementsIndexRouteImport.update({
     id: '/',
     path: '/',
     getParentRoute: () => DashboardAdminSettlementsRoute,
+  } as any)
+const DashboardAdminPromotionsIndexRoute =
+  DashboardAdminPromotionsIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => DashboardAdminPromotionsRoute,
   } as any)
 const AccountOrdersOrderIdIndexRoute =
   AccountOrdersOrderIdIndexRouteImport.update({
@@ -478,6 +499,12 @@ const DashboardAdminVendorsTierRoute =
     path: '/vendors/tier',
     getParentRoute: () => DashboardAdminRoute,
   } as any)
+const DashboardAdminVendorsProductsRoute =
+  DashboardAdminVendorsProductsRouteImport.update({
+    id: '/vendors/products',
+    path: '/vendors/products',
+    getParentRoute: () => DashboardAdminRoute,
+  } as any)
 const DashboardAdminVendorsApproveRoute =
   DashboardAdminVendorsApproveRouteImport.update({
     id: '/vendors/approve',
@@ -526,11 +553,11 @@ const DashboardAdminPromotionsPromotionIdRoute =
     path: '/$promotionId',
     getParentRoute: () => DashboardAdminPromotionsRoute,
   } as any)
-const DashboardAdminPaymentsCallbackRoute =
-  DashboardAdminPaymentsCallbackRouteImport.update({
-    id: '/callback',
-    path: '/callback',
-    getParentRoute: () => DashboardAdminPaymentsRoute,
+const DashboardAdminOrdersOrderIdRoute =
+  DashboardAdminOrdersOrderIdRouteImport.update({
+    id: '/$orderId',
+    path: '/$orderId',
+    getParentRoute: () => DashboardAdminOrdersRoute,
   } as any)
 const DashboardAdminDisputesDisputeIdRoute =
   DashboardAdminDisputesDisputeIdRouteImport.update({
@@ -589,8 +616,9 @@ export interface FileRoutesByFullPath {
   '/catalog/products/$productId': typeof CatalogProductsProductIdRoute
   '/catalog/stores/$storeId': typeof CatalogStoresStoreIdRoute
   '/dashboard/admin/disputes': typeof DashboardAdminDisputesRouteWithChildren
-  '/dashboard/admin/orders': typeof DashboardAdminOrdersRoute
-  '/dashboard/admin/payments': typeof DashboardAdminPaymentsRouteWithChildren
+  '/dashboard/admin/orders': typeof DashboardAdminOrdersRouteWithChildren
+  '/dashboard/admin/payments': typeof DashboardAdminPaymentsRoute
+  '/dashboard/admin/profile': typeof DashboardAdminProfileRoute
   '/dashboard/admin/promotions': typeof DashboardAdminPromotionsRouteWithChildren
   '/dashboard/admin/settlements': typeof DashboardAdminSettlementsRouteWithChildren
   '/dashboard/admin/users': typeof DashboardAdminUsersRouteWithChildren
@@ -611,7 +639,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/vendor/': typeof DashboardVendorIndexRoute
   '/account/orders/$orderId/tracking': typeof AccountOrdersOrderIdTrackingRoute
   '/dashboard/admin/disputes/$disputeId': typeof DashboardAdminDisputesDisputeIdRoute
-  '/dashboard/admin/payments/callback': typeof DashboardAdminPaymentsCallbackRoute
+  '/dashboard/admin/orders/$orderId': typeof DashboardAdminOrdersOrderIdRoute
   '/dashboard/admin/promotions/$promotionId': typeof DashboardAdminPromotionsPromotionIdRoute
   '/dashboard/admin/promotions/new': typeof DashboardAdminPromotionsNewRoute
   '/dashboard/admin/riders/approve': typeof DashboardAdminRidersApproveRoute
@@ -620,6 +648,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/admin/settlements/refunds': typeof DashboardAdminSettlementsRefundsRoute
   '/dashboard/admin/users/$userId': typeof DashboardAdminUsersUserIdRoute
   '/dashboard/admin/vendors/approve': typeof DashboardAdminVendorsApproveRoute
+  '/dashboard/admin/vendors/products': typeof DashboardAdminVendorsProductsRoute
   '/dashboard/admin/vendors/tier': typeof DashboardAdminVendorsTierRoute
   '/dashboard/delivery/deliveries/$deliveryId': typeof DashboardDeliveryDeliveriesDeliveryIdRoute
   '/dashboard/vendor/orders/$orderId': typeof DashboardVendorOrdersOrderIdRoute
@@ -629,7 +658,9 @@ export interface FileRoutesByFullPath {
   '/dashboard/vendor/promotions/new': typeof DashboardVendorPromotionsNewRoute
   '/dashboard/vendor/stores/$storeId': typeof DashboardVendorStoresStoreIdRoute
   '/account/orders/$orderId/': typeof AccountOrdersOrderIdIndexRoute
+  '/dashboard/admin/promotions/': typeof DashboardAdminPromotionsIndexRoute
   '/dashboard/admin/settlements/': typeof DashboardAdminSettlementsIndexRoute
+  '/dashboard/admin/users/': typeof DashboardAdminUsersIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -664,10 +695,9 @@ export interface FileRoutesByTo {
   '/catalog/products/$productId': typeof CatalogProductsProductIdRoute
   '/catalog/stores/$storeId': typeof CatalogStoresStoreIdRoute
   '/dashboard/admin/disputes': typeof DashboardAdminDisputesRouteWithChildren
-  '/dashboard/admin/orders': typeof DashboardAdminOrdersRoute
-  '/dashboard/admin/payments': typeof DashboardAdminPaymentsRouteWithChildren
-  '/dashboard/admin/promotions': typeof DashboardAdminPromotionsRouteWithChildren
-  '/dashboard/admin/users': typeof DashboardAdminUsersRouteWithChildren
+  '/dashboard/admin/orders': typeof DashboardAdminOrdersRouteWithChildren
+  '/dashboard/admin/payments': typeof DashboardAdminPaymentsRoute
+  '/dashboard/admin/profile': typeof DashboardAdminProfileRoute
   '/dashboard/delivery/deliveries': typeof DashboardDeliveryDeliveriesRouteWithChildren
   '/dashboard/delivery/earnings': typeof DashboardDeliveryEarningsRoute
   '/dashboard/delivery/payouts': typeof DashboardDeliveryPayoutsRoute
@@ -685,7 +715,7 @@ export interface FileRoutesByTo {
   '/dashboard/vendor': typeof DashboardVendorIndexRoute
   '/account/orders/$orderId/tracking': typeof AccountOrdersOrderIdTrackingRoute
   '/dashboard/admin/disputes/$disputeId': typeof DashboardAdminDisputesDisputeIdRoute
-  '/dashboard/admin/payments/callback': typeof DashboardAdminPaymentsCallbackRoute
+  '/dashboard/admin/orders/$orderId': typeof DashboardAdminOrdersOrderIdRoute
   '/dashboard/admin/promotions/$promotionId': typeof DashboardAdminPromotionsPromotionIdRoute
   '/dashboard/admin/promotions/new': typeof DashboardAdminPromotionsNewRoute
   '/dashboard/admin/riders/approve': typeof DashboardAdminRidersApproveRoute
@@ -694,6 +724,7 @@ export interface FileRoutesByTo {
   '/dashboard/admin/settlements/refunds': typeof DashboardAdminSettlementsRefundsRoute
   '/dashboard/admin/users/$userId': typeof DashboardAdminUsersUserIdRoute
   '/dashboard/admin/vendors/approve': typeof DashboardAdminVendorsApproveRoute
+  '/dashboard/admin/vendors/products': typeof DashboardAdminVendorsProductsRoute
   '/dashboard/admin/vendors/tier': typeof DashboardAdminVendorsTierRoute
   '/dashboard/delivery/deliveries/$deliveryId': typeof DashboardDeliveryDeliveriesDeliveryIdRoute
   '/dashboard/vendor/orders/$orderId': typeof DashboardVendorOrdersOrderIdRoute
@@ -703,7 +734,9 @@ export interface FileRoutesByTo {
   '/dashboard/vendor/promotions/new': typeof DashboardVendorPromotionsNewRoute
   '/dashboard/vendor/stores/$storeId': typeof DashboardVendorStoresStoreIdRoute
   '/account/orders/$orderId': typeof AccountOrdersOrderIdIndexRoute
+  '/dashboard/admin/promotions': typeof DashboardAdminPromotionsIndexRoute
   '/dashboard/admin/settlements': typeof DashboardAdminSettlementsIndexRoute
+  '/dashboard/admin/users': typeof DashboardAdminUsersIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -750,8 +783,9 @@ export interface FileRoutesById {
   '/catalog/products/$productId': typeof CatalogProductsProductIdRoute
   '/catalog/stores/$storeId': typeof CatalogStoresStoreIdRoute
   '/dashboard/admin/disputes': typeof DashboardAdminDisputesRouteWithChildren
-  '/dashboard/admin/orders': typeof DashboardAdminOrdersRoute
-  '/dashboard/admin/payments': typeof DashboardAdminPaymentsRouteWithChildren
+  '/dashboard/admin/orders': typeof DashboardAdminOrdersRouteWithChildren
+  '/dashboard/admin/payments': typeof DashboardAdminPaymentsRoute
+  '/dashboard/admin/profile': typeof DashboardAdminProfileRoute
   '/dashboard/admin/promotions': typeof DashboardAdminPromotionsRouteWithChildren
   '/dashboard/admin/settlements': typeof DashboardAdminSettlementsRouteWithChildren
   '/dashboard/admin/users': typeof DashboardAdminUsersRouteWithChildren
@@ -772,7 +806,7 @@ export interface FileRoutesById {
   '/dashboard/vendor/': typeof DashboardVendorIndexRoute
   '/account/orders/$orderId/tracking': typeof AccountOrdersOrderIdTrackingRoute
   '/dashboard/admin/disputes/$disputeId': typeof DashboardAdminDisputesDisputeIdRoute
-  '/dashboard/admin/payments/callback': typeof DashboardAdminPaymentsCallbackRoute
+  '/dashboard/admin/orders/$orderId': typeof DashboardAdminOrdersOrderIdRoute
   '/dashboard/admin/promotions/$promotionId': typeof DashboardAdminPromotionsPromotionIdRoute
   '/dashboard/admin/promotions/new': typeof DashboardAdminPromotionsNewRoute
   '/dashboard/admin/riders/approve': typeof DashboardAdminRidersApproveRoute
@@ -781,6 +815,7 @@ export interface FileRoutesById {
   '/dashboard/admin/settlements/refunds': typeof DashboardAdminSettlementsRefundsRoute
   '/dashboard/admin/users/$userId': typeof DashboardAdminUsersUserIdRoute
   '/dashboard/admin/vendors/approve': typeof DashboardAdminVendorsApproveRoute
+  '/dashboard/admin/vendors/products': typeof DashboardAdminVendorsProductsRoute
   '/dashboard/admin/vendors/tier': typeof DashboardAdminVendorsTierRoute
   '/dashboard/delivery/deliveries/$deliveryId': typeof DashboardDeliveryDeliveriesDeliveryIdRoute
   '/dashboard/vendor/orders/$orderId': typeof DashboardVendorOrdersOrderIdRoute
@@ -790,7 +825,9 @@ export interface FileRoutesById {
   '/dashboard/vendor/promotions/new': typeof DashboardVendorPromotionsNewRoute
   '/dashboard/vendor/stores/$storeId': typeof DashboardVendorStoresStoreIdRoute
   '/account/orders/$orderId/': typeof AccountOrdersOrderIdIndexRoute
+  '/dashboard/admin/promotions/': typeof DashboardAdminPromotionsIndexRoute
   '/dashboard/admin/settlements/': typeof DashboardAdminSettlementsIndexRoute
+  '/dashboard/admin/users/': typeof DashboardAdminUsersIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -840,6 +877,7 @@ export interface FileRouteTypes {
     | '/dashboard/admin/disputes'
     | '/dashboard/admin/orders'
     | '/dashboard/admin/payments'
+    | '/dashboard/admin/profile'
     | '/dashboard/admin/promotions'
     | '/dashboard/admin/settlements'
     | '/dashboard/admin/users'
@@ -860,7 +898,7 @@ export interface FileRouteTypes {
     | '/dashboard/vendor/'
     | '/account/orders/$orderId/tracking'
     | '/dashboard/admin/disputes/$disputeId'
-    | '/dashboard/admin/payments/callback'
+    | '/dashboard/admin/orders/$orderId'
     | '/dashboard/admin/promotions/$promotionId'
     | '/dashboard/admin/promotions/new'
     | '/dashboard/admin/riders/approve'
@@ -869,6 +907,7 @@ export interface FileRouteTypes {
     | '/dashboard/admin/settlements/refunds'
     | '/dashboard/admin/users/$userId'
     | '/dashboard/admin/vendors/approve'
+    | '/dashboard/admin/vendors/products'
     | '/dashboard/admin/vendors/tier'
     | '/dashboard/delivery/deliveries/$deliveryId'
     | '/dashboard/vendor/orders/$orderId'
@@ -878,7 +917,9 @@ export interface FileRouteTypes {
     | '/dashboard/vendor/promotions/new'
     | '/dashboard/vendor/stores/$storeId'
     | '/account/orders/$orderId/'
+    | '/dashboard/admin/promotions/'
     | '/dashboard/admin/settlements/'
+    | '/dashboard/admin/users/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -915,8 +956,7 @@ export interface FileRouteTypes {
     | '/dashboard/admin/disputes'
     | '/dashboard/admin/orders'
     | '/dashboard/admin/payments'
-    | '/dashboard/admin/promotions'
-    | '/dashboard/admin/users'
+    | '/dashboard/admin/profile'
     | '/dashboard/delivery/deliveries'
     | '/dashboard/delivery/earnings'
     | '/dashboard/delivery/payouts'
@@ -934,7 +974,7 @@ export interface FileRouteTypes {
     | '/dashboard/vendor'
     | '/account/orders/$orderId/tracking'
     | '/dashboard/admin/disputes/$disputeId'
-    | '/dashboard/admin/payments/callback'
+    | '/dashboard/admin/orders/$orderId'
     | '/dashboard/admin/promotions/$promotionId'
     | '/dashboard/admin/promotions/new'
     | '/dashboard/admin/riders/approve'
@@ -943,6 +983,7 @@ export interface FileRouteTypes {
     | '/dashboard/admin/settlements/refunds'
     | '/dashboard/admin/users/$userId'
     | '/dashboard/admin/vendors/approve'
+    | '/dashboard/admin/vendors/products'
     | '/dashboard/admin/vendors/tier'
     | '/dashboard/delivery/deliveries/$deliveryId'
     | '/dashboard/vendor/orders/$orderId'
@@ -952,7 +993,9 @@ export interface FileRouteTypes {
     | '/dashboard/vendor/promotions/new'
     | '/dashboard/vendor/stores/$storeId'
     | '/account/orders/$orderId'
+    | '/dashboard/admin/promotions'
     | '/dashboard/admin/settlements'
+    | '/dashboard/admin/users'
   id:
     | '__root__'
     | '/'
@@ -1000,6 +1043,7 @@ export interface FileRouteTypes {
     | '/dashboard/admin/disputes'
     | '/dashboard/admin/orders'
     | '/dashboard/admin/payments'
+    | '/dashboard/admin/profile'
     | '/dashboard/admin/promotions'
     | '/dashboard/admin/settlements'
     | '/dashboard/admin/users'
@@ -1020,7 +1064,7 @@ export interface FileRouteTypes {
     | '/dashboard/vendor/'
     | '/account/orders/$orderId/tracking'
     | '/dashboard/admin/disputes/$disputeId'
-    | '/dashboard/admin/payments/callback'
+    | '/dashboard/admin/orders/$orderId'
     | '/dashboard/admin/promotions/$promotionId'
     | '/dashboard/admin/promotions/new'
     | '/dashboard/admin/riders/approve'
@@ -1029,6 +1073,7 @@ export interface FileRouteTypes {
     | '/dashboard/admin/settlements/refunds'
     | '/dashboard/admin/users/$userId'
     | '/dashboard/admin/vendors/approve'
+    | '/dashboard/admin/vendors/products'
     | '/dashboard/admin/vendors/tier'
     | '/dashboard/delivery/deliveries/$deliveryId'
     | '/dashboard/vendor/orders/$orderId'
@@ -1038,7 +1083,9 @@ export interface FileRouteTypes {
     | '/dashboard/vendor/promotions/new'
     | '/dashboard/vendor/stores/$storeId'
     | '/account/orders/$orderId/'
+    | '/dashboard/admin/promotions/'
     | '/dashboard/admin/settlements/'
+    | '/dashboard/admin/users/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -1437,6 +1484,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardAdminPromotionsRouteImport
       parentRoute: typeof DashboardAdminRoute
     }
+    '/dashboard/admin/profile': {
+      id: '/dashboard/admin/profile'
+      path: '/profile'
+      fullPath: '/dashboard/admin/profile'
+      preLoaderRoute: typeof DashboardAdminProfileRouteImport
+      parentRoute: typeof DashboardAdminRoute
+    }
     '/dashboard/admin/payments': {
       id: '/dashboard/admin/payments'
       path: '/payments'
@@ -1500,12 +1554,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AccountOrdersOrderIdRouteImport
       parentRoute: typeof AccountOrdersRoute
     }
+    '/dashboard/admin/users/': {
+      id: '/dashboard/admin/users/'
+      path: '/'
+      fullPath: '/dashboard/admin/users/'
+      preLoaderRoute: typeof DashboardAdminUsersIndexRouteImport
+      parentRoute: typeof DashboardAdminUsersRoute
+    }
     '/dashboard/admin/settlements/': {
       id: '/dashboard/admin/settlements/'
       path: '/'
       fullPath: '/dashboard/admin/settlements/'
       preLoaderRoute: typeof DashboardAdminSettlementsIndexRouteImport
       parentRoute: typeof DashboardAdminSettlementsRoute
+    }
+    '/dashboard/admin/promotions/': {
+      id: '/dashboard/admin/promotions/'
+      path: '/'
+      fullPath: '/dashboard/admin/promotions/'
+      preLoaderRoute: typeof DashboardAdminPromotionsIndexRouteImport
+      parentRoute: typeof DashboardAdminPromotionsRoute
     }
     '/account/orders/$orderId/': {
       id: '/account/orders/$orderId/'
@@ -1570,6 +1638,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardAdminVendorsTierRouteImport
       parentRoute: typeof DashboardAdminRoute
     }
+    '/dashboard/admin/vendors/products': {
+      id: '/dashboard/admin/vendors/products'
+      path: '/vendors/products'
+      fullPath: '/dashboard/admin/vendors/products'
+      preLoaderRoute: typeof DashboardAdminVendorsProductsRouteImport
+      parentRoute: typeof DashboardAdminRoute
+    }
     '/dashboard/admin/vendors/approve': {
       id: '/dashboard/admin/vendors/approve'
       path: '/vendors/approve'
@@ -1626,12 +1701,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardAdminPromotionsPromotionIdRouteImport
       parentRoute: typeof DashboardAdminPromotionsRoute
     }
-    '/dashboard/admin/payments/callback': {
-      id: '/dashboard/admin/payments/callback'
-      path: '/callback'
-      fullPath: '/dashboard/admin/payments/callback'
-      preLoaderRoute: typeof DashboardAdminPaymentsCallbackRouteImport
-      parentRoute: typeof DashboardAdminPaymentsRoute
+    '/dashboard/admin/orders/$orderId': {
+      id: '/dashboard/admin/orders/$orderId'
+      path: '/$orderId'
+      fullPath: '/dashboard/admin/orders/$orderId'
+      preLoaderRoute: typeof DashboardAdminOrdersOrderIdRouteImport
+      parentRoute: typeof DashboardAdminOrdersRoute
     }
     '/dashboard/admin/disputes/$disputeId': {
       id: '/dashboard/admin/disputes/$disputeId'
@@ -1770,23 +1845,21 @@ const DashboardAdminDisputesRouteWithChildren =
     DashboardAdminDisputesRouteChildren,
   )
 
-interface DashboardAdminPaymentsRouteChildren {
-  DashboardAdminPaymentsCallbackRoute: typeof DashboardAdminPaymentsCallbackRoute
+interface DashboardAdminOrdersRouteChildren {
+  DashboardAdminOrdersOrderIdRoute: typeof DashboardAdminOrdersOrderIdRoute
 }
 
-const DashboardAdminPaymentsRouteChildren: DashboardAdminPaymentsRouteChildren =
-  {
-    DashboardAdminPaymentsCallbackRoute: DashboardAdminPaymentsCallbackRoute,
-  }
+const DashboardAdminOrdersRouteChildren: DashboardAdminOrdersRouteChildren = {
+  DashboardAdminOrdersOrderIdRoute: DashboardAdminOrdersOrderIdRoute,
+}
 
-const DashboardAdminPaymentsRouteWithChildren =
-  DashboardAdminPaymentsRoute._addFileChildren(
-    DashboardAdminPaymentsRouteChildren,
-  )
+const DashboardAdminOrdersRouteWithChildren =
+  DashboardAdminOrdersRoute._addFileChildren(DashboardAdminOrdersRouteChildren)
 
 interface DashboardAdminPromotionsRouteChildren {
   DashboardAdminPromotionsPromotionIdRoute: typeof DashboardAdminPromotionsPromotionIdRoute
   DashboardAdminPromotionsNewRoute: typeof DashboardAdminPromotionsNewRoute
+  DashboardAdminPromotionsIndexRoute: typeof DashboardAdminPromotionsIndexRoute
 }
 
 const DashboardAdminPromotionsRouteChildren: DashboardAdminPromotionsRouteChildren =
@@ -1794,6 +1867,7 @@ const DashboardAdminPromotionsRouteChildren: DashboardAdminPromotionsRouteChildr
     DashboardAdminPromotionsPromotionIdRoute:
       DashboardAdminPromotionsPromotionIdRoute,
     DashboardAdminPromotionsNewRoute: DashboardAdminPromotionsNewRoute,
+    DashboardAdminPromotionsIndexRoute: DashboardAdminPromotionsIndexRoute,
   }
 
 const DashboardAdminPromotionsRouteWithChildren =
@@ -1825,10 +1899,12 @@ const DashboardAdminSettlementsRouteWithChildren =
 
 interface DashboardAdminUsersRouteChildren {
   DashboardAdminUsersUserIdRoute: typeof DashboardAdminUsersUserIdRoute
+  DashboardAdminUsersIndexRoute: typeof DashboardAdminUsersIndexRoute
 }
 
 const DashboardAdminUsersRouteChildren: DashboardAdminUsersRouteChildren = {
   DashboardAdminUsersUserIdRoute: DashboardAdminUsersUserIdRoute,
+  DashboardAdminUsersIndexRoute: DashboardAdminUsersIndexRoute,
 }
 
 const DashboardAdminUsersRouteWithChildren =
@@ -1836,27 +1912,31 @@ const DashboardAdminUsersRouteWithChildren =
 
 interface DashboardAdminRouteChildren {
   DashboardAdminDisputesRoute: typeof DashboardAdminDisputesRouteWithChildren
-  DashboardAdminOrdersRoute: typeof DashboardAdminOrdersRoute
-  DashboardAdminPaymentsRoute: typeof DashboardAdminPaymentsRouteWithChildren
+  DashboardAdminOrdersRoute: typeof DashboardAdminOrdersRouteWithChildren
+  DashboardAdminPaymentsRoute: typeof DashboardAdminPaymentsRoute
+  DashboardAdminProfileRoute: typeof DashboardAdminProfileRoute
   DashboardAdminPromotionsRoute: typeof DashboardAdminPromotionsRouteWithChildren
   DashboardAdminSettlementsRoute: typeof DashboardAdminSettlementsRouteWithChildren
   DashboardAdminUsersRoute: typeof DashboardAdminUsersRouteWithChildren
   DashboardAdminIndexRoute: typeof DashboardAdminIndexRoute
   DashboardAdminRidersApproveRoute: typeof DashboardAdminRidersApproveRoute
   DashboardAdminVendorsApproveRoute: typeof DashboardAdminVendorsApproveRoute
+  DashboardAdminVendorsProductsRoute: typeof DashboardAdminVendorsProductsRoute
   DashboardAdminVendorsTierRoute: typeof DashboardAdminVendorsTierRoute
 }
 
 const DashboardAdminRouteChildren: DashboardAdminRouteChildren = {
   DashboardAdminDisputesRoute: DashboardAdminDisputesRouteWithChildren,
-  DashboardAdminOrdersRoute: DashboardAdminOrdersRoute,
-  DashboardAdminPaymentsRoute: DashboardAdminPaymentsRouteWithChildren,
+  DashboardAdminOrdersRoute: DashboardAdminOrdersRouteWithChildren,
+  DashboardAdminPaymentsRoute: DashboardAdminPaymentsRoute,
+  DashboardAdminProfileRoute: DashboardAdminProfileRoute,
   DashboardAdminPromotionsRoute: DashboardAdminPromotionsRouteWithChildren,
   DashboardAdminSettlementsRoute: DashboardAdminSettlementsRouteWithChildren,
   DashboardAdminUsersRoute: DashboardAdminUsersRouteWithChildren,
   DashboardAdminIndexRoute: DashboardAdminIndexRoute,
   DashboardAdminRidersApproveRoute: DashboardAdminRidersApproveRoute,
   DashboardAdminVendorsApproveRoute: DashboardAdminVendorsApproveRoute,
+  DashboardAdminVendorsProductsRoute: DashboardAdminVendorsProductsRoute,
   DashboardAdminVendorsTierRoute: DashboardAdminVendorsTierRoute,
 }
 

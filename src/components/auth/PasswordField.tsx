@@ -13,6 +13,8 @@ export function PasswordField({
   autoComplete = "current-password",
   className,
   variant = "default",
+  inputClassName,
+  labelClassName,
 }: {
   id?: string;
   label?: string;
@@ -21,13 +23,17 @@ export function PasswordField({
   autoComplete?: string;
   className?: string;
   variant?: "default" | "pill";
+  inputClassName?: string;
+  labelClassName?: string;
 }) {
-  const fieldClass = variant === "pill" ? authPillFieldClass : authFieldClass;
+  const fieldClass = inputClassName ?? (variant === "pill" ? authPillFieldClass : authFieldClass);
   const [visible, setVisible] = useState(false);
 
   return (
     <div className={cn("space-y-2", className)}>
-      <Label htmlFor={id}>{label}</Label>
+      <Label htmlFor={id} className={labelClassName}>
+        {label}
+      </Label>
       <div className="relative">
         <Input
           id={id}

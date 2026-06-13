@@ -141,6 +141,32 @@ export function dashboardPathForRole(
   }
 }
 
+export function dashboardProfilePathForRole(
+  role: DashboardRole,
+): "/dashboard/admin/profile" | "/dashboard/vendor/profile" | "/dashboard/delivery/profile" {
+  switch (role) {
+    case "admin":
+      return "/dashboard/admin/profile";
+    case "vendor":
+      return "/dashboard/vendor/profile";
+    case "delivery":
+      return "/dashboard/delivery/profile";
+  }
+}
+
+export function dashboardProfilePathForWorkspace(
+  workspacePath: "/dashboard/admin" | "/dashboard/vendor" | "/dashboard/delivery",
+): ReturnType<typeof dashboardProfilePathForRole> {
+  switch (workspacePath) {
+    case "/dashboard/admin":
+      return "/dashboard/admin/profile";
+    case "/dashboard/vendor":
+      return "/dashboard/vendor/profile";
+    case "/dashboard/delivery":
+      return "/dashboard/delivery/profile";
+  }
+}
+
 export function appHomePathForRole(role: UserRole): string {
   if (role === "customer") return "/shop";
   return dashboardPathForRole(role);

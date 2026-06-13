@@ -53,7 +53,7 @@ function DashboardLayout() {
 
   if (isRoleWorkspace || isLogin || isAuthUtility) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="h-screen overflow-hidden bg-background">
         <Outlet />
       </div>
     );

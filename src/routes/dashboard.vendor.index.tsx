@@ -56,7 +56,7 @@ function VendorOrdersPage() {
                   {o.orderNumber}
                 </Link>
                 <p className="text-xs text-muted-foreground">
-                  {o.customer.firstName ?? o.customer.phone} · {formatGhs(parseMoney(o.total))}
+                  {o.customer?.firstName ?? o.customer?.phone ?? o.customerPhone ?? o.customerId} · {formatGhs(parseMoney(o.total))}
                 </p>
               </div>
               <span className="rounded-full bg-muted px-2 py-0.5 text-xs">{o.status}</span>

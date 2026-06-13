@@ -1,44 +1,27 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import {
-  AuthCard,
-  AuthFooterLink,
-  BusinessAuthLayout,
-} from "@/components/auth/AuthShell";
-import { SessionPanel } from "@/components/auth/SessionPanel";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useEffect } from "react";
+import { useAuth } from "@/context/auth";
+import { dashboardProfilePathForRole } from "@/lib/auth-storage";
 import { RequireBusinessUser } from "@/components/RequireBusinessUser";
 
 export const Route = createFileRoute("/dashboard/security")({
   component: DashboardSecurityPage,
-  head: () => ({ meta: [{ title: "Security — GoMarket" }] }),
+  head: () => ({ meta: [{ title: "Profile — GoMarket" }] }),
 });
 
+/** Legacy URL — send staff users to their in-workspace profile page. */
 function DashboardSecurityPage() {
+  const navigate = useNavigate();
+  const { session } = useAuth();
+
+  useEffect(() => {
+    if (!session || session.role === "customer") return;
+    navigate({ to: dashboardProfilePathForRole(session.role), replace: true });
+  }, [session, navigate]);
+
   return (
     <RequireBusinessUser>
-      <BusinessAuthLayout>
-        <AuthCard
-          variant="business"
-          title="Security & session"
-          description="View your authenticated identity, rotate tokens, or sign out of this device."
-          footer={
-            <AuthFooterLink
-              label="Back to workspace?"
-              linkLabel="Dashboard home"
-              to="/dashboard"
-            />
-          }
-        >
-          <SessionPanel showMfaLink logoutRedirect="/dashboard/login" />
-        </AuthCard>
-        <p className="mt-8 text-center">
-          <Link
-            to="/dashboard"
-            className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-          >
-            ← All dashboards
-          </Link>
-        </p>
-      </BusinessAuthLayout>
+      <p className="p-8 text-sm text-muted-foreground">Opening your profile…</p>
     </RequireBusinessUser>
   );
 }

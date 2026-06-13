@@ -4,6 +4,7 @@ import type {
   AdminDashboard,
   AdminPasswordResetResult,
   AdminUser,
+  AdminUserCreateResult,
   AdminUserList,
   HealthResponse,
   Cart,
@@ -258,6 +259,12 @@ export const listAdminUsers = (query?: {
   offset?: number;
 }) => apiRequest<AdminUserList>("/admin/users", { auth: true, query });
 
+export const getAdminUser = (id: string) =>
+  apiRequest<AdminUser>(`/admin/users/${id}`, { auth: true });
+
+export const createAdminUser = (body: { phone: string; email: string; password: string }) =>
+  apiRequest<AdminUserCreateResult>("/admin/users/admins", { method: "POST", body, auth: true });
+
 export const updateAdminUser = (id: string, body: Record<string, unknown>) =>
   apiRequest<AdminUser>(`/admin/users/${id}`, { method: "PATCH", body, auth: true });
 
@@ -283,6 +290,9 @@ export const setVendorTier = (id: string, body: { tier: string; commissionRate?:
 
 export const listAdminOrders = (query?: { status?: string; limit?: number; offset?: number }) =>
   apiRequest<FulfilmentOrder[]>("/admin/orders", { auth: true, query });
+
+export const getAdminOrder = (id: string) =>
+  apiRequest<FulfilmentOrder>(`/admin/orders/${id}`, { auth: true });
 
 export const listAdminPayments = (query?: { status?: string; limit?: number; offset?: number }) =>
   apiRequest<Payment[]>("/admin/payments", { auth: true, query });

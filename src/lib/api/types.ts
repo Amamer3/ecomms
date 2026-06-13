@@ -108,6 +108,7 @@ export type StoreSummary = {
   rating: number;
   ratingCount: number;
   productCount?: number;
+  vendorProfileId?: string;
 };
 
 export type CartItem = {
@@ -292,8 +293,9 @@ export type Payment = {
 export type FulfilmentOrder = CustomerOrder & {
   customerId: string;
   storeId: string;
-  storeName: string;
-  customer: { phone: string; firstName?: string | null; lastName?: string | null };
+  storeName?: string | null;
+  customer?: { phone: string; firstName?: string | null; lastName?: string | null } | null;
+  customerPhone?: string | null;
   payment?: Payment | null;
 };
 
@@ -430,6 +432,13 @@ export type AdminPasswordResetResult = {
   passwordReset: boolean;
   sessionsRevoked: boolean;
   updatedAt: string;
+};
+
+export type AdminUserCreateResult = {
+  user: PublicUser;
+  mfaRequired?: boolean;
+  otpauthUri?: string | null;
+  message?: string | null;
 };
 
 export type Dispute = {
