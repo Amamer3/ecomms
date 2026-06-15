@@ -13,7 +13,10 @@ import { AuthProvider } from "@/context/auth";
 import { CartProvider } from "@/context/cart";
 import { ApiConfigBanner } from "@/components/ApiConfigBanner";
 import { AppErrorBoundary } from "@/components/AppErrorBoundary";
+import { PwaUpdatePrompt } from "@/components/PwaUpdatePrompt";
 import { Toaster } from "@/components/ui/sonner";
+import { APP_NAME, APP_TAGLINE } from "@/lib/brand";
+import { PWA_THEME_COLOR } from "@/lib/pwa";
 import { getErrorMessage, reportError } from "@/lib/errors";
 
 function NotFoundComponent() {
@@ -77,15 +80,23 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "GoMarket" },
-      { name: "description", content: "Fresh groceries & essentials, delivered from local vendors." },
-      { property: "og:title", content: "GoMarket" },
-      { property: "og:description", content: "Fresh groceries & essentials, delivered from local vendors." },
+      { title: APP_NAME },
+      { name: "description", content: APP_TAGLINE },
+      { name: "theme-color", content: PWA_THEME_COLOR },
+      { name: "mobile-web-app-capable", content: "yes" },
+      { name: "apple-mobile-web-app-capable", content: "yes" },
+      { name: "apple-mobile-web-app-status-bar-style", content: "default" },
+      { name: "apple-mobile-web-app-title", content: APP_NAME },
+      { property: "og:title", content: APP_NAME },
+      { property: "og:description", content: APP_TAGLINE },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
+      { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
+      { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
+      { rel: "manifest", href: "/manifest.webmanifest" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
@@ -125,6 +136,7 @@ function RootComponent() {
           <AppErrorBoundary>
             <Outlet />
           </AppErrorBoundary>
+          <PwaUpdatePrompt />
           <Toaster richColors position="top-center" className="sm:!top-4 sm:!right-4 sm:!left-auto" />
         </CartProvider>
       </AuthProvider>

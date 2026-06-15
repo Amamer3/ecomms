@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="GoMarket">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3f8f62"/>
+      <stop offset="100%" stop-color="#5cb87a"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+  <path
+    fill="#faf9f6"
+    d="M152 176c0-17.7 14.3-32 32-32h144c17.7 0 32 14.3 32 32v16H152v-16zm-24 48h272l-24 176c-2.2 16.2-16 28.5-32.4 28.5H184.4c-16.4 0-30.2-12.3-32.4-28.5L128 224zm96 48a24 24 0 1 0 0 48 24 24 0 0 0 0-48zm80 0a24 24 0 1 0 0 48 24 24 0 0 0 0-48z"
+  />
+  <path
+    fill="#f4b942"
+    d="M256 96c-22 0-40 16.5-40 37v27h24v-27c0-8.8 7.2-16 16-16s16 7.2 16 16v27h24v-27c0-20.5-18-37-40-37z"
+  />
+</svg>
