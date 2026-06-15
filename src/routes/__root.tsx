@@ -13,6 +13,7 @@ import { AuthProvider } from "@/context/auth";
 import { CartProvider } from "@/context/cart";
 import { ApiConfigBanner } from "@/components/ApiConfigBanner";
 import { AppErrorBoundary } from "@/components/AppErrorBoundary";
+import { PwaInstallPrompt } from "@/components/PwaInstallPrompt";
 import { PwaUpdatePrompt } from "@/components/PwaUpdatePrompt";
 import { Toaster } from "@/components/ui/sonner";
 import { APP_NAME, APP_TAGLINE } from "@/lib/brand";
@@ -136,6 +137,7 @@ function RootComponent() {
           <AppErrorBoundary>
             <Outlet />
           </AppErrorBoundary>
+          <PwaInstallPrompt />
           <PwaUpdatePrompt />
           <Toaster richColors position="top-center" className="sm:!top-4 sm:!right-4 sm:!left-auto" />
         </CartProvider>
