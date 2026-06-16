@@ -20,6 +20,7 @@ import {
   clearSessionFromStorage,
   loadSessionFromStorage,
   customerProfileDisplayName,
+  customerProfileNeedsName,
   saveSessionToStorage,
   sessionFromUser,
   type AuthSession,
@@ -42,16 +43,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [ready, setReady] = useState(false);
 
   const resolveSessionName = useCallback(
-    async (user: TokenPair["user"], fallback?: string): Promise<string> => {
+    async (
+      user: TokenPair["user"],
+      fallback?: string,
+    ): Promise<{ name: string; profileComplete: boolean }> => {
       if (user.role === "CUSTOMER") {
         try {
           const profile = await getCustomerProfile();
-          return customerProfileDisplayName(profile);
+          return {
+            name: customerProfileDisplayName(profile),
+            profileComplete: !customerProfileNeedsName(profile),
+          };
         } catch {
           /* use fallback */
         }
       }
-      return fallback ?? user.email?.split("@")[0] ?? user.phone;
+      return {
+        name: fallback ?? user.email?.split("@")[0] ?? user.phone,
+        profileComplete: true,
+      };
     },
     [],
   );
@@ -64,8 +74,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
     try {
       const user = await getMe();
-      const name = await resolveSessionName(user, session?.name);
-      const next = sessionFromUser(user, name);
+      const resolved = await resolveSessionName(user, session?.name);
+      const next = sessionFromUser(user, resolved.name, resolved.profileComplete);
       saveSessionToStorage(next);
       setSession(next);
     } catch (e) {
@@ -82,8 +92,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const setSessionFromTokens = useCallback(
     async (tokens: TokenPair, name?: string) => {
       saveTokens({ accessToken: tokens.accessToken, refreshToken: tokens.refreshToken });
-      const displayName = await resolveSessionName(tokens.user, name);
-      const next = sessionFromUser(tokens.user, displayName);
+      const resolved = await resolveSessionName(tokens.user, name);
+      const displayName = name ?? resolved.name;
+      const profileComplete = name ? true : resolved.profileComplete;
+      const next = sessionFromUser(tokens.user, displayName, profileComplete);
       saveSessionToStorage(next);
       setSession(next);
     },

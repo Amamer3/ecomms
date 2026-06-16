@@ -20,6 +20,8 @@ export type AuthSession = {
   role: UserRole;
   apiRole: ApiRole;
   createdAt: string;
+  /** False when a customer account has no name on file yet. Omitted = complete (legacy sessions). */
+  profileComplete?: boolean;
 };
 
 export const AUTH_STORAGE_KEY = "randys_auth_session";
@@ -56,7 +58,27 @@ export function customerProfileDisplayName(profile: {
   return profile.phone;
 }
 
-export function sessionFromUser(user: PublicUser, name?: string): AuthSession {
+export function customerProfileNeedsName(profile: {
+  firstName?: string | null;
+  lastName?: string | null;
+}): boolean {
+  return !profile.firstName?.trim() && !profile.lastName?.trim();
+}
+
+/** Split a single full-name field into first and last for the customer profile API. */
+export function splitFullName(fullName: string): { firstName: string; lastName?: string } {
+  const normalized = fullName.trim().replace(/\s+/g, " ");
+  if (!normalized) return { firstName: "" };
+  const space = normalized.indexOf(" ");
+  if (space < 0) return { firstName: normalized };
+  return { firstName: normalized.slice(0, space), lastName: normalized.slice(space + 1) };
+}
+
+export function sessionFromUser(
+  user: PublicUser,
+  name?: string,
+  profileComplete = true,
+): AuthSession {
   return {
     id: user.id,
     email: user.email ?? "",
@@ -65,6 +87,7 @@ export function sessionFromUser(user: PublicUser, name?: string): AuthSession {
     role: apiRoleToUserRole(user.role),
     apiRole: user.role,
     createdAt: new Date().toISOString(),
+    profileComplete: user.role === "CUSTOMER" ? profileComplete : true,
   };
 }
 
@@ -83,6 +106,7 @@ export function parseSession(raw: string | null): AuthSession | null {
       role: p.role as UserRole,
       apiRole: (p.apiRole as ApiRole) ?? mapLegacyApiRole(p.role as UserRole),
       createdAt: typeof p.createdAt === "string" ? p.createdAt : new Date().toISOString(),
+      profileComplete: typeof p.profileComplete === "boolean" ? p.profileComplete : true,
     };
   } catch {
     return null;

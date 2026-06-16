@@ -22,10 +22,16 @@ export function RequireCustomer({ children }: { children: ReactNode }) {
     if (!ready) return;
     if (!session || session.role !== "customer") {
       navigate({ to: "/login", search: { redirect: pathname } });
+      return;
+    }
+    if (session.profileComplete === false) {
+      navigate({ to: "/login", search: { redirect: pathname, completeProfile: true } });
     }
   }, [ready, session, navigate, pathname]);
-
+ 
   if (!ready) return <LoadingSkeleton />;
-  if (!session || session.role !== "customer") return <LoadingSkeleton />;
+  if (!session || session.role !== "customer" || session.profileComplete === false) {
+    return <LoadingSkeleton />;
+  }
   return <>{children}</>;
 }
