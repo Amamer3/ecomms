@@ -3,11 +3,13 @@ import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { ArrowLeft } from "lucide-react";
 import { createProduct, listCategories, listVendorStores } from "@/lib/api";
+import { productImagesForApi, type ProductImageFormValue } from "@/lib/product-images";
 import {
   catalogInputCls,
   CatalogPageHeader,
   useVendorCatalogAction,
 } from "@/components/catalog/catalog-ui";
+import { ProductImageField } from "@/components/catalog/ProductImageField";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/dashboard/vendor/products/new")({
@@ -27,6 +29,7 @@ function VendorNewProductPage() {
     storeId: "",
     categoryId: "",
     description: "",
+    images: [] as ProductImageFormValue[],
   });
 
   const { data: stores = [] } = useQuery({ queryKey: ["vendor-stores"], queryFn: listVendorStores });
@@ -54,6 +57,7 @@ function VendorNewProductPage() {
           unit: form.unit,
           stockQty: Number.isNaN(stockQty) ? 10 : stockQty,
           status: "ACTIVE",
+          images: productImagesForApi(form.images),
         }),
       );
       if (ok) {
@@ -157,6 +161,12 @@ function VendorNewProductPage() {
             onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
           />
         </label>
+        <ProductImageField
+          images={form.images}
+          onChange={(images) => setForm((f) => ({ ...f, images }))}
+          inputClassName={catalogInputCls}
+          disabled={submitting}
+        />
         <button
           type="submit"
           disabled={submitting}

@@ -1,5 +1,7 @@
+import { useQueryClient } from "@tanstack/react-query";
 import { listAdminUsers, listStoreProducts, listStores } from "@/lib/api";
 import type { AdminUser, Product, StoreSummary } from "@/lib/api/types";
+import { runAction as executeAction } from "@/lib/run-action";
 
 export type AdminVendorCatalogProduct = {
   product: Product;
@@ -99,6 +101,22 @@ export function countProductsByVendor(
     counts.set(vendor.id, productsForVendor(catalog, vendor, stores).length);
   }
   return counts;
+}
+
+export function useAdminCatalogAction() {
+  const qc = useQueryClient();
+
+  const invalidate = () => {
+    void qc.invalidateQueries({ queryKey: ["admin-vendor-catalog"] });
+    void qc.invalidateQueries({ queryKey: ["product"] });
+    void qc.invalidateQueries({ queryKey: ["stores"] });
+    void qc.invalidateQueries({ queryKey: ["categories"] });
+  };
+
+  const runAction = (label: string, fn: () => Promise<unknown>) =>
+    executeAction(label, fn, invalidate);
+
+  return { runAction, invalidate };
 }
 
 export function matchesCatalogSearch(row: AdminVendorCatalogProduct, query: string): boolean {

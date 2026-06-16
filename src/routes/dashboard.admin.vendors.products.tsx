@@ -1,8 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
-import { Package, RefreshCw, Search, Store, X } from "lucide-react";
+import { Package, Plus, RefreshCw, Search, Store, X } from "lucide-react";
 import { AdminProductDetailSheet } from "@/components/admin/AdminProductDetailSheet";
+import { CreateAdminProductDialog } from "@/components/admin/CreateAdminProductDialog";
 import { listAdminUsers, listStores } from "@/lib/api";
 import type { AdminUser } from "@/lib/api/types";
 import { parseMoney } from "@/lib/api/client";
@@ -24,6 +25,7 @@ import {
   AdminListItem,
   AdminPageHeader,
   AdminPagination,
+  AdminPrimaryButton,
   AdminStat,
   AdminStatusBadge,
   paginateItems,
@@ -65,6 +67,7 @@ function matchesVendorSearch(user: AdminUser, query: string): boolean {
 
 function AdminVendorProductsPage() {
   const { vendorId: searchVendorId, productId: searchProductId } = Route.useSearch();
+  const [createOpen, setCreateOpen] = useState(false);
   const [selectedVendorId, setSelectedVendorId] = useState<string | null>(null);
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
   const [vendorSearch, setVendorSearch] = useState("");
@@ -199,15 +202,20 @@ function AdminVendorProductsPage() {
         title="Vendor catalog"
         description="Browse products vendors have listed for customers across the marketplace."
         actions={
-          <button
-            type="button"
-            onClick={() => refetch()}
-            disabled={isFetching}
-            className="inline-flex items-center gap-2 rounded-full border border-border px-4 py-2.5 text-sm font-semibold text-foreground transition-colors hover:bg-muted/40 disabled:opacity-60"
-          >
-            <RefreshCw className={cn("h-4 w-4", isFetching && "animate-spin")} />
-            Refresh
-          </button>
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              onClick={() => refetch()}
+              disabled={isFetching}
+              className="inline-flex items-center gap-2 rounded-full border border-border px-4 py-2.5 text-sm font-semibold text-foreground transition-colors hover:bg-muted/40 disabled:opacity-60"
+            >
+              <RefreshCw className={cn("h-4 w-4", isFetching && "animate-spin")} />
+              Refresh
+            </button>
+            <AdminPrimaryButton type="button" onClick={() => setCreateOpen(true)}>
+              <Plus className="h-4 w-4" /> New product
+            </AdminPrimaryButton>
+          </div>
         }
       />
 
@@ -405,6 +413,18 @@ function AdminVendorProductsPage() {
             ) : null}
           </AdminFilterBar>
 
+          <CreateAdminProductDialog
+            open={createOpen}
+            onOpenChange={setCreateOpen}
+            stores={stores}
+            vendor={selectedVendor}
+            onCreated={() => void refetchCatalog()}
+            onViewProduct={(id) => {
+              setCreateOpen(false);
+              setSelectedProductId(id);
+            }}
+          />
+
           <AdminProductDetailSheet
             open={selectedProductId !== null}
             productId={selectedProductId}
@@ -412,6 +432,7 @@ function AdminVendorProductsPage() {
             onOpenChange={(open) => {
               if (!open) setSelectedProductId(null);
             }}
+            onUpdated={() => void refetchCatalog()}
           />
 
           <AsyncState
@@ -463,7 +484,7 @@ function AdminVendorProductsPage() {
                     onClick={() => setSelectedProductId(product.id)}
                     className="text-sm font-medium text-primary hover:underline"
                   >
-                    View
+                    Edit
                   </button>,
                 ])}
                 footer={

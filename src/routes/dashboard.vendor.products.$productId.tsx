@@ -4,11 +4,13 @@ import { useEffect, useState } from "react";
 import { ArrowLeft } from "lucide-react";
 import { deleteProduct, getProduct, updateProduct } from "@/lib/api";
 import { parseMoney } from "@/lib/api/client";
+import { productImagesForApi, type ProductImageFormValue } from "@/lib/product-images";
 import {
   catalogInputCls,
   CatalogPageHeader,
   useVendorCatalogAction,
 } from "@/components/catalog/catalog-ui";
+import { ProductImageField } from "@/components/catalog/ProductImageField";
 
 export const Route = createFileRoute("/dashboard/vendor/products/$productId")({
   component: VendorEditProductPage,
@@ -27,6 +29,7 @@ function VendorEditProductPage() {
     stockQty: "0",
     description: "",
     status: "ACTIVE" as "ACTIVE" | "OUT_OF_STOCK" | "ARCHIVED",
+    images: [] as ProductImageFormValue[],
   });
 
   const { data: product, isLoading } = useQuery({
@@ -43,6 +46,7 @@ function VendorEditProductPage() {
       stockQty: String(product.stockQty),
       description: product.description ?? "",
       status: product.status,
+      images: product.images.map((image, position) => ({ url: image.url, position })),
     });
   }, [product]);
 
@@ -61,6 +65,7 @@ function VendorEditProductPage() {
           unit: form.unit,
           stockQty: Number.isNaN(stockQty) ? 0 : stockQty,
           status: form.status,
+          images: productImagesForApi(form.images),
         }),
       );
     } finally {
@@ -163,6 +168,12 @@ function VendorEditProductPage() {
             onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
           />
         </label>
+        <ProductImageField
+          images={form.images}
+          onChange={(images) => setForm((f) => ({ ...f, images }))}
+          inputClassName={catalogInputCls}
+          disabled={submitting || archiving}
+        />
         <button
           type="submit"
           disabled={submitting}

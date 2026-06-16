@@ -13,11 +13,13 @@ export function AdminProductDetailSheet({
   productId,
   preview,
   onOpenChange,
+  onUpdated,
 }: {
   open: boolean;
   productId: string | null;
   preview?: AdminVendorCatalogProduct | null;
   onOpenChange: (open: boolean) => void;
+  onUpdated?: () => void;
 }) {
   const title = preview?.product.name ?? "Product details";
 
@@ -33,7 +35,15 @@ export function AdminProductDetailSheet({
 
         {productId ? (
           <div className="mt-6 pb-8">
-            <AdminProductDetailContent productId={productId} preview={preview} />
+            <AdminProductDetailContent
+              productId={productId}
+              preview={preview}
+              onUpdated={onUpdated}
+              onArchived={() => {
+                onOpenChange(false);
+                onUpdated?.();
+              }}
+            />
           </div>
         ) : null}
       </SheetContent>
