@@ -19,6 +19,8 @@ import { HomeHero } from "@/components/home/HomeHero";
 import { ProductCard } from "@/components/ProductCard";
 import { QueryErrorState } from "@/components/QueryErrorState";
 import { Skeleton } from "@/components/ui/skeleton";
+import { CustomerHome } from "@/components/customer/CustomerHome";
+import { useAuth } from "@/context/auth";
 import { useQuery } from "@tanstack/react-query";
 import { listCategories, listStoreProducts, listStores } from "@/lib/api";
 import { categoryEmoji, storeLabel, toShopProduct } from "@/lib/catalog-display";
@@ -78,6 +80,15 @@ const WHY_US = [
 ] as const;
 
 function Home() {
+  const { session, ready } = useAuth();
+  if (ready && session?.role === "customer") {
+    return <CustomerHome />;
+  }
+
+  return <MarketingHome />;
+}
+
+function MarketingHome() {
   const clientReady = useClientReady();
   const {
     data: stores = [],
@@ -288,9 +299,9 @@ function Home() {
             action={{ to: "/shop", label: "Go to shop" }}
           />
         ) : (
-          <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
+          <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-5 lg:grid-cols-4">
             {featured.map((p) => (
-              <ProductCard key={p.id} product={p} />
+              <ProductCard key={p.id} product={p} store={store} />
             ))}
           </div>
         )}

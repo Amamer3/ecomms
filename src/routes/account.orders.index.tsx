@@ -72,8 +72,11 @@ function OrderSection({
       <h3 className="mb-4 font-display text-lg font-semibold">{title}</h3>
       <ul className="divide-y divide-border rounded-2xl border border-border bg-card">
         {orders.map((o) => (
-          <li key={o.id} className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 text-sm">
-            <div>
+          <li
+            key={o.id}
+            className="flex flex-col gap-2 px-3 py-3 text-sm sm:flex-row sm:items-center sm:justify-between sm:gap-3 sm:px-4"
+          >
+            <div className="min-w-0">
               <Link
                 to="/account/orders/$orderId"
                 params={{ orderId: o.id }}
@@ -81,17 +84,17 @@ function OrderSection({
               >
                 {o.orderNumber}
               </Link>
-              <p className="text-xs text-muted-foreground">
+              <p className="mt-0.5 text-xs text-muted-foreground break-words">
                 {o.store.name} · {o.status}
               </p>
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center justify-between gap-3 sm:justify-end">
               <span className="font-medium">{formatGhs(parseMoney(o.total))}</span>
               {showTracking && (
                 <Link
                   to="/account/orders/$orderId/tracking"
                   params={{ orderId: o.id }}
-                  className="text-xs font-medium text-primary hover:underline"
+                  className="shrink-0 text-xs font-medium text-primary hover:underline"
                 >
                   Track
                 </Link>

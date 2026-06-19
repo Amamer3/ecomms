@@ -18,7 +18,7 @@ export const Route = createFileRoute("/account/addresses")({
 function AccountAddressesPage() {
   const { session } = useAuth();
   const { data: addresses = [], isLoading, isError, error, refetch, isFetching } = useQuery({
-    queryKey: ["addresses"],
+    queryKey: ["customer-addresses"],
     queryFn: listAddresses,
   });
 
@@ -113,7 +113,7 @@ function AccountAddressesPage() {
 
       <form
         onSubmit={(e) => void onSubmit(e)}
-        className="max-w-lg space-y-4 rounded-2xl border border-border/60 bg-card p-6"
+        className="w-full max-w-lg space-y-4 rounded-2xl border border-border/60 bg-card p-4 sm:p-6"
       >
         <h3 className="font-semibold">Add address</h3>
         <label className="block">

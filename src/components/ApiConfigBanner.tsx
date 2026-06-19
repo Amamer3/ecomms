@@ -7,6 +7,7 @@ export function ApiConfigBanner() {
 
   return (
     <div
+      data-api-config-banner
       role="alert"
       className="border-b border-destructive/30 bg-destructive/10 px-4 py-2 text-center text-sm text-destructive"
     >

@@ -39,9 +39,12 @@ function AccountTransactionsPage() {
         ) : (
           <ul className="divide-y divide-border rounded-2xl border border-border bg-card">
             {txs.map((t) => (
-              <li key={t.id} className="flex items-center justify-between px-4 py-3 text-sm">
-                <div className="flex items-center gap-2">
-                  <Package className="h-4 w-4 text-muted-foreground" />
+              <li
+                key={t.id}
+                className="flex flex-col gap-2 px-3 py-3 text-sm sm:flex-row sm:items-center sm:justify-between sm:px-4"
+              >
+                <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
+                  <Package className="h-4 w-4 shrink-0 text-muted-foreground" />
                   <Link
                     to="/account/transactions/$paymentId"
                     params={{ paymentId: t.id }}
@@ -51,7 +54,7 @@ function AccountTransactionsPage() {
                   </Link>
                   <span className="text-muted-foreground">{t.status}</span>
                 </div>
-                <span className="font-semibold">{formatGhs(parseMoney(t.amount))}</span>
+                <span className="font-semibold shrink-0">{formatGhs(parseMoney(t.amount))}</span>
               </li>
             ))}
           </ul>

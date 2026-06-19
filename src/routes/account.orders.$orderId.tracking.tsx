@@ -54,7 +54,7 @@ function AccountOrderTrackingPage() {
       />
 
       {mapTracking ? (
-        <div className="mb-8 h-[min(52vh,420px)] overflow-hidden rounded-3xl border border-border/60">
+        <div className="mb-6 h-[min(52vh,420px)] min-h-[220px] overflow-hidden rounded-2xl border border-border/60 sm:rounded-3xl">
           <CustomerJourneyMap
             delivery={mapTracking}
             showLiveRoute={mapTracking.status === "en_route"}

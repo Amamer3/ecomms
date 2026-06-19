@@ -14,7 +14,7 @@ function AccountSecurityPage() {
         title="Security & session"
         description="View your signed-in identity, refresh tokens, or sign out."
       />
-      <section className="rounded-2xl border border-border bg-card p-6">
+      <section className="rounded-2xl border border-border bg-card p-4 sm:p-6">
         <SessionPanel logoutRedirect="/login" />
       </section>
     </div>

@@ -112,25 +112,14 @@ function CatalogStoreDetailPage() {
         {products.length === 0 ? (
           <p className="text-sm text-muted-foreground">No active products in this store.</p>
         ) : (
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-5 lg:grid-cols-4">
             {products.map((p) => {
               const shopProduct = toShopProduct(
                 p,
                 store.name,
                 categoryNameById.get(p.categoryId) ?? "Groceries",
               );
-              return (
-                <div key={p.id} className="space-y-2">
-                  <Link
-                    to="/catalog/products/$productId"
-                    params={{ productId: p.id }}
-                    className="block text-center text-xs font-medium text-primary hover:underline"
-                  >
-                    View details
-                  </Link>
-                  <ProductCard product={shopProduct} />
-                </div>
-              );
+              return <ProductCard key={p.id} product={shopProduct} store={store} />;
             })}
           </div>
         )}

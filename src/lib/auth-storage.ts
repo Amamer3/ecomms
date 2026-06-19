@@ -192,7 +192,7 @@ export function dashboardProfilePathForWorkspace(
 }
 
 export function appHomePathForRole(role: UserRole): string {
-  if (role === "customer") return "/shop";
+  if (role === "customer") return "/";
   return dashboardPathForRole(role);
 }
 
@@ -229,13 +229,15 @@ export function postAuthRedirectPath(
 
 export function safeShopperPostLoginRedirect(
   redirect: string | undefined,
-): "/shop" | "/cart" | "/checkout" | "/account" {
-  if (!redirect || !redirect.startsWith("/")) return "/shop";
-  if (redirect.startsWith("//")) return "/shop";
-  if (redirect.startsWith("/dashboard") || redirect.startsWith("/login")) return "/shop";
+): "/" | "/shop" | "/cart" | "/checkout" | "/account" {
+  if (!redirect || !redirect.startsWith("/")) return "/";
+  if (redirect.startsWith("//")) return "/";
+  if (redirect.startsWith("/dashboard") || redirect.startsWith("/login")) return "/";
   if (redirect === "/cart" || redirect.startsWith("/cart/")) return "/cart";
   if (redirect === "/checkout" || redirect.startsWith("/checkout/")) return "/checkout";
   if (redirect === "/account" || redirect.startsWith("/account/")) return "/account";
-  if (redirect === "/shop" || redirect.startsWith("/shop/")) return "/shop";
-  return "/shop";
+  if (redirect === "/" || redirect === "/shop" || redirect.startsWith("/shop/")) {
+    return redirect === "/shop" || redirect.startsWith("/shop/") ? "/shop" : "/";
+  }
+  return "/";
 }

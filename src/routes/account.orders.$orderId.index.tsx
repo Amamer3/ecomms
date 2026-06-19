@@ -73,7 +73,7 @@ function AccountOrderDetailPage() {
           <Link
             to="/account/orders/$orderId/tracking"
             params={{ orderId }}
-            className="mt-6 inline-flex rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground"
+            className="mt-6 inline-flex w-full justify-center rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground sm:w-auto"
           >
             View delivery tracking
           </Link>

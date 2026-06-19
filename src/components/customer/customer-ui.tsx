@@ -11,9 +11,9 @@ export function CustomerPageHeader({
   description: string;
 }) {
   return (
-    <header className="mb-8">
-      <h2 className="font-display text-2xl font-semibold tracking-tight">{title}</h2>
-      <p className="mt-2 max-w-2xl text-sm text-muted-foreground">{description}</p>
+    <header className="mb-6 sm:mb-8">
+      <h2 className="font-display text-xl font-semibold tracking-tight sm:text-2xl">{title}</h2>
+      <p className="mt-2 max-w-2xl text-sm text-muted-foreground break-words">{description}</p>
     </header>
   );
 }
@@ -24,10 +24,14 @@ export function CustomerDetailGrid({ rows }: { rows: { label: string; value: Rea
       {rows.map(({ label, value }) => (
         <div
           key={label}
-          className="flex flex-col gap-0.5 px-4 py-3 sm:flex-row sm:items-center sm:justify-between"
+          className="flex flex-col gap-1 px-3 py-3 sm:px-4 sm:flex-row sm:items-start sm:justify-between sm:gap-4"
         >
-          <dt className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{label}</dt>
-          <dd className="text-sm font-medium text-foreground sm:text-right">{value}</dd>
+          <dt className="shrink-0 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+            {label}
+          </dt>
+          <dd className="min-w-0 text-sm font-medium text-foreground break-words sm:text-right">
+            {value}
+          </dd>
         </div>
       ))}
     </dl>

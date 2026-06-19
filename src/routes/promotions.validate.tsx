@@ -1,13 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Navbar } from "@/components/Navbar";
-import { Footer } from "@/components/Footer";
 import { RequireCustomer } from "@/components/RequireCustomer";
+import { CustomerOnlyPage } from "@/components/customer/CustomerOnlyPage";
+import { CustomerSectionHeader } from "@/components/customer/CustomerPageChrome";
 import { validatePromotion } from "@/lib/api";
 import { parseMoney } from "@/lib/api/client";
 import { getErrorMessage } from "@/lib/errors";
-import { customerInputCls, CustomerPageHeader } from "@/components/customer/customer-ui";
+import { customerInputCls } from "@/components/customer/customer-ui";
 import { formatGhs } from "@/lib/format-money";
 import { loadSelectedStoreId } from "@/lib/catalog-display";
 
@@ -48,10 +48,9 @@ function ValidatePromotionPage() {
 
   return (
     <RequireCustomer>
-      <div className="min-h-screen bg-background">
-        <Navbar />
-        <section className="mx-auto max-w-md px-4 py-12 sm:px-6">
-          <CustomerPageHeader
+      <CustomerOnlyPage activeTab="home" mainClassName="py-6">
+        <div className="mx-auto max-w-md">
+          <CustomerSectionHeader
             title="Validate promotion"
             description="Check whether a promo code applies to a store cart subtotal."
           />
@@ -100,9 +99,8 @@ function ValidatePromotionPage() {
               </div>
             </dl>
           )}
-        </section>
-        <Footer />
-      </div>
+        </div>
+      </CustomerOnlyPage>
     </RequireCustomer>
   );
 }

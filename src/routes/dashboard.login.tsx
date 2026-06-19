@@ -236,9 +236,9 @@ function DashboardLogin() {
               )}
             </Button>
 
-            <AuthDivider />
+            {/* <AuthDivider /> */}
 
-            <Button
+            {/* <Button
               type="button"
               variant="outline"
               className="h-12 w-full rounded-full border-border/80 bg-background text-sm font-semibold"
@@ -248,7 +248,7 @@ function DashboardLogin() {
                 <ShoppingBag className="mr-2 h-4 w-4" />
                 Customer sign in
               </Link>
-            </Button>
+            </Button> */}
           </form>
         )}
       </div>

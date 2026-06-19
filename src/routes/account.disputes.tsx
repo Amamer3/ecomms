@@ -49,7 +49,7 @@ function AccountDisputesPage() {
   };
 
   return (
-    <div className="max-w-2xl">
+    <div className="min-w-0">
       <CustomerPageHeader
         title="Disputes"
         description="View disputes you have opened and submit new ones for delivered orders."
@@ -57,7 +57,7 @@ function AccountDisputesPage() {
 
       <form
         onSubmit={(e) => void onSubmit(e)}
-        className="mb-8 space-y-4 rounded-2xl border border-border/60 bg-card p-6"
+        className="mb-8 w-full max-w-lg space-y-4 rounded-2xl border border-border/60 bg-card p-4 sm:p-6"
       >
         <h3 className="font-semibold">Open a dispute</h3>
         <p className="text-xs text-muted-foreground">

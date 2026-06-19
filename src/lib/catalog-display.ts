@@ -1,20 +1,7 @@
-import type { Category, Product, StoreSummary } from "@/lib/api/types";
+import type { Product, StoreSummary } from "@/lib/api/types";
 import { parseMoney } from "@/lib/api/client";
 
-const CATEGORY_EMOJI: Record<string, string> = {
-  PERISHABLE: "",
-  FROZEN: "",
-  PANTRY: "",
-  BEVERAGES: "",
-  HOUSEHOLD: "",
-  PERSONAL_CARE: "",
-  ELECTRONICS: "",
-  OTHER: "",
-};
-
-export function categoryEmoji(type: Category["type"]): string {
-  return CATEGORY_EMOJI[type] ?? "";
-}
+export { categoryEmoji, categoryTypeIcon, CategoryTypeIcon } from "@/lib/category-icons";
 
 /** UI product card shape (no mock catalog). */
 export type ShopProduct = {
@@ -23,6 +10,7 @@ export type ShopProduct = {
   name: string;
   vendor: string;
   price: number;
+  compareAtPrice?: number | null;
   unit: string;
   categoryId: string;
   categoryName: string;
@@ -31,6 +19,25 @@ export type ShopProduct = {
   status: Product["status"];
 };
 
+/** Bolt-style product card used across the storefront. */
+export type HomeProductCard = {
+  id: string;
+  storeId: string;
+  name: string;
+  vendor: string;
+  price: number;
+  compareAtPrice?: number | null;
+  unit: string;
+  imageUrl?: string;
+  stockQty: number;
+  status: Product["status"];
+  storeRating?: number;
+  storeRatingCount?: number;
+  prepTimeMinutes?: number;
+};
+
+type StoreCardMeta = Pick<StoreSummary, "rating" | "ratingCount" | "prepTimeMinutes">;
+
 export function toShopProduct(product: Product, storeName: string, categoryName: string): ShopProduct {
   return {
     id: product.id,
@@ -38,6 +45,7 @@ export function toShopProduct(product: Product, storeName: string, categoryName:
     name: product.name,
     vendor: storeName,
     price: parseMoney(product.price),
+    compareAtPrice: product.compareAtPrice ? parseMoney(product.compareAtPrice) : null,
     unit: product.unit,
     categoryId: product.categoryId,
     categoryName,
@@ -45,6 +53,32 @@ export function toShopProduct(product: Product, storeName: string, categoryName:
     stockQty: product.stockQty,
     status: product.status,
   };
+}
+
+export function toHomeProductCard(product: ShopProduct, store?: StoreCardMeta): HomeProductCard {
+  return {
+    id: product.id,
+    storeId: product.storeId,
+    name: product.name,
+    vendor: product.vendor,
+    price: product.price,
+    compareAtPrice: product.compareAtPrice,
+    unit: product.unit,
+    imageUrl: product.imageUrl,
+    stockQty: product.stockQty,
+    status: product.status,
+    storeRating: store?.rating,
+    storeRatingCount: store?.ratingCount,
+    prepTimeMinutes: store?.prepTimeMinutes,
+  };
+}
+
+export function toHomeProductFromApi(
+  product: Product,
+  store: StoreSummary,
+  categoryName: string,
+): HomeProductCard {
+  return toHomeProductCard(toShopProduct(product, store.name, categoryName), store);
 }
 
 export const SELECTED_STORE_KEY = "randys_selected_store_id";

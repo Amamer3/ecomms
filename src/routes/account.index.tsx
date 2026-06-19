@@ -59,19 +59,19 @@ const LINKS = [
 
 function AccountHomePage() {
   return (
-    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <div className="grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-2 xl:grid-cols-3">
       {LINKS.map(({ to, label, icon: Icon, description }) => (
         <Link
           key={to}
           to={to}
-          className="group rounded-3xl border border-border/60 bg-card p-6 shadow-[var(--shadow-soft)] transition-all hover:-translate-y-0.5 hover:shadow-[var(--shadow-card)]"
+          className="group rounded-2xl border border-border/60 bg-card p-4 shadow-[var(--shadow-soft)] transition-all hover:-translate-y-0.5 hover:shadow-[var(--shadow-card)] sm:rounded-3xl sm:p-6"
         >
-          <span className="grid h-11 w-11 place-items-center rounded-xl bg-primary/10 text-primary">
+          <span className="grid h-10 w-10 place-items-center rounded-xl bg-primary/10 text-primary sm:h-11 sm:w-11">
             <Icon className="h-5 w-5" />
           </span>
-          <h2 className="mt-4 text-lg font-semibold">{label}</h2>
-          <p className="mt-1 text-sm text-muted-foreground">{description}</p>
-          <span className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-primary">
+          <h2 className="mt-3 text-base font-semibold sm:mt-4 sm:text-lg">{label}</h2>
+          <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{description}</p>
+          <span className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-primary sm:mt-4">
             Open <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
           </span>
         </Link>

@@ -268,9 +268,9 @@ function ShopperLoginPage() {
               )}
             </Button>
 
-            <AuthDivider />
+            {/* <AuthDivider /> */}
 
-            <Button
+            {/* <Button
               type="button"
               variant="outline"
               className="h-12 w-full rounded-full border-border/80 bg-background text-sm font-semibold"
@@ -280,7 +280,7 @@ function ShopperLoginPage() {
                 <Briefcase className="mr-2 h-4 w-4" />
                 Business sign in
               </Link>
-            </Button>
+            </Button> */}
           </form>
         ) : step === "code" ? (
           <>

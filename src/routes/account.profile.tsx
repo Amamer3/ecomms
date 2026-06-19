@@ -74,8 +74,8 @@ function AccountProfilePage() {
         description="View your customer profile and update personal details."
       />
 
-      <div className="grid gap-6 lg:grid-cols-[1fr_300px]">
-        <section className="space-y-4 rounded-2xl border border-border bg-card p-6">
+      <div className="grid gap-4 sm:gap-6 lg:grid-cols-[minmax(0,1fr)_300px]">
+        <section className="order-last space-y-4 rounded-2xl border border-border bg-card p-4 sm:p-6 lg:order-first">
           <h3 className="font-semibold">Personal details</h3>
           <label className="block">
             <span className="text-xs font-medium text-muted-foreground">First name</span>
@@ -106,21 +106,21 @@ function AccountProfilePage() {
           <label className="block">
             <span className="text-xs font-medium text-muted-foreground">Phone</span>
             <div className="mt-1 flex items-center gap-2 rounded-xl border border-border bg-muted/40 px-4 py-3 text-sm">
-              <Phone className="h-4 w-4 text-muted-foreground" />
-              {profile.phone}
+              <Phone className="h-4 w-4 shrink-0 text-muted-foreground" />
+              <span className="min-w-0 break-all">{profile.phone}</span>
             </div>
           </label>
           <button
             type="button"
             onClick={() => void save()}
-            className="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground"
+            className="w-full rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground sm:w-auto"
           >
             Save profile
           </button>
         </section>
 
         {loyalty && (
-          <aside className="h-fit rounded-2xl border border-border bg-card p-6 shadow-[var(--shadow-soft)]">
+          <aside className="order-first h-fit rounded-2xl border border-border bg-card p-4 shadow-[var(--shadow-soft)] sm:p-6 lg:order-last">
             <div className="flex items-center gap-2 text-primary">
               <Award className="h-5 w-5" />
               <h3 className="font-semibold">Loyalty</h3>
@@ -130,12 +130,12 @@ function AccountProfilePage() {
               {loyalty.points} point{loyalty.points === 1 ? "" : "s"}
             </p>
             <dl className="mt-4 space-y-2 text-sm">
-              <div className="flex justify-between">
+              <div className="flex justify-between gap-3">
                 <dt className="text-muted-foreground">Lifetime spend</dt>
                 <dd className="font-medium">{formatGhs(lifetime)}</dd>
               </div>
               {loyalty.nextTier && loyalty.spendToNextTier && (
-                <div className="flex justify-between">
+                <div className="flex justify-between gap-3">
                   <dt className="text-muted-foreground">To {loyalty.nextTier}</dt>
                   <dd className="font-medium">{formatGhs(toNext)}</dd>
                 </div>

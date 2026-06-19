@@ -3,9 +3,9 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft, CheckCircle2, Loader2, ShoppingBag, Smartphone } from "lucide-react";
 import { toast } from "sonner";
-import { Navbar } from "@/components/Navbar";
 import { RequireCustomer } from "@/components/RequireCustomer";
-import { Footer } from "@/components/Footer";
+import { CustomerOnlyPage } from "@/components/customer/CustomerOnlyPage";
+import { CustomerSectionHeader } from "@/components/customer/CustomerPageChrome";
 import { PhoneInput } from "@/components/PhoneInput";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { Label } from "@/components/ui/label";
@@ -20,9 +20,7 @@ import { ghanaPhoneInputFrom, normalizeE164Phone } from "@/lib/phone";
 import {
   customerInputCls,
   CustomerDetailGrid,
-  CustomerPageHeader,
 } from "@/components/customer/customer-ui";
-import { PageHero } from "@/components/PageHero";
 
 export const Route = createFileRoute("/checkout")({
   component: CheckoutPage,
@@ -162,9 +160,8 @@ function CheckoutPage() {
     const { order, payment, nextAction } = checkoutResult;
     return (
       <RequireCustomer>
-        <div className="min-h-screen bg-background">
-          <Navbar />
-          <section className="mx-auto max-w-lg px-4 py-16 sm:px-6">
+        <CustomerOnlyPage activeTab="account" mainClassName="py-10">
+          <section className="mx-auto max-w-lg">
             <span className="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-primary/10 text-primary">
               <Smartphone className="h-8 w-8" />
             </span>
@@ -221,8 +218,7 @@ function CheckoutPage() {
               </button>
             </form>
           </section>
-          <Footer />
-        </div>
+        </CustomerOnlyPage>
       </RequireCustomer>
     );
   }
@@ -231,9 +227,8 @@ function CheckoutPage() {
     const { order, payment, nextAction } = checkoutResult;
     return (
       <RequireCustomer>
-        <div className="min-h-screen bg-background">
-          <Navbar />
-          <section className="mx-auto max-w-2xl px-4 py-16 sm:px-6">
+        <CustomerOnlyPage activeTab="account" mainClassName="py-10">
+          <section className="mx-auto max-w-2xl">
             <span className="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-primary/10 text-primary">
               <CheckCircle2 className="h-8 w-8" />
             </span>
@@ -290,8 +285,7 @@ function CheckoutPage() {
               </Link>
             </div>
           </section>
-          <Footer />
-        </div>
+        </CustomerOnlyPage>
       </RequireCustomer>
     );
   }
@@ -299,9 +293,8 @@ function CheckoutPage() {
   if (!storeId || items.length === 0) {
     return (
       <RequireCustomer>
-        <div className="min-h-screen bg-background">
-          <Navbar />
-          <section className="mx-auto max-w-2xl px-4 py-24 text-center">
+        <CustomerOnlyPage mainClassName="py-16">
+          <section className="mx-auto max-w-2xl text-center">
             <span className="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-primary/10 text-primary">
               <ShoppingBag className="h-6 w-6" />
             </span>
@@ -324,31 +317,26 @@ function CheckoutPage() {
               </Link>
             </div>
           </section>
-          <Footer />
-        </div>
+        </CustomerOnlyPage>
       </RequireCustomer>
     );
   }
 
   return (
     <RequireCustomer>
-      <div className="min-h-screen bg-background">
-        <Navbar overlay />
-        <PageHero>
-          <Link
-            to="/cart"
-            className="mb-4 inline-flex items-center gap-1 text-sm font-medium text-muted-foreground hover:text-foreground"
-          >
-            <ArrowLeft className="h-4 w-4" /> Back to cart
-          </Link>
-          <CustomerPageHeader
-            title="Checkout"
-            description="Create a pending order and pending MoMo payment from your active store cart."
-          />
-        </PageHero>
+      <CustomerOnlyPage activeTab="home" mainClassName="py-6">
+        <Link
+          to="/cart"
+          className="mb-4 inline-flex items-center gap-1 text-sm font-medium text-muted-foreground hover:text-foreground"
+        >
+          <ArrowLeft className="h-4 w-4" /> Back to cart
+        </Link>
+        <CustomerSectionHeader
+          title="Checkout"
+          description="Create a pending order and pending MoMo payment from your active store cart."
+        />
 
-        <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-          <form onSubmit={(e) => void submit(e)} className="grid gap-8 lg:grid-cols-[1fr_360px]">
+        <form onSubmit={(e) => void submit(e)} className="grid gap-8 lg:grid-cols-[1fr_360px]">
             <div className="space-y-8">
               <Section title="Delivery address">
                 {addresses.length > 0 ? (
@@ -463,10 +451,8 @@ function CheckoutPage() {
                 )}
               </button>
             </aside>
-          </form>
-        </section>
-        <Footer />
-      </div>
+        </form>
+      </CustomerOnlyPage>
     </RequireCustomer>
   );
 }

@@ -39,7 +39,7 @@ function DashboardLayout() {
   useEffect(() => {
     if (!session) return;
     if (session.role === "customer") {
-      navigate({ to: "/shop", replace: true });
+      navigate({ to: "/", replace: true });
       return;
     }
     if (isRoot && !isLogin) {
@@ -150,8 +150,8 @@ function DashHome() {
     return (
       <p className="text-sm text-muted-foreground">
         Customer accounts use the storefront.{" "}
-        <Link to="/shop" className="font-medium text-primary hover:underline">
-          Go to shop
+        <Link to="/" className="font-medium text-primary hover:underline">
+          Go to home
         </Link>{" "}
         or{" "}
         <Link to="/account" className="font-medium text-primary hover:underline">

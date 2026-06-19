@@ -38,8 +38,8 @@
 :root {
   --radius: 1rem;
 
-  /* Warm cream surface, deep forest text */
-  --background: oklch(0.985 0.012 95);
+  /* White surfaces, deep forest text */
+  --background: #ffffff;
   --foreground: oklch(0.22 0.04 150);
 
   --card: oklch(1 0 0);
@@ -56,7 +56,7 @@
   --secondary: oklch(0.94 0.03 140);
   --secondary-foreground: oklch(0.28 0.06 150);
 
-  --muted: oklch(0.96 0.015 95);
+  --muted: oklch(0.97 0.008 95);
   --muted-foreground: oklch(0.48 0.025 130);
 
   /* Juicy orange accent */
@@ -92,12 +92,25 @@
   --navbar-bar-height: 3rem;
   --navbar-top-inset: max(0.5rem, env(safe-area-inset-top));
   --navbar-offset: calc(var(--navbar-bar-height) + var(--navbar-top-inset));
+
+  /* Customer app shell — fallback until header is measured (matches CustomerHomeHeader) */
+  --customer-navbar-top-inset: max(0.5rem, env(safe-area-inset-top));
+  --customer-mobile-bar-height: 3rem;
+  --customer-navbar-fallback: 3.5rem;
+  --customer-bottom-nav-height: 3.5rem;
+}
+
+@media (min-width: 768px) {
+  :root {
+    --customer-navbar-fallback: 8rem;
+  }
 }
 
 @media (min-width: 640px) {
   :root {
     --navbar-bar-height: 4.25rem;
     --navbar-top-inset: max(1rem, env(safe-area-inset-top));
+    --customer-navbar-top-inset: max(1rem, env(safe-area-inset-top));
   }
 }
 
@@ -163,7 +176,7 @@
     -webkit-text-size-adjust: 100%;
   }
   body {
-    background-color: var(--color-background);
+    background-color: #ffffff;
     color: var(--color-foreground);
     font-feature-settings: "ss01", "cv11";
     -webkit-font-smoothing: antialiased;

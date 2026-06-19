@@ -59,16 +59,16 @@ function AccountReferralPage() {
   }
 
   return (
-    <div className="max-w-lg">
+    <div className="min-w-0 w-full max-w-lg">
       <CustomerPageHeader
         title="Referral rewards"
         description="Get or create your referral code and claim a friend's code for rewards."
       />
 
-      <section className="rounded-2xl border border-border/60 bg-card p-6">
+      <section className="rounded-2xl border border-border/60 bg-card p-4 sm:p-6">
         <p className="text-sm text-muted-foreground">Your referral code</p>
-        <div className="mt-2 flex items-center gap-3">
-          <p className="font-display text-2xl font-semibold tracking-wide">{ref.code}</p>
+        <div className="mt-2 flex flex-wrap items-center gap-3">
+          <p className="font-display text-xl font-semibold tracking-wide break-all sm:text-2xl">{ref.code}</p>
           <button
             type="button"
             onClick={() => void copyCode()}
@@ -94,7 +94,7 @@ function AccountReferralPage() {
 
       <form
         onSubmit={(e) => void onClaim(e)}
-        className="mt-8 space-y-4 rounded-2xl border border-border/60 bg-card p-6"
+        className="mt-8 space-y-4 rounded-2xl border border-border/60 bg-card p-4 sm:p-6"
       >
         <h3 className="font-semibold">Claim a friend&apos;s code</h3>
         <label className="block">
